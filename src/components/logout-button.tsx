@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useStoredToken, useStoredAccount } from "@/lib/auth";
+import { useStoredTokens, useStoredAccount } from "@/lib/auth";
 import { LogOut } from "lucide-react";
 import type React from "react";
 
@@ -7,10 +7,10 @@ export const LogoutButton: React.FC<React.ComponentProps<typeof Button>> = (
   props
 ) => {
   const [, setUsername] = useStoredAccount();
-  const [, setToken] = useStoredToken();
+  const [, setTokens] = useStoredTokens();
 
   const handleClick = () => {
-    setToken(undefined);
+    setTokens(undefined);
     setUsername(undefined);
     document.location.reload();
   };

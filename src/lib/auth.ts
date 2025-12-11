@@ -9,9 +9,14 @@ export interface StoredToken {
   expiresAt: Date;
 }
 
-export const useStoredToken = () => {
-  return useLocalStorage<StoredToken | undefined>(
-    "habbitses/token/v1",
+export interface StoredTokens {
+  access: StoredToken;
+  refresh: StoredToken;
+}
+
+export const useStoredTokens = () => {
+  return useLocalStorage<StoredTokens | undefined>(
+    "habbitses/tokens/v1",
     undefined,
     {
       syncData: true,

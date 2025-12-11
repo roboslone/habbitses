@@ -4,13 +4,13 @@ import { Toaster } from "./components/ui/sonner";
 import AuthWall from "./components/auth-wall";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { client } from "./lib/queries";
-import { SettingsPage } from "./components/settings-page";
+import { SettingsView } from "./components/settings-view";
 
 createRoot(document.getElementById("root")!).render(
   <>
     <QueryClientProvider client={client}>
       <AuthWall>
-        <SettingsPage />
+        <SettingsView />
         <Toaster />
       </AuthWall>
     </QueryClientProvider>
