@@ -37,19 +37,14 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
 
   const valid = !!habit.name;
 
-  const reset = () => {
-    setHabit(empty());
-  };
-
   const handleSubmit = () => {
     console.info({ value, habit });
 
     setLoading(true);
     onChange(habit)
       .then(() => {
-        reset();
         toast.success("New habit emerges!", {
-          description: habit.description,
+          description: habit.name,
           icon: <Check size={16} className="text-emerald-600" />,
         });
       })
@@ -84,7 +79,9 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
           type="number"
           value={habit.dailyTarget}
           onChange={(e) =>
-            update((h) => (h.dailyTarget = Math.min(1, e.target.valueAsNumber)))
+            update(
+              (h) => (h.dailyTarget = Math.max(1, e.target.valueAsNumber || 0))
+            )
           }
         />
       </div>
