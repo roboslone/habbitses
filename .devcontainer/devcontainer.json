@@ -1,5 +1,5 @@
 {
-    "name": "breather",
+    "name": "habbitses",
     "dockerComposeFile": "compose.yml",
     "service": "app",
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",

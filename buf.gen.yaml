@@ -6,3 +6,5 @@ plugins:
     out: src/proto
 inputs:
   - directory: proto
+  - module: buf.build/bufbuild/protovalidate
+  - module: buf.build/roboslone-oauth/github
