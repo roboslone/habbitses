@@ -5,17 +5,14 @@ package models.v1;
 import "google/protobuf/timestamp.proto";
 
 message Habit {
-  message DisplayOptions {
-    string color = 1;
-    string icon = 2;
-  }
-
   string name = 1;
   string description = 2;
-  DisplayOptions display_options = 3;
 
-  uint32 daily_target = 4;
-  repeated Completion completions = 5;
+  string color = 3;
+  string icon = 4;
+
+  uint32 daily_target = 5;
+  repeated Completion completions = 6;
 }
 
 message Completion {
