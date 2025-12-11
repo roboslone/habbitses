@@ -1,0 +1,32 @@
+{
+    "name": "breather",
+    "dockerComposeFile": "compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "remoteUser": "root",
+    "forwardPorts": [
+        5173
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bradlc.vscode-tailwindcss",
+                "bufbuild.vscode-buf",
+                "esbenp.prettier-vscode",
+                "github.vscode-github-actions",
+                "MartyBeGood.single-editor-tabs"
+            ]
+        }
+    },
+    "features": {
+        "ghcr.io/nils-geistmann/devcontainers-features/zsh:0": {},
+        "ghcr.io/joshuanianji/devcontainer-features/mount-pnpm-store:1": {},
+        "ghcr.io/devcontainers/features/node:1": {
+            "installYarnUsingApt": false
+        },
+        "ghcr.io/schlich/devcontainer-features/powerlevel10k:1": {},
+        "ghcr.io/mrsimonemms/devcontainers/buf:1": {},
+        "ghcr.io/devcontainers-extra/features/fzf:1": {}
+    },
+    "postCreateCommand": "bash .devcontainer/post-create.sh"
+}

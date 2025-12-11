@@ -1,0 +1,14 @@
+services:
+    app:
+        hostname: dc
+        network_mode: host
+        build:
+            context: .
+            dockerfile: devcontainer.Dockerfile
+        command: sleep infinity
+        env_file:
+            - .env
+        volumes:
+            - ../..:/workspaces:cached
+            - .zshrc:/root/.zshrc:cached
+            - ~/.config:/root/.config:cached
