@@ -1,6 +1,6 @@
 import type React from "react";
-import { LogoutButton } from "./logout-button";
-import { AccountBadge } from "./account-chip";
+import { LogoutButton } from "@/components/auth/logout-button";
+import { AccountBadge } from "@/components/auth/account-chip";
 
 export const SettingsView: React.FC = () => {
   return (

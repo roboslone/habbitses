@@ -2,7 +2,7 @@ import { QueryClient, useQuery } from "@tanstack/react-query";
 import { ExchangeService } from "@/proto/github/v1/exchange_pb";
 import { createClient } from "@connectrpc/connect";
 import { createGrpcWebTransport } from "@connectrpc/connect-web";
-import { useOctokit } from "@/components/octokit-provider";
+import { useOctokit } from "@/components/util/octokit-provider";
 import { useStoredAccount, type StoredAccount } from "./auth";
 
 export const client = new QueryClient();

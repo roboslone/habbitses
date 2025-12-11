@@ -5,15 +5,15 @@ import {
   type StoredTokens,
 } from "@/lib/auth";
 import React from "react";
-import { LoginButton } from "./login-button";
-import { Loader2 } from "lucide-react";
+import { ErrorView } from "@/components/util/error-view";
 import { ExchangeClient } from "@/lib/queries";
+import { LoadingScreen } from "@/components/util/loading-screen";
+import { LoginButton } from "@/components/auth/login-button";
+import { LogoutButton } from "@/components/auth/logout-button";
+import { Octokit } from "octokit";
+import { OctokitContext } from "@/components/util/octokit-provider";
 import { toast } from "sonner";
 import type { ExchangeResponse, Token } from "@/proto/github/v1/exchange_pb";
-import { OctokitContext } from "./octokit-provider";
-import { Octokit } from "octokit";
-import { ErrorView } from "./error-view";
-import { LogoutButton } from "./logout-button";
 
 const parseToken = (token?: Token): StoredToken => {
   if (!token || !token.value) throw new Error("token value not provided");
@@ -103,14 +103,7 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
   }
 
   if (exchanging) {
-    return (
-      <div className="flex items-center justify-center h-full w-full">
-        <div className="flex flex-col gap-2 items-center">
-          <Loader2 className="animate-spin" />
-          Exchanging GitHub code...
-        </div>
-      </div>
-    );
+    return <LoadingScreen label="Exchanging GitHub code..." />;
   }
 
   return (
