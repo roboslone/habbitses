@@ -41,18 +41,18 @@ export const HabitView: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label className="text-zinc-600">Description</Label>
+          <Label className="text-muted-foreground/50">Description</Label>
           <HabitDescription />
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label className="text-zinc-600">Progress</Label>
+          <Label className="text-muted-foreground/50">Progress</Label>
           {completion.count} / {completion.target}
           <HabitProgress className="rounded-full h-1.5" />
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label className="text-zinc-600">Chart</Label>
+          <Label className="text-muted-foreground/50">Chart</Label>
           <div className="max-w-full overflow-auto">
             <HabitChart />
           </div>

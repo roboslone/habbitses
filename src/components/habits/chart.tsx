@@ -48,7 +48,7 @@ export const HabitChart: React.FC = () => {
   const now = new Date();
 
   return (
-    <div className="p-1">
+    <div>
       <div className="max-w-full overflow-auto">
         <div
           data-testid={`habit-chart--${habit.name}`}
