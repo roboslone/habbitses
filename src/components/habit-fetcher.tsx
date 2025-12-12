@@ -1,7 +1,8 @@
 import { useHabit } from "@/lib/queries";
 import type React from "react";
-import { Loader2 } from "lucide-react";
 import { HabitContext } from "./habit/context";
+import { LoadingScreen } from "./util/loading-screen";
+import { ErrorView } from "./util/error-view";
 
 interface P extends React.PropsWithChildren {
   name: string;
@@ -10,9 +11,13 @@ interface P extends React.PropsWithChildren {
 export const HabitFetcher: React.FC<P> = ({ name, children }) => {
   const habit = useHabit(name);
 
+  if (habit.isLoading) {
+    return <LoadingScreen label={name} />;
+  }
+
   if (habit.data) {
     return <HabitContext value={habit.data}>{children}</HabitContext>;
   }
 
-  return <Loader2 className="animate-spin" />;
+  return <ErrorView error={habit.error} />;
 };

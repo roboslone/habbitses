@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { HabitIcon } from "./icon";
 import { useBreakHabit, useRefetchRepoContent } from "@/lib/queries";
 import { toast } from "sonner";
+import { HabitDescription } from "./description";
 
 export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({
   children,
@@ -54,14 +55,12 @@ export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({
           Habit will be deleted, but its data will be preserved in GitHub log.
         </DialogDescription>
 
-        <div className="flex flex-col gap-2 py-6">
+        <div className="flex flex-col gap-2">
           <h1 className={cn("flex items-center gap-2 text-xl", color.text)}>
             <HabitIcon />
             {habit.name}
           </h1>
-          <p className={cn({ "text-muted-foreground": !habit.description })}>
-            {habit.description || "No description"}
-          </p>
+          <HabitDescription />
         </div>
 
         <DialogFooter>

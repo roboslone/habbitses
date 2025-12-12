@@ -6,7 +6,13 @@ import type React from "react";
 export const LoginButton: React.FC<React.ComponentProps<typeof Button>> = (
   props
 ) => {
-  const redirectURI = `${document.location.origin}${document.location.pathname}`;
+  const pathParts = document.location.pathname.split("/");
+  let path = "/";
+  if (pathParts.length > 1) {
+    path = pathParts.slice(0, 2).join("/") + "/";
+  }
+
+  const redirectURI = `${document.location.origin}${path}`;
 
   const handleClick = () => {
     window.open(

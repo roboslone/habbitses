@@ -5,6 +5,7 @@ import type React from "react";
 import { HabitIcon } from "./icon";
 import { HabitDoneButton } from "./done-button";
 import { HabitChart } from "./chart";
+import { Link } from "@tanstack/react-router";
 
 export const HabitCard: React.FC = () => {
   const habit = useHabitContext();
@@ -12,11 +13,13 @@ export const HabitCard: React.FC = () => {
   const color = colors.forHabit(habit);
 
   return (
-    <div className="rounded-md border truncate w-full min-h-40 bg-card">
+    <div className="rounded-md truncate w-full min-h-40 bg-card">
       <div className={cn("p-1 pl-2 flex items-center gap-2", color.text)}>
         <HabitIcon size={20} className="w-6" />
         <div className="flex flex-col gap-0">
-          <span>{habit.name}</span>
+          <Link to="/habits/$name" params={{ name: habit.name }}>
+            {habit.name}
+          </Link>
           <span className="text-xs text-stone-500">{habit.description}</span>
         </div>
 

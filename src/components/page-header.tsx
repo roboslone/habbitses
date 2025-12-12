@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 import { ProjectButton } from "@/components/project-button";
 
 interface P {
-  title: string;
+  title: React.ReactNode;
   buttonLeft?: React.ReactNode;
   buttonRight?: React.ReactNode;
 }
