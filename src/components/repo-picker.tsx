@@ -35,7 +35,7 @@ export const RepoPicker: React.FC<P> = ({ onPick }) => {
         <div className="flex flex-col gap-4 items-center justify-center h-full">
           <p className="text-muted-foreground text-center">
             No repositories found. GitHub app needs to be installed in at least
-            one <strong>owned private</strong> repository.
+            one <strong>private</strong> repository.
           </p>
           <Separator />
           <a href="https://github.com/new" target="_self" className="w-full">

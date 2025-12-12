@@ -45,8 +45,7 @@ export const RepoSelector: React.FC = () => {
       <DialogContent>
         <DialogTitle>Select a repository</DialogTitle>
         <DialogDescription>
-          Pick an <strong>owned private</strong> repository to store your habit
-          data.
+          Pick a <strong>private</strong> repository to store your habit data.
         </DialogDescription>
         <div className="h-[50vh]">
           <RepoPicker onPick={handlePick} />

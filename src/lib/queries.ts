@@ -81,7 +81,6 @@ export const useRepos = () => {
     queryKey: ["repos"],
     queryFn: async ({ signal }) => {
       const response = await octokit.rest.repos.listForAuthenticatedUser({
-        affiliation: "owner",
         visibility: "private",
         request: { signal },
       });
