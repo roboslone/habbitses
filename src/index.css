@@ -122,5 +122,5 @@
 html,
 body,
 #root {
-  @apply h-full;
+  @apply h-full flex flex-col;
 }

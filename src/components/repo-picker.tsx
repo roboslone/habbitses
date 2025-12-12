@@ -88,10 +88,10 @@ export const RepoPicker: React.FC<P> = ({ onPick }) => {
           <Button
             variant="outline"
             onClick={() => void refresh()}
-            disabled={repos.isLoading}
+            disabled={repos.isFetching}
             className="w-fit"
           >
-            <RefreshCw className={cn({ "animate-spin": repos.isLoading })} />
+            <RefreshCw className={cn({ "animate-spin": repos.isFetching })} />
           </Button>
         </div>
 

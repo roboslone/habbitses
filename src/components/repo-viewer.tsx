@@ -22,7 +22,7 @@ export const RepoViewer: React.FC<P> = ({ repo }) => {
 
   const refreshButton = (
     <Button
-      variant="outline"
+      variant="ghost"
       disabled={content.isFetching}
       onClick={() => void content.refetch()}
     >
@@ -42,13 +42,14 @@ export const RepoViewer: React.FC<P> = ({ repo }) => {
     }
 
     return (
-      <div className="flex flex-col gap-2 p-2 pt-0">
-        {refreshButton}
+      <div className="flex flex-col gap-2 p-2 pt-0 grow">
         {[...parseRepoContent(content.data)].map((name) => (
           <HabitFetcher key={name} name={name}>
             <HabitCard />
           </HabitFetcher>
         ))}
+
+        <div className="mt-auto flex justify-center">{refreshButton}</div>
       </div>
     );
   }

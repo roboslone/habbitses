@@ -21,8 +21,6 @@ export const useSelectedRepo = () => {
 
 export function* parseRepoContent(content: RepoContent) {
   for (const item of content.tree) {
-    console.info(item);
-
     if (item.path.startsWith("habits/")) {
       const parts = item.path.split("/");
       if (parts.length === 2 && parts[1].endsWith(".json")) {

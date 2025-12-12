@@ -16,7 +16,9 @@ import { HabitIcon } from "./icon";
 import { useBreakHabit, useRefetchRepoContent } from "@/lib/queries";
 import { toast } from "sonner";
 
-export const HabitBreakDialog: React.FC = () => {
+export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({
+  children,
+}) => {
   const [open, setOpen] = React.useState(false);
   const habit = useHabitContext();
   const color = colors.forHabit(habit);
@@ -45,15 +47,7 @@ export const HabitBreakDialog: React.FC = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="text-muted-foreground"
-        >
-          <Trash2 />
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogTitle>Break a habit?</DialogTitle>
         <DialogDescription>
