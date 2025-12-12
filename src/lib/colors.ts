@@ -25,6 +25,8 @@ export const index: Record<string, Options> = {
   rose: { text: "text-rose-400", background: "bg-rose-400" },
 };
 
+export const defaultOption = index["neutral"];
+
 export type Key = keyof typeof index;
 
 export const all: Key[] = Object.keys(index);

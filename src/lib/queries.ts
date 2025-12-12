@@ -1,9 +1,4 @@
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { ExchangeService } from "@/proto/github/v1/exchange_pb";
 import { createClient } from "@connectrpc/connect";
 import { createGrpcWebTransport } from "@connectrpc/connect-web";
@@ -135,7 +130,7 @@ export const useRefetchRepoContent = () => {
   return content.refetch;
 };
 
-export const useNewHabit = () => {
+export const useSaveHabit = () => {
   const account = useStoredAccountContext();
   const [repo] = useSelectedRepo();
   const octokit = useOctokit();

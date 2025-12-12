@@ -2,9 +2,13 @@ syntax = "proto3";
 
 package models.v1;
 
-import "google/protobuf/timestamp.proto";
-
 message Habit {
+  message DisplayOptions {
+    optional bool show_chart = 1;
+    optional bool show_progressbar = 2;
+    optional bool show_description = 3;
+  }
+
   string name = 1;
   string description = 2;
   string sha = 3;
@@ -13,10 +17,30 @@ message Habit {
   string icon = 5;
 
   uint32 daily_target = 6;
-  repeated Completion completions = 7;
+
+  // key is date as `YYYY-MM-DD`
+  map<string, Completion> completions = 7;
+
+  // defaults to `[{delta: 1}]`
+  // first button in list is displayed on home page,
+  // other buttons are displayed on habit page
+  repeated Completion.ButtonOptions buttons = 8;
+
+  DisplayOptions display_options = 9;
 }
 
 message Completion {
-  google.protobuf.Timestamp date = 1;
-  uint32 count = 2;
+  message ButtonOptions {
+    oneof kind {
+      // increases count by specified amount
+      uint32 delta = 1;
+
+      // (0, 100], increases count by specified percentage of `target`
+      // for example, `percentage = 50` will increase `count` by `target * 0.5`
+      uint32 percentage = 2;
+    }
+  }
+
+  uint32 count = 1;
+  uint32 target = 2;
 }

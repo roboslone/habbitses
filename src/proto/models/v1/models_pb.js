@@ -3,13 +3,12 @@
 /* eslint-disable */
 
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
  * Describes the file models/v1/models.proto.
  */
 export const file_models_v1_models = /*@__PURE__*/
-  fileDesc("ChZtb2RlbHMvdjEvbW9kZWxzLnByb3RvEgltb2RlbHMudjEilgEKBUhhYml0EgwKBG5hbWUYASABKAkSEwoLZGVzY3JpcHRpb24YAiABKAkSCwoDc2hhGAMgASgJEg0KBWNvbG9yGAQgASgJEgwKBGljb24YBSABKAkSFAoMZGFpbHlfdGFyZ2V0GAYgASgNEioKC2NvbXBsZXRpb25zGAcgAygLMhUubW9kZWxzLnYxLkNvbXBsZXRpb24iRQoKQ29tcGxldGlvbhIoCgRkYXRlGAEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBINCgVjb3VudBgCIAEoDUJhCg1jb20ubW9kZWxzLnYxQgtNb2RlbHNQcm90b1ABogIDTVhYqgIJTW9kZWxzLlYxygIJTW9kZWxzXFYx4gIVTW9kZWxzXFYxXEdQQk1ldGFkYXRh6gIKTW9kZWxzOjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp]);
+  fileDesc("ChZtb2RlbHMvdjEvbW9kZWxzLnByb3RvEgltb2RlbHMudjEigAQKBUhhYml0EgwKBG5hbWUYASABKAkSEwoLZGVzY3JpcHRpb24YAiABKAkSCwoDc2hhGAMgASgJEg0KBWNvbG9yGAQgASgJEgwKBGljb24YBSABKAkSFAoMZGFpbHlfdGFyZ2V0GAYgASgNEjYKC2NvbXBsZXRpb25zGAcgAygLMiEubW9kZWxzLnYxLkhhYml0LkNvbXBsZXRpb25zRW50cnkSNAoHYnV0dG9ucxgIIAMoCzIjLm1vZGVscy52MS5Db21wbGV0aW9uLkJ1dHRvbk9wdGlvbnMSOAoPZGlzcGxheV9vcHRpb25zGAkgASgLMh8ubW9kZWxzLnYxLkhhYml0LkRpc3BsYXlPcHRpb25zGqABCg5EaXNwbGF5T3B0aW9ucxIXCgpzaG93X2NoYXJ0GAEgASgISACIAQESHQoQc2hvd19wcm9ncmVzc2JhchgCIAEoCEgBiAEBEh0KEHNob3dfZGVzY3JpcHRpb24YAyABKAhIAogBAUINCgtfc2hvd19jaGFydEITChFfc2hvd19wcm9ncmVzc2JhckITChFfc2hvd19kZXNjcmlwdGlvbhpJChBDb21wbGV0aW9uc0VudHJ5EgsKA2tleRgBIAEoCRIkCgV2YWx1ZRgCIAEoCzIVLm1vZGVscy52MS5Db21wbGV0aW9uOgI4ASJrCgpDb21wbGV0aW9uEg0KBWNvdW50GAEgASgNEg4KBnRhcmdldBgCIAEoDRo+Cg1CdXR0b25PcHRpb25zEg8KBWRlbHRhGAEgASgNSAASFAoKcGVyY2VudGFnZRgCIAEoDUgAQgYKBGtpbmRCYQoNY29tLm1vZGVscy52MUILTW9kZWxzUHJvdG9QAaICA01YWKoCCU1vZGVscy5WMcoCCU1vZGVsc1xWMeICFU1vZGVsc1xWMVxHUEJNZXRhZGF0YeoCCk1vZGVsczo6VjFiBnByb3RvMw");
 
 /**
  * Describes the message models.v1.Habit.
@@ -19,9 +18,23 @@ export const HabitSchema = /*@__PURE__*/
   messageDesc(file_models_v1_models, 0);
 
 /**
+ * Describes the message models.v1.Habit.DisplayOptions.
+ * Use `create(Habit_DisplayOptionsSchema)` to create a new message.
+ */
+export const Habit_DisplayOptionsSchema = /*@__PURE__*/
+  messageDesc(file_models_v1_models, 0, 0);
+
+/**
  * Describes the message models.v1.Completion.
  * Use `create(CompletionSchema)` to create a new message.
  */
 export const CompletionSchema = /*@__PURE__*/
   messageDesc(file_models_v1_models, 1);
+
+/**
+ * Describes the message models.v1.Completion.ButtonOptions.
+ * Use `create(Completion_ButtonOptionsSchema)` to create a new message.
+ */
+export const Completion_ButtonOptionsSchema = /*@__PURE__*/
+  messageDesc(file_models_v1_models, 1, 0);
 

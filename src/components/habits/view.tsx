@@ -1,29 +1,31 @@
-import type React from "react";
-import { useHabitContext } from "../habit/context";
+import React from "react";
+import { useHabitContext } from "@/components/habit/context";
 import { HabitIcon } from "./icon";
-import { PageHeader } from "../page-header";
-import * as colors from "@/lib/colors";
+import { PageHeader } from "@/components/page-header";
 import { cn } from "@/lib/utils";
-import { Label } from "../ui/label";
+import { Label } from "@/components/ui/label";
 import { HabitDescription } from "./description";
 import { HabitBreakDialog } from "./break-dialog";
-import { Button } from "../ui/button";
-import { History, Trash2 } from "lucide-react";
-import { GitHubIcon } from "../github-icon";
+import { Button } from "@/components/ui/button";
+import { Code, History, RefreshCw, Trash2 } from "lucide-react";
 import { useSelectedRepo } from "@/lib/git";
 import { HabitChart } from "./chart";
-import { HabitDoneButton } from "./done-button";
+import { CompletionButtons } from "./buttons";
+import { HabitProgress } from "./progress";
 
 export const HabitView: React.FC = () => {
   const [repo] = useSelectedRepo();
 
-  const habit = useHabitContext();
-  const color = colors.forHabit(habit);
+  const { habit, color, completion, refetch, isFetching } = useHabitContext();
 
-  const githubURL = `https://github.com/${repo?.full_name}/commits/main/habits/${habit.name}.json`;
+  const historyURL = `https://github.com/${repo?.full_name}/commits/main/habits/${habit.name}.json`;
+  const fileURL = `https://github.com/${repo?.full_name}/blob/main/habits/${habit.name}.json`;
 
   return (
-    <div data-testid={`habit-view--${habit.name}`}>
+    <div
+      data-testid={`habit-view--${habit.name}`}
+      className="truncate max-w-full"
+    >
       <PageHeader
         title={
           <div className={cn("flex items-center gap-2", color.text)}>
@@ -33,9 +35,9 @@ export const HabitView: React.FC = () => {
         }
       />
 
-      <div className="flex flex-col gap-5 p-5">
-        <div className="flex items-center gap-2">
-          <HabitDoneButton variant="outline" />
+      <div className="flex flex-col gap-5 px-5">
+        <div className="flex items-center gap-2 flex-wrap">
+          <CompletionButtons variant="outline" />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -44,17 +46,36 @@ export const HabitView: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <Label className="text-zinc-600">Daily target</Label>
-          {habit.dailyTarget}
+          <Label className="text-zinc-600">Progress</Label>
+          {completion.count} / {completion.target}
+          <HabitProgress className="rounded-full h-1.5" />
         </div>
 
         <div className="flex flex-col gap-2">
           <Label className="text-zinc-600">Chart</Label>
-          <HabitChart />
+          <div className="max-w-full overflow-auto">
+            <HabitChart />
+          </div>
         </div>
 
-        <div className="flex flex-col items-center gap-2">
-          <a href={githubURL} target="_blank">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <Button
+            variant="ghost"
+            onClick={() => void refetch()}
+            disabled={isFetching}
+          >
+            <RefreshCw className={cn({ "animate-spin": isFetching })} />
+            Refresh
+          </Button>
+
+          <a href={fileURL} target="_blank">
+            <Button variant="ghost">
+              <Code />
+              File
+            </Button>
+          </a>
+
+          <a href={historyURL} target="_blank">
             <Button variant="ghost">
               <History />
               History

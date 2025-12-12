@@ -13,7 +13,6 @@ import { randomArrayElement } from "@/lib/utils";
 import IconPicker from "./icon-picker";
 import { Separator } from "./ui/separator";
 import { useNavigate } from "@tanstack/react-router";
-import { useQueries, useQueryClient } from "@tanstack/react-query";
 import { useRefetchRepoContent } from "@/lib/queries";
 
 interface P {
@@ -66,10 +65,14 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
   return (
     <div data-testid="new-habit-form" className="flex flex-col gap-5 p-5">
       <div className="flex flex-col gap-2">
-        <Label aria-required>Name *</Label>
+        {value === undefined ? (
+          <Label aria-required>Name *</Label>
+        ) : (
+          <Label>Name</Label>
+        )}
         <Input
           autoFocus
-          disabled={loading}
+          disabled={loading || value !== undefined}
           value={habit.name}
           onChange={(e) => update((h) => (h.name = e.target.value))}
         />

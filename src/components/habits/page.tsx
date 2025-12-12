@@ -1,6 +1,6 @@
 import { rHabit } from "@/routes";
 import type React from "react";
-import { HabitFetcher } from "../habit-fetcher";
+import { HabitFetcher } from "@/components/habit-fetcher";
 import { HabitView } from "./view";
 
 export const HabitPage: React.FC = () => {

@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Trash2, Undo2 } from "lucide-react";
 import { useHabitContext } from "@/components/habit/context";
-import * as colors from "@/lib/colors";
 import { cn } from "@/lib/utils";
 import { HabitIcon } from "./icon";
 import { useBreakHabit, useRefetchRepoContent } from "@/lib/queries";
@@ -21,8 +20,7 @@ export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [open, setOpen] = React.useState(false);
-  const habit = useHabitContext();
-  const color = colors.forHabit(habit);
+  const { habit, color } = useHabitContext();
   const breakHabit = useBreakHabit();
   const refetchRepoContent = useRefetchRepoContent();
 

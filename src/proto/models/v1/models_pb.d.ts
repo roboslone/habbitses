@@ -4,7 +4,6 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import type { Message } from "@bufbuild/protobuf";
-import type { Timestamp } from "@bufbuild/protobuf/wkt";
 
 /**
  * Describes the file models/v1/models.proto.
@@ -46,9 +45,25 @@ export declare type Habit = Message<"models.v1.Habit"> & {
   dailyTarget: number;
 
   /**
-   * @generated from field: repeated models.v1.Completion completions = 7;
+   * key is date as `YYYY-MM-DD`
+   *
+   * @generated from field: map<string, models.v1.Completion> completions = 7;
    */
-  completions: Completion[];
+  completions: { [key: string]: Completion };
+
+  /**
+   * defaults to `[{delta: 1}]`
+   * first button in list is displayed on home page,
+   * other buttons are displayed on habit page
+   *
+   * @generated from field: repeated models.v1.Completion.ButtonOptions buttons = 8;
+   */
+  buttons: Completion_ButtonOptions[];
+
+  /**
+   * @generated from field: models.v1.Habit.DisplayOptions display_options = 9;
+   */
+  displayOptions?: Habit_DisplayOptions;
 };
 
 /**
@@ -58,18 +73,44 @@ export declare type Habit = Message<"models.v1.Habit"> & {
 export declare const HabitSchema: GenMessage<Habit>;
 
 /**
+ * @generated from message models.v1.Habit.DisplayOptions
+ */
+export declare type Habit_DisplayOptions = Message<"models.v1.Habit.DisplayOptions"> & {
+  /**
+   * @generated from field: optional bool show_chart = 1;
+   */
+  showChart?: boolean;
+
+  /**
+   * @generated from field: optional bool show_progressbar = 2;
+   */
+  showProgressbar?: boolean;
+
+  /**
+   * @generated from field: optional bool show_description = 3;
+   */
+  showDescription?: boolean;
+};
+
+/**
+ * Describes the message models.v1.Habit.DisplayOptions.
+ * Use `create(Habit_DisplayOptionsSchema)` to create a new message.
+ */
+export declare const Habit_DisplayOptionsSchema: GenMessage<Habit_DisplayOptions>;
+
+/**
  * @generated from message models.v1.Completion
  */
 export declare type Completion = Message<"models.v1.Completion"> & {
   /**
-   * @generated from field: google.protobuf.Timestamp date = 1;
-   */
-  date?: Timestamp;
-
-  /**
-   * @generated from field: uint32 count = 2;
+   * @generated from field: uint32 count = 1;
    */
   count: number;
+
+  /**
+   * @generated from field: uint32 target = 2;
+   */
+  target: number;
 };
 
 /**
@@ -77,4 +118,37 @@ export declare type Completion = Message<"models.v1.Completion"> & {
  * Use `create(CompletionSchema)` to create a new message.
  */
 export declare const CompletionSchema: GenMessage<Completion>;
+
+/**
+ * @generated from message models.v1.Completion.ButtonOptions
+ */
+export declare type Completion_ButtonOptions = Message<"models.v1.Completion.ButtonOptions"> & {
+  /**
+   * @generated from oneof models.v1.Completion.ButtonOptions.kind
+   */
+  kind: {
+    /**
+     * increases count by specified amount
+     *
+     * @generated from field: uint32 delta = 1;
+     */
+    value: number;
+    case: "delta";
+  } | {
+    /**
+     * (0, 100], increases count by specified percentage of `target`
+     * for example, `percentage = 50` will increase `count` by `target * 0.5`
+     *
+     * @generated from field: uint32 percentage = 2;
+     */
+    value: number;
+    case: "percentage";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message models.v1.Completion.ButtonOptions.
+ * Use `create(Completion_ButtonOptionsSchema)` to create a new message.
+ */
+export declare const Completion_ButtonOptionsSchema: GenMessage<Completion_ButtonOptions>;
 
