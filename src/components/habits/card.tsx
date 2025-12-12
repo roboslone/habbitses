@@ -11,7 +11,7 @@ export const HabitCard: React.FC = () => {
   const { habit, color } = useHabitContext();
 
   return (
-    <div className="habit-card rounded truncate w-full min-h-40 max-w-213 flex flex-col gap-1">
+    <div className="habit-card rounded truncate w-full min-h-40 max-w-211 flex flex-col gap-1">
       <div
         className={cn(
           "habit-card--header",
