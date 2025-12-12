@@ -1,4 +1,4 @@
-import Logo from "@/assets/github.svg?url";
+import GitHubLogo from "@/assets/github.svg?url";
 import { Button } from "@/components/ui/button";
 import { clientId } from "@/lib/auth";
 import type React from "react";
@@ -17,7 +17,7 @@ export const LoginButton: React.FC<React.ComponentProps<typeof Button>> = (
 
   return (
     <Button className="cursor-pointer" onClick={handleClick} {...props}>
-      <img src={Logo} className="h-6 w-6" />
+      <img src={GitHubLogo} className="h-6 w-6" />
       Log in with GitHub
     </Button>
   );

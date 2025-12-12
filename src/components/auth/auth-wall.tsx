@@ -61,7 +61,10 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
 
             return response;
           })
-          .catch(setError)
+          .catch((e: Error) => {
+            setError(e);
+            throw e;
+          })
           .finally(() => setExchanging(false)),
         {
           loading: "Exchanging GitHub code...",
