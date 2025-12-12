@@ -7,19 +7,28 @@ interface P {
   active?: string | icons.Key;
   color?: colors.Key;
   onPick: (v: icons.Key) => void;
+  disabled?: boolean;
 }
 
-export const IconPicker: React.FC<P> = ({ active, color, onPick }) => (
+export const IconPicker: React.FC<P> = ({
+  active,
+  color,
+  onPick,
+  disabled,
+}) => (
   <div data-testid="color-picker" className="flex flex-wrap gap-2">
     {icons.all.map((v) => (
       <div
         key={v}
         className={cn(
-          "rounded-md w-10 h-10 flex flex-col items-center justify-center bg-card border-2",
-          colors.colors[colors.fromString(color)]?.text,
-          { "border-primary": active === v }
+          "rounded-md w-10 h-10 flex flex-col items-center justify-center bg-card border-2 cursor-pointer",
+          colors.index[colors.fromString(color)]?.text,
+          { "border-primary": active === v },
+          { "opacity-80": disabled }
         )}
-        onClick={() => onPick(v)}
+        onClick={() => {
+          if (!disabled) onPick(v);
+        }}
       >
         {icons.render(v, { size: 22 })}
       </div>

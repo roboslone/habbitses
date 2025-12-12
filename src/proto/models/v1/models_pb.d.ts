@@ -26,22 +26,27 @@ export declare type Habit = Message<"models.v1.Habit"> & {
   description: string;
 
   /**
-   * @generated from field: string color = 3;
+   * @generated from field: string sha = 3;
+   */
+  sha: string;
+
+  /**
+   * @generated from field: string color = 4;
    */
   color: string;
 
   /**
-   * @generated from field: string icon = 4;
+   * @generated from field: string icon = 5;
    */
   icon: string;
 
   /**
-   * @generated from field: uint32 daily_target = 5;
+   * @generated from field: uint32 daily_target = 6;
    */
   dailyTarget: number;
 
   /**
-   * @generated from field: repeated models.v1.Completion completions = 6;
+   * @generated from field: repeated models.v1.Completion completions = 7;
    */
   completions: Completion[];
 };

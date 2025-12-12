@@ -18,3 +18,16 @@ export const useSelectedRepo = () => {
     syncData: true,
   });
 };
+
+export function* parseRepoContent(content: RepoContent) {
+  for (const item of content.tree) {
+    console.info(item);
+
+    if (item.path.startsWith("habits/")) {
+      const parts = item.path.split("/");
+      if (parts.length === 2 && parts[1].endsWith(".json")) {
+        yield parts[1].slice(0, parts[1].length - ".json".length);
+      }
+    }
+  }
+}

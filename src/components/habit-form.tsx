@@ -12,6 +12,9 @@ import ColorPicker from "./color-picker";
 import { randomArrayElement } from "@/lib/utils";
 import IconPicker from "./icon-picker";
 import { Separator } from "./ui/separator";
+import { useNavigate } from "@tanstack/react-router";
+import { useQueries, useQueryClient } from "@tanstack/react-query";
+import { useRefetchRepoContent } from "@/lib/queries";
 
 interface P {
   value?: Habit;
@@ -28,6 +31,8 @@ const empty = (): Habit =>
 export const HabitForm: React.FC<P> = ({ value, onChange }) => {
   const [loading, setLoading] = React.useState(false);
   const [habit, setHabit] = React.useState<Habit>(value ?? empty());
+  const navigate = useNavigate();
+  const refetchRepoContent = useRefetchRepoContent();
 
   const update = (fn: (h: Habit) => void) => {
     const next = clone(HabitSchema, habit);
@@ -42,11 +47,18 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
 
     setLoading(true);
     onChange(habit)
-      .then(() => {
-        toast.success("New habit emerges!", {
-          description: habit.name,
-          icon: <Check size={16} className="text-emerald-600" />,
-        });
+      .then(async () => {
+        const icon = <Check size={16} className="text-emerald-600" />;
+        if (value === undefined) {
+          toast.success("New habit emerges!", {
+            description: habit.name,
+            icon,
+          });
+          await refetchRepoContent();
+          await navigate({ to: "/" });
+        } else {
+          toast.success("Habit updated", { description: habit.name, icon });
+        }
       })
       .finally(() => setLoading(false));
   };
@@ -57,6 +69,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
         <Label aria-required>Name *</Label>
         <Input
           autoFocus
+          disabled={loading}
           value={habit.name}
           onChange={(e) => update((h) => (h.name = e.target.value))}
         />
@@ -65,6 +78,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
       <div className="flex flex-col gap-2">
         <Label>Description</Label>
         <Input
+          disabled={loading}
           value={habit.description}
           onChange={(e) => update((h) => (h.description = e.target.value))}
         />
@@ -77,6 +91,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
         </p>
         <Input
           type="number"
+          disabled={loading}
           value={habit.dailyTarget}
           onChange={(e) =>
             update(
@@ -89,6 +104,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
       <div className="flex flex-col gap-2">
         <Label>Color</Label>
         <ColorPicker
+          disabled={loading}
           active={habit.color}
           onPick={(color) => update((h) => (h.color = color))}
         />
@@ -97,6 +113,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
       <div className="flex flex-col gap-2">
         <Label>Icon</Label>
         <IconPicker
+          disabled={loading}
           active={habit.icon}
           color={habit.color}
           onPick={(icon) => update((h) => (h.icon = icon))}

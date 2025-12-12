@@ -31,10 +31,12 @@ export type Key = keyof typeof icons;
 
 export const all: Key[] = Object.keys(icons);
 
-export const fromString = (s: string | Key): Key => {
-  if (icons[s] === undefined) return "CircleQuestionMark";
+export const fromString = (s?: string | Key): Key => {
+  if (s === undefined || icons[s] === undefined) return "CircleQuestionMark";
   return s;
 };
 
-export const render = (key: Key, props?: LucideProps): React.ReactNode =>
-  React.createElement(icons[key], props);
+export const render = (
+  key?: string | Key,
+  props?: LucideProps
+): React.ReactNode => React.createElement(icons[fromString(key)], props);

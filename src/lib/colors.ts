@@ -1,9 +1,11 @@
+import type { Habit } from "@/proto/models/v1/models_pb";
+
 export interface Options {
   text: string;
   background: string;
 }
 
-export const colors: Record<string, Options> = {
+export const index: Record<string, Options> = {
   neutral: { text: "text-neutral-400", background: "bg-neutral-400" },
   red: { text: "text-red-400", background: "bg-red-400" },
   orange: { text: "text-orange-400", background: "bg-orange-400" },
@@ -23,11 +25,15 @@ export const colors: Record<string, Options> = {
   rose: { text: "text-rose-400", background: "bg-rose-400" },
 };
 
-export type Key = keyof typeof colors;
+export type Key = keyof typeof index;
 
-export const all: Key[] = Object.keys(colors);
+export const all: Key[] = Object.keys(index);
 
 export const fromString = (s?: string | Key): Key => {
-  if (!s || colors[s] === undefined) return "neutral";
+  if (!s || index[s] === undefined) return "neutral";
   return s;
+};
+
+export const forHabit = (h?: Habit): Options => {
+  return index[fromString(h?.color)];
 };

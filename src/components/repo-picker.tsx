@@ -95,11 +95,12 @@ export const RepoPicker: React.FC<P> = ({ onPick }) => {
           </Button>
         </div>
 
-        <div className="flex flex-col gap-1 overflow-auto">
+        <div className="flex flex-col gap-2 overflow-auto">
           {filtered.map((repo) => (
             <Button
               key={repo.id}
-              variant="outline"
+              variant="secondary"
+              size="lg"
               className="cursor-pointer justify-start"
               onClick={() => onPick(repo)}
             >

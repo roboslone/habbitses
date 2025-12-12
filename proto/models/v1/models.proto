@@ -7,12 +7,13 @@ import "google/protobuf/timestamp.proto";
 message Habit {
   string name = 1;
   string description = 2;
+  string sha = 3;
 
-  string color = 3;
-  string icon = 4;
+  string color = 4;
+  string icon = 5;
 
-  uint32 daily_target = 5;
-  repeated Completion completions = 6;
+  uint32 daily_target = 6;
+  repeated Completion completions = 7;
 }
 
 message Completion {
