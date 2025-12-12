@@ -14,6 +14,7 @@ import {
 } from "./git";
 import { HabitSchema, type Habit } from "@/proto/models/v1/models_pb";
 import { clone, fromJsonString, toJsonString } from "@bufbuild/protobuf";
+import type { Octokit } from "octokit";
 
 export const client = new QueryClient();
 
@@ -130,7 +131,28 @@ export const useRefetchRepoContent = () => {
   return content.refetch;
 };
 
-export const useSaveHabit = () => {
+const pushHabit = async (
+  octokit: Octokit,
+  habit: Habit,
+  owner: string,
+  repo: string,
+  message: string
+) => {
+  const copy = clone(HabitSchema, habit);
+  copy.sha = "";
+
+  return octokit.rest.repos.createOrUpdateFileContents({
+    path: `habits/${habit.name}.json`,
+    owner,
+    repo,
+    content: btoa(toJsonString(HabitSchema, copy)),
+    message,
+    sha: habit.sha,
+    headers: { "If-None-Match": "" },
+  });
+};
+
+export const useNewHabit = () => {
   const account = useStoredAccountContext();
   const [repo] = useSelectedRepo();
   const octokit = useOctokit();
@@ -138,19 +160,40 @@ export const useSaveHabit = () => {
   return useMutation({
     mutationFn: (habit: Habit) => {
       if (repo === undefined) throw new Error("repo is not selected");
-
-      const copy = clone(HabitSchema, habit);
-      copy.sha = "";
-
-      return octokit.rest.repos.createOrUpdateFileContents({
-        path: `habits/${habit.name}.json`,
-        owner: account.login,
-        repo: repo.name,
-        content: btoa(toJsonString(HabitSchema, copy)),
-        message: `start new habit - "${habit.name}"`,
-      });
+      return pushHabit(
+        octokit,
+        habit,
+        account.login,
+        repo.name,
+        `start new habit - "${habit.name}"`
+      );
     },
-    retry: handleError("Failed to start new habit", { maxFailures: 0 }),
+    retry: 0,
+  });
+};
+
+export const useUpdateHabit = (name: string) => {
+  const account = useStoredAccountContext();
+  const [repo] = useSelectedRepo();
+  const octokit = useOctokit();
+  const habit = useHabit(name);
+
+  return useMutation({
+    mutationFn: (habit: Habit) => {
+      if (repo === undefined) throw new Error("repo is not selected");
+      return pushHabit(
+        octokit,
+        habit,
+        account.login,
+        repo.name,
+        `update habit - "${name}"`
+      );
+    },
+    onSettled: async () => {
+      await client.invalidateQueries({ queryKey: ["habits", name] });
+      await habit.refetch();
+    },
+    retry: 0,
   });
 };
 
@@ -190,6 +233,7 @@ export const useHabit = (name: string) => {
         repo: repo.name,
         path: `habits/${name}.json`,
         request: { signal },
+        headers: { "If-None-Match": "" },
       });
 
       if (Array.isArray(response.data)) {

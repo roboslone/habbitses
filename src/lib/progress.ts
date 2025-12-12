@@ -2,13 +2,12 @@ import { CompletionSchema, type Habit } from "@/proto/models/v1/models_pb";
 import { formatDate } from "./dates";
 import { create } from "@bufbuild/protobuf";
 
-const defaultCompletion = create(CompletionSchema, {
-  count: 0,
-  target: 1,
-});
-
 export const getProgress = (habit: Habit, date: Date) => {
-  const completion = habit.completions[formatDate(date)] ?? defaultCompletion;
+  const completion =
+    habit.completions[formatDate(date)] ??
+    create(CompletionSchema, {
+      target: habit.dailyTarget,
+    });
 
   let progress = 0;
   if (completion.target !== 0) {

@@ -59,6 +59,12 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
           toast.success("Habit updated", { description: habit.name, icon });
         }
       })
+      .catch((e: Error) => {
+        toast.error(
+          value === undefined ? "Failed to start a habit" : "Update failed",
+          { description: e.message }
+        );
+      })
       .finally(() => setLoading(false));
   };
 

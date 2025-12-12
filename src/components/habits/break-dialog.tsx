@@ -15,6 +15,7 @@ import { HabitIcon } from "./icon";
 import { useBreakHabit, useRefetchRepoContent } from "@/lib/queries";
 import { toast } from "sonner";
 import { HabitDescription } from "./description";
+import { useNavigate } from "@tanstack/react-router";
 
 export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({
   children,
@@ -23,21 +24,23 @@ export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({
   const { habit, color } = useHabitContext();
   const breakHabit = useBreakHabit();
   const refetchRepoContent = useRefetchRepoContent();
+  const navigate = useNavigate();
 
   const handleBreak = () => {
     toast.promise(
       breakHabit
         .mutateAsync(habit)
         .then(() => setOpen(false))
+        .then(() => navigate({ to: "/" }))
         .then(() => refetchRepoContent()),
       {
-        loading: "Breaking a habit...",
+        loading: "Breaking the habit, tonight...",
         success: () => ({
           message: "Habit is broken!",
           description: habit.name,
         }),
         error: (e: Error) => ({
-          message: "Failed to break a habit",
+          message: "Failed to break the habit",
           description: `${habit.name}: ${e.message}`,
         }),
       }
@@ -48,7 +51,7 @@ export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
-        <DialogTitle>Break a habit?</DialogTitle>
+        <DialogTitle>Break the habit?</DialogTitle>
         <DialogDescription>
           Habit will be deleted, but its data will be preserved in GitHub log.
         </DialogDescription>

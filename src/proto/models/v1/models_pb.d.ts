@@ -52,7 +52,7 @@ export declare type Habit = Message<"models.v1.Habit"> & {
   completions: { [key: string]: Completion };
 
   /**
-   * defaults to `[{delta: 1}]`
+   * defaults to `[{complete: true}]`
    * first button in list is displayed on home page,
    * other buttons are displayed on habit page
    *
@@ -143,6 +143,22 @@ export declare type Completion_ButtonOptions = Message<"models.v1.Completion.But
      */
     value: number;
     case: "percentage";
+  } | {
+    /**
+     * sets `count` to `target`
+     *
+     * @generated from field: bool complete = 3;
+     */
+    value: boolean;
+    case: "complete";
+  } | {
+    /**
+     * sets `count` to specified value
+     *
+     * @generated from field: uint32 set = 4;
+     */
+    value: number;
+    case: "set";
   } | { case: undefined; value?: undefined };
 };
 

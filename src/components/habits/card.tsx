@@ -8,7 +8,7 @@ import { CompletionButtons } from "./buttons";
 import { HabitProgress } from "./progress";
 
 export const HabitCard: React.FC = () => {
-  const { habit, color } = useHabitContext();
+  const { habit, color, isCompleted } = useHabitContext();
 
   return (
     <div className="habit-card rounded truncate w-full min-h-40 max-w-211 flex flex-col gap-1">
@@ -19,21 +19,39 @@ export const HabitCard: React.FC = () => {
           color.text
         )}
       >
-        <div className="flex items-center gap-2 w-full pl-2 pr-1">
-          <HabitIcon size={20} className="w-6" />
-          <div className="flex flex-col gap-0">
-            <Link to="/habits/$name" params={{ name: habit.name }}>
-              {habit.name}
-            </Link>
-            <span className="text-xs text-stone-500">{habit.description}</span>
-          </div>
+        <div
+          className={cn("flex items-center gap-1 w-full pl-2 pr-1", {
+            "opacity-50": isCompleted,
+          })}
+        >
+          <Link
+            to="/habits/$name"
+            params={{ name: habit.name }}
+            className="grow"
+          >
+            <div className="flex items-center gap-2 grow">
+              <HabitIcon size={20} className="w-6" />
+              <div className="flex flex-col gap-0">
+                <span
+                  className={cn({
+                    "line-through": isCompleted,
+                  })}
+                >
+                  {habit.name}
+                </span>
+                <span className="text-xs text-stone-500">
+                  {habit.description}
+                </span>
+              </div>
+            </div>
+          </Link>
 
           <div className="ml-auto flex items-center gap-1">
             <CompletionButtons />
           </div>
         </div>
 
-        <HabitProgress />
+        <HabitProgress className="opacity-50" />
       </div>
 
       <HabitChart />

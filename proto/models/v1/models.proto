@@ -21,7 +21,7 @@ message Habit {
   // key is date as `YYYY-MM-DD`
   map<string, Completion> completions = 7;
 
-  // defaults to `[{delta: 1}]`
+  // defaults to `[{complete: true}]`
   // first button in list is displayed on home page,
   // other buttons are displayed on habit page
   repeated Completion.ButtonOptions buttons = 8;
@@ -38,6 +38,12 @@ message Completion {
       // (0, 100], increases count by specified percentage of `target`
       // for example, `percentage = 50` will increase `count` by `target * 0.5`
       uint32 percentage = 2;
+
+      // sets `count` to `target`
+      bool complete = 3;
+
+      // sets `count` to specified value
+      uint32 set = 4;
     }
   }
 

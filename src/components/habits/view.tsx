@@ -12,6 +12,9 @@ import { useSelectedRepo } from "@/lib/git";
 import { HabitChart } from "./chart";
 import { CompletionButtons } from "./buttons";
 import { HabitProgress } from "./progress";
+import { CompletionButton } from "./button";
+import { create } from "@bufbuild/protobuf";
+import { Completion_ButtonOptionsSchema } from "@/proto/models/v1/models_pb";
 
 export const HabitView: React.FC = () => {
   const [repo] = useSelectedRepo();
@@ -49,6 +52,16 @@ export const HabitView: React.FC = () => {
           <Label className="text-muted-foreground/50">Progress</Label>
           {completion.count} / {completion.target}
           <HabitProgress className="rounded-full h-1.5" />
+          <CompletionButton
+            options={create(Completion_ButtonOptionsSchema, {
+              kind: { case: "set", value: 0 },
+            })}
+            variant="outline"
+            className="w-fit"
+            disabled={completion.count === 0}
+          >
+            Reset
+          </CompletionButton>
         </div>
 
         <div className="flex flex-col gap-2">

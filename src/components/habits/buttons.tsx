@@ -18,7 +18,7 @@ export const CompletionButtons: React.FC<P> = ({ max, ...rest }) => {
   if (buttons.length === 0) {
     buttons = [
       create(Completion_ButtonOptionsSchema, {
-        kind: { case: "delta", value: 1 },
+        kind: { case: "complete", value: true },
       }),
     ];
   }

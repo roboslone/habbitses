@@ -14,6 +14,7 @@ interface S {
   isFetching: boolean;
   color: colors.Options;
   completion: Completion;
+  isCompleted: boolean;
   progress: number;
 }
 
@@ -26,6 +27,7 @@ export const HabitContext = React.createContext<S>({
     count: 0,
     target: 1,
   }),
+  isCompleted: false,
   progress: 0,
 });
 
