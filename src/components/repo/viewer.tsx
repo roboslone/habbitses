@@ -21,15 +21,8 @@ export const RepoViewer: React.FC<P> = ({ repo }) => {
     const refresh = useRefresh()
 
     if (content.isLoading) {
-        return <LoadingScreen label={`Loading ${repo.name}...`} />
+        return <LoadingScreen label="Loading repository..." />
     }
-
-    const refreshButton = (
-        <Button variant="ghost" disabled={content.isFetching} onClick={() => void refresh()}>
-            <RefreshCw className={cn({ "animate-spin": content.isFetching })} />
-            Refresh
-        </Button>
-    )
 
     if (content.data) {
         const names = [...parseRepoContent(content.data)]
@@ -63,7 +56,16 @@ export const RepoViewer: React.FC<P> = ({ repo }) => {
                         </>
                     )}
 
-                    <div className="mt-auto flex justify-center">{refreshButton}</div>
+                    <div className="mt-auto flex justify-center p-4">
+                        <Button
+                            variant="ghost"
+                            disabled={content.isFetching}
+                            onClick={() => void refresh()}
+                        >
+                            <RefreshCw className={cn({ "animate-spin": content.isFetching })} />
+                            Refresh
+                        </Button>
+                    </div>
                 </div>
             </RepoContext.Provider>
         )
