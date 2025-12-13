@@ -8,18 +8,32 @@ import * as colors from "@/lib/colors";
 
 interface P extends React.PropsWithChildren {
   name: string;
+  mode: "completed" | "active";
 }
 
-export const HabitFetcher: React.FC<P> = ({ name, children }) => {
+export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
   const habit = useHabit(name);
   const update = useUpdateHabit(name);
 
   if (habit.isLoading) {
+    if (mode === "completed") {
+      // Loading will be shown in `active` fetcher, avoid duplication.
+      return null;
+    }
     return <LoadingScreen label={name} className="h-40 border rounded" />;
   }
 
   if (habit.data) {
     const { progress, completion } = getProgress(habit.data, new Date());
+    const isCompleted = completion.count >= completion.target;
+
+    if (mode === "completed" && !isCompleted) {
+      return null;
+    }
+    if (mode === "active" && isCompleted) {
+      // Habit will be shown in `completed` fetcher, avoid duplication.
+      return null;
+    }
 
     return (
       <HabitContext
@@ -30,7 +44,7 @@ export const HabitFetcher: React.FC<P> = ({ name, children }) => {
           isFetching: habit.isFetching,
           progress,
           completion,
-          isCompleted: completion.count >= completion.target,
+          isCompleted,
           color: colors.forHabit(habit.data),
         }}
       >
@@ -39,5 +53,9 @@ export const HabitFetcher: React.FC<P> = ({ name, children }) => {
     );
   }
 
+  if (mode === "completed") {
+    // Error will be shown in `active` fetcher, avoid duplication.
+    return null;
+  }
   return <ErrorView error={habit.error} />;
 };

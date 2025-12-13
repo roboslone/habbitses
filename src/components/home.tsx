@@ -3,10 +3,10 @@ import { Button } from "./ui/button";
 import { Cog, Plus } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useSelectedRepo } from "@/lib/git";
-import { RepoSelector } from "@/components/repo-selector";
+import { RepoSelector } from "@/components/repo/selector";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { PageHeader } from "./page-header";
-import { RepoViewer } from "./repo-viewer";
+import { RepoViewer } from "./repo/viewer";
 
 export const Home: React.FC = () => {
   const [repo] = useSelectedRepo();

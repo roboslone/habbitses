@@ -56,8 +56,6 @@ export const CompletionButton: React.FC<P> = ({
     applyButton(completion, options);
     next.completions[date] = completion;
 
-    console.info("button click", { habit, next, options, completion });
-
     toast.promise(update.mutateAsync(next), {
       loading: "Updating habit...",
       success: "Habit updated",

@@ -1,7 +1,7 @@
 import React from "react";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { AccountBadge } from "@/components/auth/account-chip";
-import { RepoSelector } from "./repo-selector";
+import { RepoSelector } from "./repo/selector";
 import { Label } from "./ui/label";
 import { PageHeader } from "./page-header";
 

@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { RepoPicker } from "@/components/repo-picker";
+import { RepoPicker } from "@/components/repo/picker";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 export const RepoSelector: React.FC = () => {

@@ -44,10 +44,6 @@ const extractTokens = (
 };
 
 const accessTokenExpired = (tokens: StoredTokens): boolean => {
-  console.info("expiration check", {
-    expiresAt: new Date(tokens.access.expiresAt),
-    date: new Date(),
-  });
   return new Date(tokens.access.expiresAt) < new Date();
 };
 

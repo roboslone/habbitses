@@ -14,7 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { Repo } from "@/lib/git";
 import { Input } from "@/components/ui/input";
-import { Separator } from "./ui/separator";
+import { Separator } from "../ui/separator";
 
 interface P {
   onPick: (r: Repo) => void;
