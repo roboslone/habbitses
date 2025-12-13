@@ -6,8 +6,8 @@ import { ErrorView } from "@/components/util/error-view";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { HabitFetcher } from "@/components/habit-fetcher";
-import { HabitCard } from "@/components/habits/card";
+import { HabitFetcher } from "@/components/habit/fetcher";
+import { HabitCard } from "@/components/habit/card";
 import { RepoContext } from "./context";
 
 interface P {

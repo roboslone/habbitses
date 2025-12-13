@@ -7,7 +7,7 @@ import {
 } from "@/proto/models/v1/models_pb";
 import type React from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, ArrowUp, Check } from "lucide-react";
+import { ArrowRight, ArrowUp, Check, Undo2 } from "lucide-react";
 import { clone, create } from "@bufbuild/protobuf";
 import { useHabitContext } from "@/components/habit/context";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ import { toast } from "sonner";
 
 interface P extends React.ComponentProps<typeof Button> {
   options?: Completion_ButtonOptions;
+  preview?: boolean;
 }
 
 const defaultOptions = create(Completion_ButtonOptionsSchema, {
@@ -26,35 +27,48 @@ const applyButton = (
   completion: Completion,
   options: Completion_ButtonOptions
 ) => {
-  if (options.kind.case === "delta") {
-    completion.count += options.kind.value;
-  } else if (options.kind.case === "percentage") {
-    completion.count += Math.ceil(
-      (options.kind.value / 100) * completion.target
-    );
-  } else if (options.kind.case === "complete") {
-    completion.count = completion.target;
-  } else if (options.kind.case === "set") {
-    completion.count = options.kind.value;
+  switch (options.kind.case) {
+    case "delta":
+      completion.count += options.kind.value;
+      return;
+    case "percentage":
+      completion.count += Math.ceil(
+        (options.kind.value / 100) * completion.target
+      );
+      return;
+    case "complete":
+      completion.count = completion.target;
+      return;
+    case "set":
+      completion.count = options.kind.value;
+      return;
   }
 };
 
 export const CompletionButton: React.FC<P> = ({
   options = defaultOptions,
   children,
+  preview,
   ...rest
 }) => {
   const { habit, color, update } = useHabitContext();
 
   const handleClick = () => {
+    if (preview) return;
+
     const next = clone(HabitSchema, habit);
     const date = formatDate(new Date());
-    const completion =
-      next.completions[date] ??
-      create(CompletionSchema, { target: next.dailyTarget });
 
-    applyButton(completion, options);
-    next.completions[date] = completion;
+    if (options.kind.case === undefined) {
+      delete next.completions[date];
+    } else {
+      const completion =
+        next.completions[date] ??
+        create(CompletionSchema, { target: next.dailyTarget });
+
+      applyButton(completion, options);
+      next.completions[date] = completion;
+    }
 
     toast.promise(update.mutateAsync(next), {
       loading: "Updating habit...",
@@ -70,7 +84,14 @@ export const CompletionButton: React.FC<P> = ({
   let className = cn(color.text, rest.className);
 
   let content = null;
-  if (kind.case === "delta") {
+  if (kind.case === undefined) {
+    content = (
+      <>
+        <Undo2 />
+        <span>Reset</span>
+      </>
+    );
+  } else if (kind.case === "delta") {
     className = cn(className, "gap-1");
     content = (
       <>

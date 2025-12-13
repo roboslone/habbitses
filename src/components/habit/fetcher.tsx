@@ -1,10 +1,11 @@
 import { useHabit, useUpdateHabit } from "@/lib/queries";
 import type React from "react";
-import { HabitContext } from "./habit/context";
-import { LoadingScreen } from "./util/loading-screen";
-import { ErrorView } from "./util/error-view";
+import { HabitContext } from "./context";
+import { LoadingScreen } from "@/components/util/loading-screen";
+import { ErrorView } from "@/components/util/error-view";
 import { getProgress } from "@/lib/progress";
 import * as colors from "@/lib/colors";
+import { cn } from "@/lib/utils";
 
 interface P extends React.PropsWithChildren {
   name: string;
@@ -21,7 +22,10 @@ export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
       return null;
     }
     return (
-      <LoadingScreen label={name} className="h-40 max-w-211 border rounded" />
+      <LoadingScreen
+        label={name}
+        className={cn("h-40 max-w-211 rounded", { border: mode !== "page" })}
+      />
     );
   }
 

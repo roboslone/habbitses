@@ -46,8 +46,8 @@ export const HabitCard: React.FC = () => {
             </div>
           </Link>
 
-          <div className="ml-auto flex items-center gap-1">
-            <CompletionButtons />
+          <div className="ml-auto flex items-center gap-1 overflow-hidden">
+            <CompletionButtons max={2} />
           </div>
         </div>
 

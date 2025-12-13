@@ -27,7 +27,7 @@ export const rSettings = createRoute({
 export const rNewHabit = createRoute({
   getParentRoute: () => rRoot,
   path: "/habits/new",
-  component: React.lazy(() => import("@/components/new-habbit-page")),
+  component: React.lazy(() => import("@/components/habit/new-habbit-page")),
 });
 
 export const rHabit = createRoute({
@@ -36,7 +36,7 @@ export const rHabit = createRoute({
   beforeLoad: ({ params }) => ({
     name: params.name,
   }),
-  component: React.lazy(() => import("@/components/habits/page")),
+  component: React.lazy(() => import("@/components/habit/page")),
 });
 
 const routeTree = rRoot.addChildren([rHome, rSettings, rNewHabit, rHabit]);

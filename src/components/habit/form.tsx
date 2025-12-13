@@ -1,17 +1,17 @@
 import { HabitSchema, type Habit } from "@/proto/models/v1/models_pb";
 import React from "react";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Check, Loader2 } from "lucide-react";
 import { clone, create } from "@bufbuild/protobuf";
 import { toast } from "sonner";
 import * as colors from "@/lib/colors";
 import * as icons from "@/lib/icons";
-import ColorPicker from "./color-picker";
+import ColorPicker from "@/components/color-picker";
 import { randomArrayElement } from "@/lib/utils";
-import IconPicker from "./icon-picker";
-import { Separator } from "./ui/separator";
+import IconPicker from "@/components/icon-picker";
+import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "@tanstack/react-router";
 import { useRefetchRepoContent } from "@/lib/queries";
 

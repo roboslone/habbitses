@@ -13,7 +13,7 @@ import {
   type RepoContent,
 } from "./git";
 import { HabitSchema, type Habit } from "@/proto/models/v1/models_pb";
-import { clone, fromJsonString, toJsonString } from "@bufbuild/protobuf";
+import { clone, fromJsonString, toJson } from "@bufbuild/protobuf";
 import type { Octokit } from "octokit";
 
 export const client = new QueryClient();
@@ -135,7 +135,7 @@ const pushHabit = async (
     path: `habits/${habit.name}.json`,
     owner,
     repo,
-    content: btoa(toJsonString(HabitSchema, copy)),
+    content: btoa(JSON.stringify(toJson(HabitSchema, copy), null, 4)),
     message,
     sha: habit.sha,
     headers: { "If-None-Match": "" },
@@ -171,6 +171,7 @@ export const useUpdateHabit = (name: string) => {
   return useMutation({
     mutationFn: (habit: Habit) => {
       if (repo === undefined) throw new Error("repo is not selected");
+      console.info("updateHabit", habit);
       return pushHabit(
         octokit,
         habit,

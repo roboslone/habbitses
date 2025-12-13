@@ -15,6 +15,7 @@ import { HabitProgress } from "./progress";
 import { CompletionButton } from "./button";
 import { create } from "@bufbuild/protobuf";
 import { Completion_ButtonOptionsSchema } from "@/proto/models/v1/models_pb";
+import { ButtonForm } from "./button-form";
 
 export const HabitView: React.FC = () => {
   const [repo] = useSelectedRepo();
@@ -41,6 +42,7 @@ export const HabitView: React.FC = () => {
       <div className="flex flex-col gap-5 px-5">
         <div className="flex items-center gap-2 flex-wrap">
           <CompletionButtons variant="outline" />
+          <ButtonForm />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -50,18 +52,17 @@ export const HabitView: React.FC = () => {
 
         <div className="flex flex-col gap-2">
           <Label className="text-muted-foreground/50">Progress</Label>
-          {completion.count} / {completion.target}
+          <div className="flex items-center justify-between">
+            <span>
+              {completion.count} / {completion.target}
+            </span>
+            <CompletionButton
+              options={create(Completion_ButtonOptionsSchema, {})}
+              className="w-fit"
+              size="sm"
+            />
+          </div>
           <HabitProgress className="rounded-full h-1.5" />
-          <CompletionButton
-            options={create(Completion_ButtonOptionsSchema, {
-              kind: { case: "set", value: 0 },
-            })}
-            variant="outline"
-            className="w-fit"
-            disabled={completion.count === 0}
-          >
-            Reset
-          </CompletionButton>
         </div>
 
         <div className="flex flex-col gap-2">

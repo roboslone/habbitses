@@ -8,6 +8,7 @@ import type { Button } from "@/components/ui/button";
 interface P extends React.ComponentProps<typeof Button> {
   max?: number;
 }
+
 export const CompletionButtons: React.FC<P> = ({ max, ...rest }) => {
   const { habit } = useHabitContext();
 

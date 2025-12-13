@@ -22,7 +22,7 @@ message Habit {
   map<string, Completion> completions = 7;
 
   // defaults to `[{complete: true}]`
-  // first button in list is displayed on home page,
+  // first two buttons in list are displayed on habit card,
   // other buttons are displayed on habit page
   repeated Completion.ButtonOptions buttons = 8;
 
