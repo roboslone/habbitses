@@ -37,8 +37,8 @@ export const RepoViewer: React.FC<P> = ({ repo }) => {
         const names = [...parseRepoContent(content.data)]
         return (
             <RepoContext.Provider value={{ content, names }}>
-                <div className="flex flex-col items-center gap-4 p-2 pt-0 grow">
-                    <div className="flex flex-col items-center gap-4 w-full">
+                <div className="flex flex-col items-center gap-2 p-2 pt-0 grow">
+                    <div className="flex flex-col items-center gap-2 w-full">
                         {names.map((name) => (
                             <HabitFetcher key={name} name={name} mode="active">
                                 <HabitCard />
@@ -46,7 +46,7 @@ export const RepoViewer: React.FC<P> = ({ repo }) => {
                         ))}
                     </div>
 
-                    <div className="flex flex-col items-center gap-4 w-full">
+                    <div className="flex flex-col items-center gap-2 w-full">
                         {names.map((name) => (
                             <HabitFetcher key={name} name={name} mode="completed">
                                 <HabitCard />

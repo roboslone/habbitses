@@ -9,20 +9,25 @@ import { HabitIcon } from "./icon"
 import { HabitProgress } from "./progress"
 
 export const HabitCard: React.FC = () => {
-    const { habit, color, isCompleted } = useHabitContext()
+    const { habit, displayOptions, color, isCompleted } = useHabitContext()
 
     return (
-        <div className="habit-card rounded truncate w-full min-h-40 max-w-211 flex flex-col gap-1">
+        <div
+            className={cn("habit-card rounded truncate w-full max-w-211 flex flex-col gap-1", {
+                "min-h-40": !displayOptions.hideChart,
+            })}
+        >
             <div
                 className={cn(
                     "habit-card--header",
-                    "flex flex-col gap-1 bg-card rounded truncate pt-1",
+                    "flex flex-col gap-1 bg-card rounded truncate",
                     color.text,
+                    { "pt-1": !displayOptions.hideProgressbar },
                 )}
             >
                 <div
                     className={cn("flex items-center gap-1 w-full pl-2 pr-1", {
-                        "opacity-50": isCompleted,
+                        "opacity-40": isCompleted,
                     })}
                 >
                     <Link to="/habits/$name" params={{ name: habit.name }} className="grow">
@@ -36,7 +41,11 @@ export const HabitCard: React.FC = () => {
                                 >
                                     {habit.name}
                                 </span>
-                                <span className="text-xs text-stone-500">{habit.description}</span>
+                                {!displayOptions.hideDescription && (
+                                    <span className="text-xs text-stone-500">
+                                        {habit.description}
+                                    </span>
+                                )}
                             </div>
                         </div>
                     </Link>
@@ -46,10 +55,10 @@ export const HabitCard: React.FC = () => {
                     </div>
                 </div>
 
-                <HabitProgress className="opacity-50" />
+                {!displayOptions.hideProgressbar && <HabitProgress className="opacity-50" />}
             </div>
 
-            <HabitChart />
+            {!displayOptions.hideChart && <HabitChart />}
         </div>
     )
 }

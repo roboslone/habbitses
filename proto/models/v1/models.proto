@@ -4,9 +4,9 @@ package models.v1;
 
 message Habit {
   message DisplayOptions {
-    optional bool show_chart = 1;
-    optional bool show_progressbar = 2;
-    optional bool show_description = 3;
+    optional bool hide_chart = 1;
+    optional bool hide_progressbar = 2;
+    optional bool hide_description = 3;
   }
 
   string name = 1;
