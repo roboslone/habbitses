@@ -5,6 +5,18 @@ Operates completely in browser, except for [GitHub token exchange](https://githu
 
 [GitHub application](https://github.com/apps/habbitses)
 
+## Quickstart
+
+1. [Create](https://github.com/new?visibility=private&name=habbitses.data) a private repository:
+
+<img width="394" height="252,5" alt="github com_new_visibility=private name=habbitses data add-readme=true description=Data+for+https___roboslone github io_habbitses_" src="https://github.com/user-attachments/assets/15412465-745f-495b-b190-eef3fb1469f8" />
+
+2. Install Habbitses [GitHub application](https://github.com/apps/habbitses):
+
+<img width="404,25" height="403,25" alt="github com_settings_installations_99406588" src="https://github.com/user-attachments/assets/07bf68d8-2faf-4b1a-b7db-fe4d353cc68a" />
+
+3. Open https://roboslone.github.io/habbitses/, sign in with your GitHub account.
+
 ## Setting up your own instance
 
 To run your own instance of Habbitses you'll need several things:
