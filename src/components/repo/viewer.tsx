@@ -6,9 +6,11 @@ import { LoadingScreen } from "@/components/util/loading-screen"
 import { type Repo, parseRepoContent } from "@/lib/git"
 import { useRepoContent } from "@/lib/queries"
 import { cn } from "@/lib/utils"
-import { RefreshCw } from "lucide-react"
+import { Link } from "@tanstack/react-router"
+import { Plus, RefreshCw } from "lucide-react"
 import React from "react"
 
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 import { RepoContext } from "./context"
 
 interface P {
@@ -56,8 +58,12 @@ export const RepoViewer: React.FC<P> = ({ repo }) => {
 
                     {names.length === 0 && (
                         <>
-                            <span className="text-muted-foreground">Repository is empty</span>
-                            {refreshButton}
+                            <Link to="/habits/new">
+                                <Button size="lg">
+                                    <Plus />
+                                    Start a new habit!
+                                </Button>
+                            </Link>
                         </>
                     )}
 

@@ -6,7 +6,7 @@ import { clone, fromJsonString, toJson } from "@bufbuild/protobuf"
 import { createClient } from "@connectrpc/connect"
 import { createGrpcWebTransport } from "@connectrpc/connect-web"
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query"
-import type { Octokit } from "octokit"
+import type { Octokit, RequestError } from "octokit"
 import { toast } from "sonner"
 
 import { type StoredAccount, useStoredAccount } from "./auth"
@@ -96,16 +96,27 @@ export const useRepoContent = (repo?: Repo, force = false) => {
                 } as RepoContent
             }
 
-            const response = await octokit.rest.git.getTree({
-                owner: account.login,
-                repo: repo.name,
-                tree_sha: "HEAD",
-                recursive: "true",
-                request: { signal },
-                headers: force ? { "If-None-Match": "" } : undefined,
-            })
-
-            return response.data
+            try {
+                const response = await octokit.rest.git.getTree({
+                    owner: account.login,
+                    repo: repo.name,
+                    tree_sha: "HEAD",
+                    recursive: "true",
+                    request: { signal },
+                    headers: force ? { "If-None-Match": "" } : undefined,
+                })
+                return response.data
+            } catch (e: unknown) {
+                if ((e as RequestError).status === 404) {
+                    // empty repo
+                    return {
+                        sha: "",
+                        truncated: false,
+                        tree: [],
+                    } as RepoContent
+                }
+                throw e
+            }
         },
         staleTime: 5 * 60 * 1000, // todo
         retry: handleError("Failed to fetch repo content", { maxFailures: 1 }),
