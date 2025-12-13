@@ -1,88 +1,83 @@
-import React from "react";
+import { useHabitContext } from "@/components/habit/context"
+import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Trash2, Undo2 } from "lucide-react";
-import { useHabitContext } from "@/components/habit/context";
-import { cn } from "@/lib/utils";
-import { HabitIcon } from "./icon";
-import { useBreakHabit, useRefetchRepoContent } from "@/lib/queries";
-import { toast } from "sonner";
-import { HabitDescription } from "./description";
-import { useNavigate } from "@tanstack/react-router";
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { useBreakHabit, useRefetchRepoContent } from "@/lib/queries"
+import { cn } from "@/lib/utils"
+import { useNavigate } from "@tanstack/react-router"
+import { Trash2, Undo2 } from "lucide-react"
+import React from "react"
+import { toast } from "sonner"
 
-export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({
-  children,
-}) => {
-  const [open, setOpen] = React.useState(false);
-  const { habit, color } = useHabitContext();
-  const breakHabit = useBreakHabit();
-  const refetchRepoContent = useRefetchRepoContent();
-  const navigate = useNavigate();
+import { HabitDescription } from "./description"
+import { HabitIcon } from "./icon"
 
-  const handleBreak = () => {
-    toast.promise(
-      breakHabit
-        .mutateAsync(habit)
-        .then(() => setOpen(false))
-        .then(() => navigate({ to: "/" }))
-        .then(() => refetchRepoContent()),
-      {
-        loading: "Breaking the habit, tonight...",
-        success: () => ({
-          message: "Habit is broken!",
-          description: habit.name,
-        }),
-        error: (e: Error) => ({
-          message: "Failed to break the habit",
-          description: `${habit.name}: ${e.message}`,
-        }),
-      }
-    );
-  };
+export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({ children }) => {
+    const [open, setOpen] = React.useState(false)
+    const { habit, color } = useHabitContext()
+    const breakHabit = useBreakHabit()
+    const refetchRepoContent = useRefetchRepoContent()
+    const navigate = useNavigate()
 
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
-        <DialogTitle>Break the habit?</DialogTitle>
-        <DialogDescription>
-          Habit will be deleted, but its data will be preserved in GitHub log.
-        </DialogDescription>
+    const handleBreak = () => {
+        toast.promise(
+            breakHabit
+                .mutateAsync(habit)
+                .then(() => setOpen(false))
+                .then(() => navigate({ to: "/" }))
+                .then(() => refetchRepoContent()),
+            {
+                loading: "Breaking the habit, tonight...",
+                success: () => ({
+                    message: "Habit is broken!",
+                    description: habit.name,
+                }),
+                error: (e: Error) => ({
+                    message: "Failed to break the habit",
+                    description: `${habit.name}: ${e.message}`,
+                }),
+            },
+        )
+    }
 
-        <div className="flex flex-col gap-2">
-          <h1 className={cn("flex items-center gap-2 text-xl", color.text)}>
-            <HabitIcon />
-            {habit.name}
-          </h1>
-          <HabitDescription />
-        </div>
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>{children}</DialogTrigger>
+            <DialogContent>
+                <DialogTitle>Break the habit?</DialogTitle>
+                <DialogDescription>
+                    Habit will be deleted, but its data will be preserved in GitHub log.
+                </DialogDescription>
 
-        <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => setOpen(false)}
-            disabled={breakHabit.isPending}
-          >
-            <Undo2 />
-            Cancel
-          </Button>
-          <Button
-            variant="outline"
-            disabled={breakHabit.isPending}
-            onClick={handleBreak}
-          >
-            <Trash2 className="text-rose-500" />
-            Break
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
+                <div className="flex flex-col gap-2">
+                    <h1 className={cn("flex items-center gap-2 text-xl", color.text)}>
+                        <HabitIcon />
+                        {habit.name}
+                    </h1>
+                    <HabitDescription />
+                </div>
+
+                <DialogFooter>
+                    <Button
+                        variant="outline"
+                        onClick={() => setOpen(false)}
+                        disabled={breakHabit.isPending}
+                    >
+                        <Undo2 />
+                        Cancel
+                    </Button>
+                    <Button variant="outline" disabled={breakHabit.isPending} onClick={handleBreak}>
+                        <Trash2 className="text-rose-500" />
+                        Break
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}

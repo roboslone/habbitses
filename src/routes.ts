@@ -1,53 +1,53 @@
 import {
-  createHashHistory,
-  createRootRoute,
-  createRoute,
-  createRouter,
-} from "@tanstack/react-router";
-import React from "react";
+    createHashHistory,
+    createRootRoute,
+    createRoute,
+    createRouter,
+} from "@tanstack/react-router"
+import React from "react"
 
-const history = createHashHistory();
+const history = createHashHistory()
 
 export const rRoot = createRootRoute({
-  component: React.lazy(() => import("@/layout")),
-});
+    component: React.lazy(() => import("@/layout")),
+})
 
 export const rHome = createRoute({
-  getParentRoute: () => rRoot,
-  path: "/",
-  component: React.lazy(() => import("@/components/home")),
-});
+    getParentRoute: () => rRoot,
+    path: "/",
+    component: React.lazy(() => import("@/components/home")),
+})
 
 export const rSettings = createRoute({
-  getParentRoute: () => rRoot,
-  path: "/settings",
-  component: React.lazy(() => import("@/components/settings-page")),
-});
+    getParentRoute: () => rRoot,
+    path: "/settings",
+    component: React.lazy(() => import("@/components/settings-page")),
+})
 
 export const rNewHabit = createRoute({
-  getParentRoute: () => rRoot,
-  path: "/habits/new",
-  component: React.lazy(() => import("@/components/habit/new-habbit-page")),
-});
+    getParentRoute: () => rRoot,
+    path: "/habits/new",
+    component: React.lazy(() => import("@/components/habit/new-habbit-page")),
+})
 
 export const rHabit = createRoute({
-  getParentRoute: () => rRoot,
-  path: "/habits/$name",
-  beforeLoad: ({ params }) => ({
-    name: params.name,
-  }),
-  component: React.lazy(() => import("@/components/habit/page")),
-});
+    getParentRoute: () => rRoot,
+    path: "/habits/$name",
+    beforeLoad: ({ params }) => ({
+        name: params.name,
+    }),
+    component: React.lazy(() => import("@/components/habit/page")),
+})
 
-const routeTree = rRoot.addChildren([rHome, rSettings, rNewHabit, rHabit]);
+const routeTree = rRoot.addChildren([rHome, rSettings, rNewHabit, rHabit])
 
 export const router = createRouter({
-  history,
-  routeTree,
-});
+    history,
+    routeTree,
+})
 
 declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
+    interface Register {
+        router: typeof router
+    }
 }

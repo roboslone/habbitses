@@ -4,9 +4,7 @@
     "service": "app",
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
     "remoteUser": "root",
-    "forwardPorts": [
-        5173
-    ],
+    "forwardPorts": [5173],
     "customizations": {
         "vscode": {
             "extensions": [
