@@ -11,7 +11,6 @@ import { ArrowRight, ArrowUp, Check } from "lucide-react";
 import { clone, create } from "@bufbuild/protobuf";
 import { useHabitContext } from "@/components/habit/context";
 import { cn } from "@/lib/utils";
-import { useUpdateHabit } from "@/lib/queries";
 import { formatDate } from "@/lib/dates";
 import { toast } from "sonner";
 
@@ -45,8 +44,7 @@ export const CompletionButton: React.FC<P> = ({
   children,
   ...rest
 }) => {
-  const { habit, color } = useHabitContext();
-  const saveHabit = useUpdateHabit(habit.name);
+  const { habit, color, update } = useHabitContext();
 
   const handleClick = () => {
     const next = clone(HabitSchema, habit);
@@ -60,7 +58,7 @@ export const CompletionButton: React.FC<P> = ({
 
     console.info("button click", { habit, next, options, completion });
 
-    toast.promise(saveHabit.mutateAsync(next), {
+    toast.promise(update.mutateAsync(next), {
       loading: "Updating habit...",
       success: "Habit updated",
       error: (e: Error) => ({
@@ -111,7 +109,7 @@ export const CompletionButton: React.FC<P> = ({
       variant="ghost"
       {...rest}
       className={className}
-      disabled={rest.disabled || saveHabit.isPending}
+      disabled={rest.disabled || update.isPending}
       onClick={handleClick}
     >
       {children ?? content}

@@ -53,7 +53,7 @@ const accessTokenExpired = (tokens: StoredTokens): boolean => {
 
 export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [storedTokens, setStoredTokens] = useStoredTokens();
-  const [exchanging, setExchanging] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<Error | undefined>(undefined);
 
   const url = new URL(location.href);
@@ -61,7 +61,7 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
 
   const getTokens = React.useCallback(
     (promise: Promise<StoredTokens>) => {
-      setExchanging(true);
+      setLoading(true);
       return promise
         .then((tokens) => {
           setError(undefined);
@@ -77,7 +77,7 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
           setError(e);
           throw e;
         })
-        .finally(() => setExchanging(false));
+        .finally(() => setLoading(false));
     },
     [setStoredTokens]
   );
@@ -107,6 +107,7 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
           ExchangeClient.refresh({ clientId, refreshToken }).then(extractTokens)
         ),
         {
+          success: "GitHub token refreshed",
           error: (e: Error) => ({
             message: "Token refresh failed",
             description: e.message,
@@ -117,22 +118,14 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
   );
 
   React.useEffect(() => {
-    console.info("effect", {
-      storedTokens,
-      exchanging,
-      error,
-      code,
-      expired: storedTokens !== undefined && accessTokenExpired(storedTokens),
-    });
-
-    if (exchanging || error) return;
+    if (loading || error) return;
 
     if (code && !storedTokens) {
       exchangeCode(code);
     } else if (storedTokens && accessTokenExpired(storedTokens)) {
       refreshToken(storedTokens.refresh.value);
     }
-  }, [code, error, exchangeCode, exchanging, refreshToken, storedTokens]);
+  }, [code, error, exchangeCode, loading, refreshToken, storedTokens]);
 
   if (storedTokens !== undefined && !accessTokenExpired(storedTokens)) {
     return (
@@ -154,7 +147,7 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
     );
   }
 
-  if (exchanging) {
+  if (loading) {
     return <LoadingScreen label="Exchanging GitHub code..." />;
   }
 

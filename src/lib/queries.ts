@@ -22,7 +22,6 @@ export const ExchangeClient = createClient(
   ExchangeService,
   createGrpcWebTransport({
     baseUrl: "https://robosl.one",
-    useBinaryFormat: true,
     defaultTimeoutMs: 30 * 1000,
     fetch: (input, init) => fetch(input, { ...init, credentials: "include" }),
   })

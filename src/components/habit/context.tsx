@@ -1,16 +1,12 @@
-import {
-  type Completion,
-  CompletionSchema,
-  type Habit,
-  HabitSchema,
-} from "@/proto/models/v1/models_pb";
-import { create } from "@bufbuild/protobuf";
+import { type Completion, type Habit } from "@/proto/models/v1/models_pb";
 import React from "react";
 import * as colors from "@/lib/colors";
+import type { useUpdateHabit } from "@/lib/queries";
 
 interface S {
   habit: Habit;
   refetch: () => Promise<unknown>;
+  update: ReturnType<typeof useUpdateHabit>;
   isFetching: boolean;
   color: colors.Options;
   completion: Completion;
@@ -18,17 +14,10 @@ interface S {
   progress: number;
 }
 
-export const HabitContext = React.createContext<S>({
-  habit: create(HabitSchema, {}),
-  refetch: async () => null,
-  isFetching: false,
-  color: colors.defaultOption,
-  completion: create(CompletionSchema, {
-    count: 0,
-    target: 1,
-  }),
-  isCompleted: false,
-  progress: 0,
-});
+export const HabitContext = React.createContext<S | undefined>(undefined);
 
-export const useHabitContext = () => React.useContext(HabitContext);
+export const useHabitContext = () => {
+  const ctx = React.useContext(HabitContext);
+  if (ctx === undefined) throw new Error("habit context unavailable");
+  return ctx;
+};
