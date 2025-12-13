@@ -1,4 +1,9 @@
-https://github.com/apps/habbitses
+# Habbitses
+
+**Habit tracker** using your private GitHub repository as data storage.  
+Operates completely in browser, except for [GitHub token exchange](https://github.com/roboslone/github-oauth-exchange).
+
+[GitHub application](https://github.com/apps/habbitses)
 
 <img width="292.5" height="633" alt="localhost_5173_habbitses_(iPhone 12 Pro) (1)" src="https://github.com/user-attachments/assets/fc1f49f3-c151-44d4-aed8-5d7630798ad9" />
 <img width="292.5" height="633" alt="localhost_5173_habbitses_(iPhone 12 Pro) (3)" src="https://github.com/user-attachments/assets/f4bbf187-fd0e-4bd9-bdb8-373a9d61735c" />
