@@ -1,4 +1,4 @@
-# Habbitses
+# Habbitses – https://roboslone.github.io/habbitses/
 
 **Habit tracker** using your private GitHub repository as data storage.  
 Operates completely in browser, except for [GitHub token exchange](https://github.com/roboslone/github-oauth-exchange).
