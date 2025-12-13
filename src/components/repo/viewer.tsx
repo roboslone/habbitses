@@ -10,7 +10,6 @@ import { Link } from "@tanstack/react-router"
 import { Plus, RefreshCw } from "lucide-react"
 import React from "react"
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 import { RepoContext } from "./context"
 
 interface P {
