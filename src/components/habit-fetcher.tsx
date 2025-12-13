@@ -8,7 +8,7 @@ import * as colors from "@/lib/colors";
 
 interface P extends React.PropsWithChildren {
   name: string;
-  mode: "completed" | "active";
+  mode: "completed" | "active" | "page";
 }
 
 export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {

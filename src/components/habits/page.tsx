@@ -7,7 +7,7 @@ export const HabitPage: React.FC = () => {
   const { name } = rHabit.useRouteContext();
 
   return (
-    <HabitFetcher name={name}>
+    <HabitFetcher name={name} mode="page">
       <HabitView />
     </HabitFetcher>
   );
