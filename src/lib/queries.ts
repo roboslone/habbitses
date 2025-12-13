@@ -211,6 +211,14 @@ export const useBreakHabit = () => {
     })
 }
 
+export const useRefresh = () => {
+    const refetchRepoContent = useRefetchRepoContent()
+    return async () => {
+        await refetchRepoContent()
+        await client.invalidateQueries({ queryKey: ["habits"] })
+    }
+}
+
 export const useHabit = (name: string) => {
     const account = useStoredAccountContext()
     const [repo] = useSelectedRepo()

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ErrorView } from "@/components/util/error-view"
 import { LoadingScreen } from "@/components/util/loading-screen"
 import { type Repo, parseRepoContent } from "@/lib/git"
-import { useRepoContent } from "@/lib/queries"
+import { useRefresh, useRepoContent } from "@/lib/queries"
 import { cn } from "@/lib/utils"
 import { Link } from "@tanstack/react-router"
 import { Plus, RefreshCw } from "lucide-react"
@@ -18,17 +18,14 @@ interface P {
 
 export const RepoViewer: React.FC<P> = ({ repo }) => {
     const content = useRepoContent(repo, true)
+    const refresh = useRefresh()
 
     if (content.isLoading) {
         return <LoadingScreen label={`Loading ${repo.name}...`} />
     }
 
     const refreshButton = (
-        <Button
-            variant="ghost"
-            disabled={content.isFetching}
-            onClick={() => void content.refetch()}
-        >
+        <Button variant="ghost" disabled={content.isFetching} onClick={() => void refresh()}>
             <RefreshCw className={cn({ "animate-spin": content.isFetching })} />
             Refresh
         </Button>
