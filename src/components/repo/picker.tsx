@@ -31,13 +31,13 @@ export const RepoPicker: React.FC<P> = ({ onPick }) => {
                         <strong>private</strong> repository.
                     </p>
                     <Separator />
-                    <a href="https://github.com/new" target="_self" className="w-full">
+                    <a href="https://github.com/new" target="_blank" className="w-full">
                         <Button variant="outline" size="lg" className="w-full">
                             <BookPlus className="text-emerald-600" />
                             Create new repository
                         </Button>
                     </a>
-                    <a href="https://github.com/apps/habbitses" target="_self" className="w-full">
+                    <a href="https://github.com/apps/habbitses" target="_blank" className="w-full">
                         <Button variant="outline" size="lg" className="w-full">
                             <img src={GitHubLogo} className="h-4 w-4 invert" />
                             Install GitHub app
