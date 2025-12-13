@@ -63,15 +63,6 @@ export const useCurrentAccount = () => {
   });
 };
 
-export const useRefreshRepos = () => {
-  const repos = useRepos();
-
-  return async () => {
-    await client.invalidateQueries({ queryKey: ["repos"] });
-    await repos.refetch();
-  };
-};
-
 export const useRepos = () => {
   const octokit = useOctokit();
   const [repos, setRepos] = useStoredRepos();
@@ -82,6 +73,7 @@ export const useRepos = () => {
       const response = await octokit.rest.repos.listForAuthenticatedUser({
         visibility: "private",
         request: { signal },
+        headers: { "If-None-Match": "" },
       });
       setRepos(response.data as Repo[]);
       return response.data as Repo[];

@@ -1,15 +1,14 @@
 import { parseRepoContent, type Repo } from "@/lib/git";
 import { useRepoContent } from "@/lib/queries";
 import React from "react";
-import { LoadingScreen } from "../util/loading-screen";
-import { ErrorView } from "../util/error-view";
-import { Check, CheckCheck, Eye, EyeClosed, RefreshCw } from "lucide-react";
-import { Button } from "../ui/button";
+import { LoadingScreen } from "@/components/util/loading-screen";
+import { ErrorView } from "@/components/util/error-view";
+import { RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { HabitFetcher } from "../habit-fetcher";
-import { HabitCard } from "../habits/card";
+import { HabitFetcher } from "@/components/habit-fetcher";
+import { HabitCard } from "@/components/habits/card";
 import { RepoContext } from "./context";
-import { Label } from "../ui/label";
 
 interface P {
   repo: Repo;

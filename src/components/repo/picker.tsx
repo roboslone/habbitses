@@ -1,5 +1,5 @@
 import GitHubLogo from "@/assets/github.svg?url";
-import { useRefreshRepos, useRepos } from "@/lib/queries";
+import { useRepos } from "@/lib/queries";
 import React from "react";
 import { LoadingScreen } from "@/components/util/loading-screen";
 import { ErrorView } from "@/components/util/error-view";
@@ -14,7 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { Repo } from "@/lib/git";
 import { Input } from "@/components/ui/input";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/components/ui/separator";
 
 interface P {
   onPick: (r: Repo) => void;
@@ -22,7 +22,6 @@ interface P {
 
 export const RepoPicker: React.FC<P> = ({ onPick }) => {
   const repos = useRepos();
-  const refresh = useRefreshRepos();
   const [query, setQuery] = React.useState<string | undefined>(undefined);
 
   if (repos.isPending) {
@@ -54,6 +53,16 @@ export const RepoPicker: React.FC<P> = ({ onPick }) => {
               Install GitHub app
             </Button>
           </a>
+          <Button
+            variant="outline"
+            size="lg"
+            className="w-full"
+            disabled={repos.isFetching}
+            onClick={() => void repos.refetch()}
+          >
+            <RefreshCw className={cn({ "animate-spin": repos.isFetching })} />
+            Refresh
+          </Button>
         </div>
       );
     }
@@ -87,7 +96,7 @@ export const RepoPicker: React.FC<P> = ({ onPick }) => {
 
           <Button
             variant="outline"
-            onClick={() => void refresh()}
+            onClick={() => void repos.refetch()}
             disabled={repos.isFetching}
             className="w-fit"
           >
