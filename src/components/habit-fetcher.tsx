@@ -20,7 +20,9 @@ export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
       // Loading will be shown in `active` fetcher, avoid duplication.
       return null;
     }
-    return <LoadingScreen label={name} className="h-40 border rounded" />;
+    return (
+      <LoadingScreen label={name} className="h-40 max-w-211 border rounded" />
+    );
   }
 
   if (habit.data) {
