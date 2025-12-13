@@ -1,6 +1,6 @@
 import * as colors from "@/lib/colors"
 import type { useUpdateHabit } from "@/lib/queries"
-import { type Completion, type Habit, type Habit_DisplayOptions } from "@/proto/models/v1/models_pb"
+import { type Completion, type Habit } from "@/proto/models/v1/models_pb"
 import React from "react"
 
 interface S {
@@ -8,7 +8,6 @@ interface S {
     refetch: () => Promise<unknown>
     update: ReturnType<typeof useUpdateHabit>
     isFetching: boolean
-    displayOptions: Habit_DisplayOptions
     color: colors.Options
     completion: Completion
     isCompleted: boolean

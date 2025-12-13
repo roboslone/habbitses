@@ -59,11 +59,6 @@ export declare type Habit = Message<"models.v1.Habit"> & {
    * @generated from field: repeated models.v1.Completion.ButtonOptions buttons = 8;
    */
   buttons: Completion_ButtonOptions[];
-
-  /**
-   * @generated from field: models.v1.Habit.DisplayOptions display_options = 9;
-   */
-  displayOptions?: Habit_DisplayOptions;
 };
 
 /**

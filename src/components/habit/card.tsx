@@ -1,4 +1,5 @@
 import { useHabitContext } from "@/components/habit/context"
+import { useStoredDisplayOptions } from "@/lib/displayOptions"
 import { cn } from "@/lib/utils"
 import { Link } from "@tanstack/react-router"
 import type React from "react"
@@ -9,7 +10,8 @@ import { HabitIcon } from "./icon"
 import { HabitProgress } from "./progress"
 
 export const HabitCard: React.FC = () => {
-    const { habit, displayOptions, color, isCompleted } = useHabitContext()
+    const { habit, color, isCompleted } = useHabitContext()
+    const [displayOptions] = useStoredDisplayOptions()
 
     return (
         <div
