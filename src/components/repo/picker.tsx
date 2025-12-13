@@ -31,7 +31,11 @@ export const RepoPicker: React.FC<P> = ({ onPick }) => {
                         <strong>private</strong> repository.
                     </p>
                     <Separator />
-                    <a href="https://github.com/new" target="_blank" className="w-full">
+                    <a
+                        href="https://github.com/new?visibility=private"
+                        target="_blank"
+                        className="w-full"
+                    >
                         <Button variant="outline" size="lg" className="w-full">
                             <BookPlus className="text-emerald-600" />
                             Create new repository
