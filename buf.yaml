@@ -5,5 +5,3 @@ breaking:
         - FILE
 modules:
     - path: proto
-deps:
-    - buf.build/protocolbuffers/wellknowntypes

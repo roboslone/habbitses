@@ -13,7 +13,11 @@ import { LogoutButton } from "@/components/auth/logout-button";
 import { Octokit } from "octokit";
 import { OctokitContext } from "@/components/util/octokit-provider";
 import { toast } from "sonner";
-import type { ExchangeResponse, Token } from "@/proto/github/v1/exchange_pb";
+import type {
+  ExchangeResponse,
+  RefreshResponse,
+  Token,
+} from "@/proto/github/v1/exchange_pb";
 
 const parseToken = (token?: Token): StoredToken => {
   if (!token || !token.value) throw new Error("token value not provided");
@@ -30,11 +34,21 @@ const parseToken = (token?: Token): StoredToken => {
   };
 };
 
-const extractTokens = (response: ExchangeResponse): StoredTokens => {
+const extractTokens = (
+  response: ExchangeResponse | RefreshResponse
+): StoredTokens => {
   return {
     access: parseToken(response.accessToken),
     refresh: parseToken(response.refreshToken),
   };
+};
+
+const accessTokenExpired = (tokens: StoredTokens): boolean => {
+  console.info("expiration check", {
+    expiresAt: new Date(tokens.access.expiresAt),
+    date: new Date(),
+  });
+  return new Date(tokens.access.expiresAt) < new Date();
 };
 
 export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -45,27 +59,35 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
   const url = new URL(location.href);
   const code = url.searchParams.get("code");
 
-  const exchangeCode = React.useCallback(
-    (code: string) => {
+  const getTokens = React.useCallback(
+    (promise: Promise<StoredTokens>) => {
       setExchanging(true);
+      return promise
+        .then((tokens) => {
+          setError(undefined);
+          setStoredTokens(tokens);
 
+          const nextURL = new URL(location.href);
+          nextURL.searchParams.delete("code");
+          window.history.pushState({}, document.title, nextURL);
+
+          return tokens;
+        })
+        .catch((e: Error) => {
+          setError(e);
+          throw e;
+        })
+        .finally(() => setExchanging(false));
+    },
+    [setStoredTokens]
+  );
+
+  const exchangeCode = React.useCallback(
+    (code: string) =>
       toast.promise(
-        ExchangeClient.exchange({ clientId, code })
-          .then((response) => {
-            setError(undefined);
-            setStoredTokens(extractTokens(response));
-
-            const nextURL = new URL(location.href);
-            nextURL.searchParams.delete("code");
-            window.history.pushState({}, document.title, nextURL);
-
-            return response;
-          })
-          .catch((e: Error) => {
-            setError(e);
-            throw e;
-          })
-          .finally(() => setExchanging(false)),
+        getTokens(
+          ExchangeClient.exchange({ clientId, code }).then(extractTokens)
+        ),
         {
           loading: "Exchanging GitHub code...",
           success: "Signed in",
@@ -74,19 +96,45 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
             description: e.message,
           }),
         }
-      );
-    },
-    [setStoredTokens]
+      ),
+    [getTokens]
+  );
+
+  const refreshToken = React.useCallback(
+    (refreshToken: string) =>
+      toast.promise(
+        getTokens(
+          ExchangeClient.refresh({ clientId, refreshToken }).then(extractTokens)
+        ),
+        {
+          error: (e: Error) => ({
+            message: "Token refresh failed",
+            description: e.message,
+          }),
+        }
+      ),
+    [getTokens]
   );
 
   React.useEffect(() => {
-    if (code && !exchanging && !error && !storedTokens) {
-      exchangeCode(code);
-    }
-  }, [code, error, exchangeCode, exchanging, storedTokens]);
+    console.info("effect", {
+      storedTokens,
+      exchanging,
+      error,
+      code,
+      expired: storedTokens !== undefined && accessTokenExpired(storedTokens),
+    });
 
-  if (storedTokens !== undefined) {
-    // todo: check expiration, refresh in background if refresh token is available
+    if (exchanging || error) return;
+
+    if (code && !storedTokens) {
+      exchangeCode(code);
+    } else if (storedTokens && accessTokenExpired(storedTokens)) {
+      refreshToken(storedTokens.refresh.value);
+    }
+  }, [code, error, exchangeCode, exchanging, refreshToken, storedTokens]);
+
+  if (storedTokens !== undefined && !accessTokenExpired(storedTokens)) {
     return (
       <OctokitContext.Provider
         value={new Octokit({ auth: storedTokens.access.value })}
@@ -99,8 +147,9 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
   if (error !== undefined) {
     return (
       <div className="flex items-center justify-center h-full w-full">
-        <ErrorView error={error} />
-        <LogoutButton />
+        <ErrorView error={error}>
+          <LogoutButton variant="outline" />
+        </ErrorView>
       </div>
     );
   }

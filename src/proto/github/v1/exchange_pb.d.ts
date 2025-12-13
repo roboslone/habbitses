@@ -279,6 +279,72 @@ export declare type ExchangeResponse = Message<"github.v1.ExchangeResponse"> & {
 export declare const ExchangeResponseSchema: GenMessage<ExchangeResponse>;
 
 /**
+ * @generated from message github.v1.RefreshRequest
+ */
+export declare type RefreshRequest = Message<"github.v1.RefreshRequest"> & {
+  /**
+   * @generated from field: string client_id = 1;
+   */
+  clientId: string;
+
+  /**
+   * @generated from field: string refresh_token = 2;
+   */
+  refreshToken: string;
+
+  /**
+   * If set, resulting access token will also be resolved to an `Account`.
+   *
+   * @generated from field: bool resolve = 3;
+   */
+  resolve: boolean;
+};
+
+/**
+ * Describes the message github.v1.RefreshRequest.
+ * Use `create(RefreshRequestSchema)` to create a new message.
+ */
+export declare const RefreshRequestSchema: GenMessage<RefreshRequest>;
+
+/**
+ * @generated from message github.v1.RefreshResponse
+ */
+export declare type RefreshResponse = Message<"github.v1.RefreshResponse"> & {
+  /**
+   * @generated from field: github.v1.Token access_token = 1;
+   */
+  accessToken?: Token;
+
+  /**
+   * @generated from field: github.v1.Token refresh_token = 4;
+   */
+  refreshToken?: Token;
+
+  /**
+   * @generated from field: string token_type = 2;
+   */
+  tokenType: string;
+
+  /**
+   * @generated from field: string scope = 3;
+   */
+  scope: string;
+
+  /**
+   * Only set if `RefreshRequest.resolve` is true.
+   *
+   * @generated from field: github.v1.Account account = 5;
+   */
+  account?: Account;
+};
+
+/**
+ * Describes the message github.v1.RefreshResponse.
+ * Use `create(RefreshResponseSchema)` to create a new message.
+ */
+export declare const RefreshResponseSchema: GenMessage<RefreshResponse>;
+
+/**
  * @generated from message github.v1.ResolveRequest
  */
 export declare type ResolveRequest = Message<"github.v1.ResolveRequest"> & {
@@ -321,6 +387,14 @@ export declare const ExchangeService: GenService<{
     methodKind: "unary";
     input: typeof ExchangeRequestSchema;
     output: typeof ExchangeResponseSchema;
+  },
+  /**
+   * @generated from rpc github.v1.ExchangeService.Refresh
+   */
+  refresh: {
+    methodKind: "unary";
+    input: typeof RefreshRequestSchema;
+    output: typeof RefreshResponseSchema;
   },
   /**
    * @generated from rpc github.v1.ExchangeService.Resolve
