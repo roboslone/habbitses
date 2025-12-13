@@ -7,7 +7,7 @@ interface P {
     className?: string
 }
 
-export const LoadingScreen: React.FC<P> = ({ label = "Loading...", className }) => {
+export const LoadingScreen: React.FC<P> = ({ label, className }) => {
     return (
         <div
             className={cn(

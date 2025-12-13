@@ -6,36 +6,41 @@ import {
 } from "@tanstack/react-router"
 import React from "react"
 
+import { LoadingScreen } from "./components/util/loading-screen"
+
 const history = createHashHistory()
+
+const common = {
+    getParentRoute: () => rRoot,
+    pendingComponent: LoadingScreen,
+}
 
 export const rRoot = createRootRoute({
     component: React.lazy(() => import("@/layout")),
+    pendingComponent: LoadingScreen,
 })
 
 export const rHome = createRoute({
-    getParentRoute: () => rRoot,
+    ...common,
     path: "/",
     component: React.lazy(() => import("@/components/home")),
 })
 
 export const rSettings = createRoute({
-    getParentRoute: () => rRoot,
+    ...common,
     path: "/settings",
     component: React.lazy(() => import("@/components/settings-page")),
 })
 
 export const rNewHabit = createRoute({
-    getParentRoute: () => rRoot,
+    ...common,
     path: "/habits/new",
     component: React.lazy(() => import("@/components/habit/new-habbit-page")),
 })
 
 export const rHabit = createRoute({
-    getParentRoute: () => rRoot,
+    ...common,
     path: "/habits/$name",
-    beforeLoad: ({ params }) => ({
-        name: params.name,
-    }),
     component: React.lazy(() => import("@/components/habit/page")),
 })
 

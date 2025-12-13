@@ -5,7 +5,7 @@ import type React from "react"
 import { HabitView } from "./view"
 
 export const HabitPage: React.FC = () => {
-    const { name } = rHabit.useRouteContext()
+    const { name } = rHabit.useParams()
 
     return (
         <HabitFetcher name={name} mode="page">
