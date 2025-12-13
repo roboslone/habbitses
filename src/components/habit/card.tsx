@@ -28,13 +28,14 @@ export const HabitCard: React.FC = () => {
                 )}
             >
                 <div
-                    className={cn("flex items-center gap-1 w-full pl-2 pr-1", {
+                    className={cn("flex items-center gap-1 w-full px-2 pl-3 min-h-11", {
                         "opacity-40": isCompleted,
                     })}
                 >
                     <Link to="/habits/$name" params={{ name: habit.name }} className="grow">
-                        <div className="flex items-center gap-2 grow">
+                        <div className="flex items-center gap-3 grow">
                             <HabitIcon size={20} className="w-6" />
+
                             <div className="flex flex-col gap-0">
                                 <span
                                     className={cn({
@@ -43,6 +44,7 @@ export const HabitCard: React.FC = () => {
                                 >
                                     {habit.name}
                                 </span>
+
                                 {!displayOptions.hideDescription && (
                                     <span className="text-xs text-stone-500">
                                         {habit.description}

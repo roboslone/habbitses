@@ -1,6 +1,7 @@
 import { ErrorView } from "@/components/util/error-view"
 import { LoadingScreen } from "@/components/util/loading-screen"
 import * as colors from "@/lib/colors"
+import { useStoredDisplayOptions } from "@/lib/displayOptions"
 import { getProgress } from "@/lib/progress"
 import { useHabit, useUpdateHabit } from "@/lib/queries"
 import { cn } from "@/lib/utils"
@@ -16,6 +17,7 @@ interface P extends React.PropsWithChildren {
 export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
     const habit = useHabit(name)
     const update = useUpdateHabit(name)
+    const [displayOptions] = useStoredDisplayOptions()
 
     if (habit.isLoading) {
         if (mode === "completed") {
@@ -25,7 +27,10 @@ export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
         return (
             <LoadingScreen
                 label={name}
-                className={cn("h-40 max-w-211 rounded", { border: mode !== "page" })}
+                className={cn("h-40 max-w-211 rounded", {
+                    "h-14 justify-start px-3 *:data-[slot='label']:flex-row":
+                        displayOptions.hideChart,
+                })}
             />
         )
     }

@@ -15,7 +15,10 @@ export const LoadingScreen: React.FC<P> = ({ label = "Loading...", className }) 
                 className,
             )}
         >
-            <div className="flex flex-col gap-2 text-background-foreground items-center justify-center">
+            <div
+                data-slot="label"
+                className="flex flex-col gap-2 text-background-foreground items-center justify-center"
+            >
                 <Loader2 className="animate-spin" />
                 {label}
             </div>
