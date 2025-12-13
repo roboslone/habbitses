@@ -32,7 +32,7 @@ export const RepoPicker: React.FC<P> = ({ onPick }) => {
                     </p>
                     <Separator />
                     <a
-                        href="https://github.com/new?visibility=private"
+                        href="https://github.com/new?visibility=private&name=habbitses.data&description=Data+for+https://roboslone.github.io/habbitses/"
                         target="_blank"
                         className="w-full"
                     >

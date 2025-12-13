@@ -107,7 +107,7 @@ export const useRepoContent = (repo?: Repo, force = false) => {
                 })
                 return response.data
             } catch (e: unknown) {
-                if ((e as RequestError).status === 404) {
+                if ((e as RequestError).status === 404 || (e as RequestError).status === 409) {
                     // empty repo
                     return {
                         sha: "",

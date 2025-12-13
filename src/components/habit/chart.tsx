@@ -36,7 +36,7 @@ const Cell: React.FC<CellProps> = ({ date, background, completion }) => {
                 [background]: progress > 0,
             })}
             style={{
-                opacity: progress === 0 ? 1 : progress,
+                opacity: progress === 0 ? 1 : progress * 0.5,
             }}
             data-date={date}
         />
