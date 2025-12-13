@@ -1,9 +1,12 @@
 import {
+  createHashHistory,
   createRootRoute,
   createRoute,
   createRouter,
 } from "@tanstack/react-router";
 import React from "react";
+
+const history = createHashHistory();
 
 export const rRoot = createRootRoute({
   component: React.lazy(() => import("@/layout")),
@@ -38,7 +41,10 @@ export const rHabit = createRoute({
 
 const routeTree = rRoot.addChildren([rHome, rSettings, rNewHabit, rHabit]);
 
-export const router = createRouter({ routeTree, basepath: "/habbitses/" });
+export const router = createRouter({
+  history,
+  routeTree,
+});
 
 declare module "@tanstack/react-router" {
   interface Register {
