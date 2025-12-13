@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { Link } from "@tanstack/react-router"
 import { Plus, RefreshCw } from "lucide-react"
 import React from "react"
+import PullToRefresh from "react-pull-to-refresh"
 
 import { RepoContext } from "./context"
 
@@ -27,47 +28,49 @@ export const RepoViewer: React.FC<P> = ({ repo }) => {
     if (content.data) {
         const names = [...parseRepoContent(content.data)]
         return (
-            <RepoContext.Provider value={{ content, names }}>
-                <div className="flex flex-col items-center gap-2 p-2 pt-0 grow">
-                    <div className="flex flex-col items-center gap-2 w-full">
-                        {names.map((name) => (
-                            <HabitFetcher key={name} name={name} mode="active">
-                                <HabitCard />
-                            </HabitFetcher>
-                        ))}
-                    </div>
+            <PullToRefresh onRefresh={refresh} className="h-full [&>div.refresh-view]:h-full">
+                <RepoContext.Provider value={{ content, names }}>
+                    <div className="flex flex-col items-center gap-2 p-2 pt-0 h-full">
+                        <div className="flex flex-col items-center gap-2 w-full">
+                            {names.map((name) => (
+                                <HabitFetcher key={name} name={name} mode="active">
+                                    <HabitCard />
+                                </HabitFetcher>
+                            ))}
+                        </div>
 
-                    <div className="flex flex-col items-center gap-2 w-full">
-                        {names.map((name) => (
-                            <HabitFetcher key={name} name={name} mode="completed">
-                                <HabitCard />
-                            </HabitFetcher>
-                        ))}
-                    </div>
+                        <div className="flex flex-col items-center gap-2 w-full">
+                            {names.map((name) => (
+                                <HabitFetcher key={name} name={name} mode="completed">
+                                    <HabitCard />
+                                </HabitFetcher>
+                            ))}
+                        </div>
 
-                    {names.length === 0 && (
-                        <>
-                            <Link to="/habits/new">
-                                <Button size="lg">
-                                    <Plus />
-                                    Start a new habit!
-                                </Button>
-                            </Link>
-                        </>
-                    )}
+                        {names.length === 0 && (
+                            <>
+                                <Link to="/habits/new">
+                                    <Button size="lg">
+                                        <Plus />
+                                        Start a new habit!
+                                    </Button>
+                                </Link>
+                            </>
+                        )}
 
-                    <div className="mt-auto flex justify-center p-4">
-                        <Button
-                            variant="ghost"
-                            disabled={content.isFetching}
-                            onClick={() => void refresh()}
-                        >
-                            <RefreshCw className={cn({ "animate-spin": content.isFetching })} />
-                            Refresh
-                        </Button>
+                        <div className="flex justify-center p-2">
+                            <Button
+                                variant="ghost"
+                                disabled={content.isFetching}
+                                onClick={() => void refresh()}
+                            >
+                                <RefreshCw className={cn({ "animate-spin": content.isFetching })} />
+                                Refresh
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            </RepoContext.Provider>
+                </RepoContext.Provider>
+            </PullToRefresh>
         )
     }
 
