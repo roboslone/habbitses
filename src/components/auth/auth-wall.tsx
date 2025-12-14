@@ -1,7 +1,7 @@
 import { LoginButton } from "@/components/auth/login-button"
 import { LogoutButton } from "@/components/auth/logout-button"
 import { ErrorView } from "@/components/util/error-view"
-import { LoadingScreen } from "@/components/util/loading-screen"
+import { LoadingPage } from "@/components/util/loading-page"
 import { OctokitContext } from "@/components/util/octokit-provider"
 import { type StoredToken, type StoredTokens, clientId, useStoredTokens } from "@/lib/auth"
 import { ExchangeClient } from "@/lib/queries"
@@ -127,7 +127,7 @@ export const AuthWall: React.FC<React.PropsWithChildren> = ({ children }) => {
     }
 
     if (loading) {
-        return <LoadingScreen label="Exchanging GitHub code..." />
+        return <LoadingPage label="Exchanging GitHub code..." />
     }
 
     return (

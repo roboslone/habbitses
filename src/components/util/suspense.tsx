@@ -10,7 +10,9 @@ interface P extends React.PropsWithChildren {
 
 export const Suspense: React.FC<P> = ({ children, label = "Loading..." }) => {
     return (
-        <React.Suspense fallback={<LoadingScreen label={label} />}>
+        <React.Suspense
+            fallback={<LoadingScreen data-testid="suspense--loading-screen" label={label} />}
+        >
             <ErrorBoundary
                 fallbackRender={({ error }) => (
                     <div className="flex items-center justify-center h-full w-full">

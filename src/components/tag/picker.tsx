@@ -1,7 +1,13 @@
 import { useCollectionContext } from "@/components/collection/context"
 import { useHabitContext } from "@/components/habit/context"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogTitle,
+} from "@/components/ui/dialog"
 import { HabitSchema } from "@/proto/models/v1/models_pb"
 import { clone } from "@bufbuild/protobuf"
 import { DialogTrigger } from "@radix-ui/react-dialog"
@@ -30,6 +36,11 @@ export const TagPicker: React.FC = () => {
         setSelected(next)
     }
 
+    const handleCancel = () => {
+        setOpen(false)
+        setSelected(new Set(habit.tagNames))
+    }
+
     const handleSubmit = () => {
         const copy = clone(HabitSchema, habit)
         copy.tagNames = [...selected].sort()
@@ -53,6 +64,9 @@ export const TagPicker: React.FC = () => {
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
+                            <DialogTitle>Update tags</DialogTitle>
+                            <DialogDescription>Select tags for this habit</DialogDescription>
+
                             {tags.length === 0 ? (
                                 <div className="p-2 flex justify-center items-center flex-col gap-2">
                                     <span className="text-muted-foreground">
@@ -68,11 +82,13 @@ export const TagPicker: React.FC = () => {
                                 </div>
                             ) : (
                                 <>
-                                    <TagList tags={tags} />
+                                    <div className="py-4">
+                                        <TagList tags={tags} />
+                                    </div>
                                     <DialogFooter>
                                         <Button
                                             variant="outline"
-                                            onClick={() => setOpen(false)}
+                                            onClick={handleCancel}
                                             disabled={update.isPending}
                                         >
                                             <Undo2 />

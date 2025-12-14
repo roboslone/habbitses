@@ -1,10 +1,7 @@
 import { CollectionView } from "@/components/collection/view"
-import { Button } from "@/components/ui/button"
 import { ErrorView } from "@/components/util/error-view"
-import { LoadingScreen } from "@/components/util/loading-screen"
+import { LoadingPage } from "@/components/util/loading-page"
 import { useRefresh, useRepoContent } from "@/lib/queries"
-import { cn } from "@/lib/utils"
-import { RefreshCw } from "lucide-react"
 import React from "react"
 import PullToRefresh from "react-pull-to-refresh"
 
@@ -15,20 +12,20 @@ export const RepoContentView: React.FC<React.PropsWithChildren> = ({ children })
     const refresh = useRefresh()
 
     if (content.isLoading) {
-        return <LoadingScreen label="Loading repository..." />
+        return <LoadingPage label="Loading repository..." />
     }
 
     if (content.data) {
         return (
             <PullToRefresh
                 onRefresh={() => refresh()}
-                className="h-full [&>div.refresh-view]:h-full"
+                className="h-full flex flex-col [&>div.refresh-view]:grow"
                 data-testid="repo-content-view"
             >
                 <RepoContentContext.Provider value={content.data}>
                     <CollectionView>{children}</CollectionView>
 
-                    <div className="flex justify-center p-2">
+                    {/* <div className="flex justify-center p-2">
                         <Button
                             variant="ghost"
                             disabled={content.isFetching}
@@ -37,7 +34,7 @@ export const RepoContentView: React.FC<React.PropsWithChildren> = ({ children })
                             <RefreshCw className={cn({ "animate-spin": content.isFetching })} />
                             Refresh
                         </Button>
-                    </div>
+                    </div> */}
                 </RepoContentContext.Provider>
             </PullToRefresh>
         )

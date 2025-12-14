@@ -17,7 +17,9 @@ const NewHabbitPage: React.FC = () => {
     return (
         <>
             <PageHeader title="Start new habit" />
-            <HabitForm onChange={handleSubmit} />
+            <div className="px-4">
+                <HabitForm onChange={handleSubmit} />
+            </div>
         </>
     )
 }

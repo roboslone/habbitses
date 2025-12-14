@@ -68,6 +68,21 @@ export const HabitView: React.FC = () => {
                 </div>
             </div>
 
+            <div className="flex flex-col gap-2">
+                <Label className="text-muted-foreground/50">GitHub</Label>
+
+                <div className="flex items-center gap-2">
+                    <FileButton variant="outline" name={habit.name} />
+
+                    <a href={historyURL} target="_blank">
+                        <Button variant="outline">
+                            <History />
+                            History
+                        </Button>
+                    </a>
+                </div>
+            </div>
+
             <div className="flex flex-wrap items-center justify-center gap-2">
                 <Button variant="ghost" onClick={() => void refetch()} disabled={isFetching}>
                     <RefreshCw className={cn({ "animate-spin": isFetching })} />
@@ -75,27 +90,11 @@ export const HabitView: React.FC = () => {
                 </Button>
 
                 <HabitBreakDialog>
-                    <Button variant="ghost" onClick={() => setEditMode(true)}>
-                        <Pencil />
-                        Edit
-                    </Button>
-                </HabitBreakDialog>
-
-                <HabitBreakDialog>
                     <Button variant="ghost">
                         <Trash2 />
                         Break
                     </Button>
                 </HabitBreakDialog>
-
-                <FileButton name={habit.name} />
-
-                <a href={historyURL} target="_blank">
-                    <Button variant="ghost">
-                        <History />
-                        History
-                    </Button>
-                </a>
             </div>
         </>
     )
@@ -117,6 +116,11 @@ export const HabitView: React.FC = () => {
                         <HabitIcon size={18} />
                         {habit.name}
                     </div>
+                }
+                buttonRight={
+                    <Button variant="ghost" onClick={() => setEditMode(true)} disabled={editMode}>
+                        <Pencil />
+                    </Button>
                 }
             />
 

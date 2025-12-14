@@ -5,11 +5,11 @@ import { useRepoContext } from "@/components/repo/context"
 import { useOctokit } from "@/components/util/octokit-provider"
 import { ExchangeService } from "@/proto/github/v1/exchange_pb"
 import {
+    type Collection,
     CollectionSchema,
     type Habit,
     HabitSchema,
     type Tag,
-    TagSchema,
 } from "@/proto/models/v1/models_pb"
 import { type JsonValue, clone, create, fromJsonString, toJson } from "@bufbuild/protobuf"
 import { createClient } from "@connectrpc/connect"
@@ -194,44 +194,36 @@ export const useCollection = () => {
     })
 }
 
-const pushHabit = async (
-    octokit: Octokit,
-    habit: Habit,
-    owner: string,
-    repo: string,
-    message: string,
-) => {
-    const copy = clone(HabitSchema, habit)
-    copy.sha = ""
-    copy.name = copy.name.trim()
-    copy.description = copy.description.trim()
-
-    return octokit.rest.repos.createOrUpdateFileContents({
-        path: `habits/${habit.name}.json`,
-        owner,
-        repo,
-        content: encodeFile(toJson(HabitSchema, copy)),
-        message,
-        sha: habit.sha,
-        headers: { "If-None-Match": "" },
-    })
-}
-
-export const useNewHabit = () => {
+const usePushHabit = () => {
     const account = useStoredAccountContext()
     const repo = useRepoContext()
     const octokit = useOctokit()
 
+    return (message: string, habit: Habit) => {
+        const copy = clone(HabitSchema, habit)
+        copy.sha = ""
+        copy.name = copy.name.trim()
+        copy.description = copy.description.trim()
+
+        return octokit.rest.repos.createOrUpdateFileContents({
+            path: `habits/${habit.name}.json`,
+            owner: account.login,
+            repo: repo.name,
+            content: encodeFile(toJson(HabitSchema, copy)),
+            message,
+            sha: habit.sha,
+            headers: { "If-None-Match": "" },
+        })
+    }
+}
+
+export const useNewHabit = () => {
+    const repo = useRepoContext()
+    const pushHabit = usePushHabit()
+
     return useMutation({
-        mutationFn: (habit: Habit) => {
-            return pushHabit(
-                octokit,
-                habit,
-                account.login,
-                repo.name,
-                `start new habit - "${habit.name}"`,
-            )
-        },
+        mutationFn: (habit: Habit) => pushHabit(`start new habit - "${habit.name}"`, habit),
+
         onSettled: async () => {
             await client.invalidateQueries({ queryKey: ["repo", repo.id, "content"] })
         },
@@ -240,16 +232,11 @@ export const useNewHabit = () => {
 }
 
 export const useUpdateHabit = (name: string) => {
-    const account = useStoredAccountContext()
     const repo = useRepoContext()
-    const octokit = useOctokit()
+    const pushHabit = usePushHabit()
 
     return useMutation({
-        mutationFn: (habit: Habit) => {
-            if (repo === undefined) throw new Error("repo is not selected")
-            console.info("updateHabit", habit)
-            return pushHabit(octokit, habit, account.login, repo.name, `update habit - "${name}"`)
-        },
+        mutationFn: (habit: Habit) => pushHabit(`update habit - "${name}"`, habit),
         onSettled: async () => {
             await client.invalidateQueries({ queryKey: ["repo", repo.id, "habit", name] })
         },
@@ -317,31 +304,61 @@ export const useHabit = (name: string) => {
     })
 }
 
-export const useNewTag = () => {
+const useUpdateCollection = () => {
     const account = useStoredAccountContext()
     const repo = useRepoContext()
-    const octokit = useOctokit()
     const { collection } = useCollectionContext()
+    const octokit = useOctokit()
+
+    return (update: (c: Collection) => void, message: string) => {
+        const copy = clone(CollectionSchema, collection)
+
+        update(copy)
+        copy.sha = ""
+
+        return octokit.rest.repos.createOrUpdateFileContents({
+            path: "collection.json",
+            owner: account.login,
+            repo: repo.name,
+            content: encodeFile(toJson(CollectionSchema, copy)),
+            message,
+            sha: collection.sha,
+            headers: { "If-None-Match": "" },
+        })
+    }
+}
+
+const useInvalidateCollection = () => {
+    const repo = useRepoContext()
+    return async () => {
+        await client.invalidateQueries({ queryKey: ["repo", repo.id, "collection"] })
+    }
+}
+
+export const useDeleteTags = () => {
+    const updateCollection = useUpdateCollection()
+    const invalidateCollection = useInvalidateCollection()
 
     return useMutation({
-        mutationFn: (tag: Tag) => {
-            const copy = clone(CollectionSchema, collection)
-            copy.sha = ""
-            copy.tags[tag.name] = tag
+        mutationFn: (tags: string[]) =>
+            updateCollection((c) => {
+                for (const name of tags) {
+                    delete c.tags[name]
+                }
+            }, `deleted ${tags.length} tag(s)`),
+        onSettled: invalidateCollection,
+        retry: handleError("Failed to delete tags", { maxFailures: 0 }),
+    })
+}
 
-            return octokit.rest.repos.createOrUpdateFileContents({
-                path: "collection.json",
-                owner: account.login,
-                repo: repo.name,
-                content: encodeFile(toJson(CollectionSchema, copy)),
-                message: `created tag - ${tag.name}`,
-                sha: collection.sha,
-                headers: { "If-None-Match": "" },
-            })
-        },
-        onSettled: async () => {
-            await client.invalidateQueries({ queryKey: ["repo", repo.id] })
-        },
+export const useNewTag = () => {
+    const updateCollection = useUpdateCollection()
+    const invalidateCollection = useInvalidateCollection()
+
+    return useMutation({
+        mutationFn: (tag: Tag) =>
+            updateCollection((c) => (c.tags[tag.name] = tag), `created tag - ${tag.name}`),
+        onSettled: invalidateCollection,
         retry: handleError("Failed to create tag", { maxFailures: 0 }),
     })
 }

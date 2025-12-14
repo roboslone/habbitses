@@ -1,5 +1,5 @@
 import { ErrorView } from "@/components/util/error-view"
-import { LoadingScreen } from "@/components/util/loading-screen"
+import { LoadingPage } from "@/components/util/loading-page"
 import { useCurrentAccount } from "@/lib/queries"
 import type React from "react"
 
@@ -9,7 +9,7 @@ export const AccountWall: React.FC<React.PropsWithChildren> = ({ children }) => 
     const account = useCurrentAccount()
 
     if (account.isPending) {
-        return <LoadingScreen label="Loading GitHub account..." />
+        return <LoadingPage />
     }
 
     if (account.data) {

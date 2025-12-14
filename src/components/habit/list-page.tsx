@@ -7,7 +7,7 @@ import type React from "react"
 
 import { HabitList } from "./list"
 
-export const Home: React.FC = () => {
+export const HabitListPage: React.FC = () => {
     return (
         <>
             <PageHeader
@@ -38,11 +38,11 @@ export const Home: React.FC = () => {
                 }
             />
 
-            <div className="w-full p-2 pt-0">
+            <div className="w-full px-4">
                 <HabitList />
             </div>
         </>
     )
 }
 
-export default Home
+export default HabitListPage

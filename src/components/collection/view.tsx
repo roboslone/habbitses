@@ -1,6 +1,6 @@
 import { useRepoContentContext } from "@/components/repo/content-context"
 import { ErrorView } from "@/components/util/error-view"
-import { LoadingScreen } from "@/components/util/loading-screen"
+import { LoadingPage } from "@/components/util/loading-page"
 import { iterHabitNames } from "@/lib/git"
 import { useCollection } from "@/lib/queries"
 import type React from "react"
@@ -14,7 +14,7 @@ export const CollectionView: React.FC<React.PropsWithChildren> = ({ children }) 
     const habits = [...iterHabitNames(repoContent)]
 
     if (collection.isLoading) {
-        return <LoadingScreen label="Loading collection..." />
+        return <LoadingPage label="Loading collection..." />
     }
 
     if (collection.data) {

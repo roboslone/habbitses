@@ -5,12 +5,12 @@ import { Home } from "lucide-react"
 import type React from "react"
 
 interface P {
-    title: React.ReactNode
+    title?: React.ReactNode
     buttonLeft?: React.ReactNode
     buttonRight?: React.ReactNode
 }
 
-export const PageHeader: React.FC<P> = ({ title, buttonLeft, buttonRight }) => (
+export const PageHeader: React.FC<P> = ({ title = "Habbitses", buttonLeft, buttonRight }) => (
     <div data-testid="page-header" className="flex items-center gap-2 p-2 w-full">
         {buttonLeft ?? (
             <Link to="/">

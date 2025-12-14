@@ -5,7 +5,7 @@ import { TagContext } from "@/components/tag/context"
 import { TagList } from "@/components/tag/list"
 import { Button } from "@/components/ui/button"
 import { Link } from "@tanstack/react-router"
-import { Plus } from "lucide-react"
+import { Ellipsis, Plus } from "lucide-react"
 import React from "react"
 
 export const HabitList: React.FC = () => {
@@ -24,7 +24,15 @@ export const HabitList: React.FC = () => {
         <TagContext.Provider value={{ active: activeTags, onClick: toggleTag }}>
             <div className="flex flex-col gap-2">
                 <div className="flex justify-center">
-                    <TagList tags={tags} />
+                    <TagList tags={tags}>
+                        {tags.length > 0 && (
+                            <Link to="/tags">
+                                <Button variant="ghost" size="icon-sm">
+                                    <Ellipsis />
+                                </Button>
+                            </Link>
+                        )}
+                    </TagList>
                 </div>
 
                 <div className="flex flex-col items-center gap-2 w-full">
