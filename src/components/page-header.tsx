@@ -1,7 +1,6 @@
 import { ProjectButton } from "@/components/project-button"
 import { Button } from "@/components/ui/button"
-import { client, useRefresh } from "@/lib/queries"
-import { useQueryClient } from "@tanstack/react-query"
+import { client } from "@/lib/queries"
 import { Link } from "@tanstack/react-router"
 import { Home } from "lucide-react"
 import type React from "react"
