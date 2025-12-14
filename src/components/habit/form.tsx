@@ -75,7 +75,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
                     autoFocus
                     disabled={loading || value !== undefined}
                     value={habit.name}
-                    onChange={(e) => update((h) => (h.name = e.target.value))}
+                    onChange={(e) => update((h) => (h.name = e.target.value.trim()))}
                 />
             </div>
 
@@ -84,7 +84,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
                 <Input
                     disabled={loading}
                     value={habit.description}
-                    onChange={(e) => update((h) => (h.description = e.target.value))}
+                    onChange={(e) => update((h) => (h.description = e.target.value.trim()))}
                 />
             </div>
 
