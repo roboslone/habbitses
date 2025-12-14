@@ -32,7 +32,7 @@ const Cell: React.FC<CellProps> = ({ date, background, completion }) => {
     return (
         <div
             className={cn("w-3 h-3 min-w-3 min-h-3 rounded-xs", {
-                "bg-card/80": progress === 0,
+                "bg-secondary dark:bg-card/80": progress === 0,
                 [background]: progress > 0,
             })}
             style={{

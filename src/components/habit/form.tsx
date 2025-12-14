@@ -123,17 +123,12 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
 
             <div className="flex flex-col items-center gap-2 justify-center">
                 <Button
-                    variant="outline"
                     size="lg"
                     disabled={!valid || loading}
                     onClick={handleSubmit}
                     className="w-full max-w-lg"
                 >
-                    {loading ? (
-                        <Loader2 className="animate-spin" />
-                    ) : (
-                        <Check style={{ color: `var(--color-${habit.color}-400)` }} />
-                    )}
+                    {loading ? <Loader2 className="animate-spin" /> : <Check />}
                     {value === undefined ? "Start a habit" : "Save"}
                 </Button>
 

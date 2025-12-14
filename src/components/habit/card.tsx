@@ -36,16 +36,14 @@ export const HabitCard: React.FC = () => {
             <div
                 className={cn(
                     "habit-card--header",
-                    "flex flex-col gap-1 bg-card rounded truncate",
+                    "flex flex-col gap-1 dark:border-0 dark:bg-card rounded truncate",
                     color.text,
+                    color.lightBackground,
                     { "pt-1": !displayOptions.hideProgressbar },
+                    { "opacity-50": isCompleted },
                 )}
             >
-                <div
-                    className={cn("flex items-center gap-1 w-full px-2 pl-3 min-h-11", {
-                        "opacity-40": isCompleted,
-                    })}
-                >
+                <div className={cn("flex items-center gap-1 w-full px-2 pl-3 min-h-11")}>
                     <Link
                         to="/habits/$name"
                         params={{ name: habit.name }}
@@ -64,7 +62,7 @@ export const HabitCard: React.FC = () => {
                                 </span>
 
                                 {!displayOptions.hideDescription && (
-                                    <span className="text-xs text-stone-500">
+                                    <span className="text-xs text-muted-foreground dark:text-stone-500">
                                         {habit.description}
                                     </span>
                                 )}
@@ -77,7 +75,7 @@ export const HabitCard: React.FC = () => {
                     </div>
                 </div>
 
-                {!displayOptions.hideProgressbar && <HabitProgress className="opacity-50" />}
+                {!displayOptions.hideProgressbar && <HabitProgress />}
             </div>
 
             {!displayOptions.hideChart && <HabitChart />}
