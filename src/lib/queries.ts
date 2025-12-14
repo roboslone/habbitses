@@ -142,6 +142,8 @@ const pushHabit = async (
 ) => {
     const copy = clone(HabitSchema, habit)
     copy.sha = ""
+    copy.name = copy.name.trim()
+    copy.description = copy.description.trim()
 
     const content = encode(textEncoder.encode(JSON.stringify(toJson(HabitSchema, copy), null, 4)))
     return octokit.rest.repos.createOrUpdateFileContents({
@@ -181,7 +183,7 @@ export const useUpdateHabit = (name: string) => {
     const account = useStoredAccountContext()
     const [repo] = useSelectedRepo()
     const octokit = useOctokit()
-    const habit = useHabit(name)
+    // const habit = useHabit(name)
 
     return useMutation({
         mutationFn: (habit: Habit) => {
@@ -191,7 +193,7 @@ export const useUpdateHabit = (name: string) => {
         },
         onSettled: async () => {
             await client.invalidateQueries({ queryKey: ["habits", name] })
-            await habit.refetch()
+            // await habit.refetch()
         },
         retry: 0,
     })

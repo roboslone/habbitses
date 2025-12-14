@@ -11,13 +11,14 @@ import { randomArrayElement } from "@/lib/utils"
 import { type Habit, HabitSchema } from "@/proto/models/v1/models_pb"
 import { clone, create } from "@bufbuild/protobuf"
 import { useNavigate } from "@tanstack/react-router"
-import { Check, Loader2 } from "lucide-react"
+import { Check, Loader2, X } from "lucide-react"
 import React from "react"
 import { toast } from "sonner"
 
 interface P {
     value?: Habit
     onChange: (h: Habit) => Promise<unknown>
+    onCancel?: () => void
 }
 
 const empty = (): Habit =>
@@ -27,7 +28,7 @@ const empty = (): Habit =>
         icon: randomArrayElement(icons.all),
     })
 
-export const HabitForm: React.FC<P> = ({ value, onChange }) => {
+export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
     const [loading, setLoading] = React.useState(false)
     const [habit, setHabit] = React.useState<Habit>(value ?? empty())
     const navigate = useNavigate()
@@ -67,22 +68,24 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
 
     return (
         <div data-testid="new-habit-form" className="flex flex-col gap-5 p-5">
-            <div className="flex flex-col gap-2">
-                {value === undefined ? <Label aria-required>Name *</Label> : <Label>Name</Label>}
-                <Input
-                    autoFocus
-                    disabled={loading || value !== undefined}
-                    value={habit.name}
-                    onChange={(e) => update((h) => (h.name = e.target.value.trim()))}
-                />
-            </div>
+            {value === undefined && (
+                <div className="flex flex-col gap-2">
+                    <Label aria-required>Name *</Label>
+                    <Input
+                        autoFocus
+                        disabled={loading}
+                        value={habit.name}
+                        onChange={(e) => update((h) => (h.name = e.target.value))}
+                    />
+                </div>
+            )}
 
             <div className="flex flex-col gap-2">
                 <Label>Description</Label>
                 <Input
                     disabled={loading}
                     value={habit.description}
-                    onChange={(e) => update((h) => (h.description = e.target.value.trim()))}
+                    onChange={(e) => update((h) => (h.description = e.target.value))}
                 />
             </div>
 
@@ -121,7 +124,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
 
             <Separator />
 
-            <div className="flex items-center gap-2 justify-center">
+            <div className="flex flex-col items-center gap-2 justify-center">
                 <Button
                     variant="outline"
                     size="lg"
@@ -134,8 +137,20 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
                     ) : (
                         <Check style={{ color: `var(--color-${habit.color}-400)` }} />
                     )}
-                    Start a habit
+                    {value === undefined ? "Start a habit" : "Save"}
                 </Button>
+
+                {onCancel !== undefined && (
+                    <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={onCancel}
+                        className="w-full max-w-lg"
+                    >
+                        <X />
+                        Cancel
+                    </Button>
+                )}
             </div>
         </div>
     )
