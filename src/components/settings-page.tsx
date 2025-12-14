@@ -1,9 +1,11 @@
 import { AccountBadge } from "@/components/auth/account-chip"
 import { LogoutButton } from "@/components/auth/logout-button"
 import { useStoredDisplayOptions } from "@/lib/displayOptions"
+import { useQueryClient } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
-import { ExternalLink, Monitor, Moon, Sun } from "lucide-react"
+import { ExternalLink, Monitor, Moon, Sun, Trash2 } from "lucide-react"
 import React from "react"
+import { toast } from "sonner"
 
 import { DisplayOptionsForm } from "./display-options-form"
 import { PageHeader } from "./page-header"
@@ -17,6 +19,12 @@ import { ThemeContext } from "./util/theme-context"
 export const SettingsPage: React.FC = () => {
     const { theme, setTheme, saturation, setSaturation } = React.useContext(ThemeContext)
     const [displayOptions, setDisplayOptions] = useStoredDisplayOptions()
+    const queryClient = useQueryClient()
+
+    const clearCache = () => {
+        queryClient.removeQueries()
+        toast.success("Cache cleared")
+    }
 
     return (
         <>
@@ -74,7 +82,7 @@ export const SettingsPage: React.FC = () => {
                         value={[saturation]}
                         onValueChange={(v) => setSaturation(v[0])}
                         step={10}
-                        min={30}
+                        min={0}
                         max={100}
                     />
                     <ColorPreview />
@@ -91,6 +99,14 @@ export const SettingsPage: React.FC = () => {
                 </div>
 
                 <DisplayOptionsForm options={displayOptions} onChange={setDisplayOptions} />
+
+                <div className="flex flex-col gap-3">
+                    <Label>Cache</Label>
+                    <Button variant="outline" className="w-fit" onClick={clearCache}>
+                        <Trash2 />
+                        Clear cache
+                    </Button>
+                </div>
             </div>
         </>
     )
