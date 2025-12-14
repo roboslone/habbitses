@@ -95,9 +95,8 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
                     type="number"
                     disabled={loading}
                     value={habit.dailyTarget}
-                    onChange={(e) =>
-                        update((h) => (h.dailyTarget = Math.max(1, e.target.valueAsNumber || 0)))
-                    }
+                    onFocus={(e) => e.target.select()}
+                    onChange={(e) => update((h) => (h.dailyTarget = e.target.valueAsNumber || 0))}
                 />
             </div>
 
