@@ -13,6 +13,7 @@ const history = createHashHistory()
 const common = {
     getParentRoute: () => rRoot,
     pendingComponent: LoadingPage,
+    preload: true,
 }
 
 export const rRoot = createRootRoute({
@@ -24,6 +25,7 @@ export const rSettings = createRoute({
     ...common,
     path: "/settings",
     component: React.lazy(() => import("@/components/settings-page")),
+    preload: true,
 })
 
 export const rHabitList = createRoute({
@@ -61,6 +63,7 @@ const routeTree = rRoot.addChildren([rHabitList, rSettings, rNewHabit, rHabit, r
 export const router = createRouter({
     history,
     routeTree,
+    defaultPreload: "render",
 })
 
 declare module "@tanstack/react-router" {

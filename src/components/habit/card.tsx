@@ -40,6 +40,7 @@ export const HabitCard: React.FC = () => {
                     color.text,
                     color.lightBackground,
                     { "pt-1": !displayOptions.hideProgressbar },
+                    { "py-1": displayOptions.hideProgressbar },
                     { "opacity-50": isCompleted },
                 )}
             >
