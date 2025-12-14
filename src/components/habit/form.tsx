@@ -42,8 +42,6 @@ export const HabitForm: React.FC<P> = ({ value, onChange }) => {
     const valid = !!habit.name
 
     const handleSubmit = () => {
-        console.info({ value, habit })
-
         setLoading(true)
         onChange(habit)
             .then(async () => {

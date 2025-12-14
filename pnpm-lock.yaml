@@ -95,6 +95,9 @@ importers:
       tailwindcss:
         specifier: ^4.1.17
         version: 4.1.17
+      uint8-to-base64:
+        specifier: ^0.2.1
+        version: 0.2.1
       use-local-storage:
         specifier: ^3.0.0
         version: 3.0.0(react@19.2.0)
@@ -2390,6 +2393,9 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  uint8-to-base64@0.2.1:
+    resolution: {integrity: sha512-uO/84GaoDUfiAxpa8EksjVLE77A9Kc7ZTziN4zRpq4de9yLaLcZn3jx1/sVjyupsywcVX6RKWbqLe7gUNyzH+Q==}
+
   undici-types@7.16.0:
     resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
@@ -4635,6 +4641,8 @@ snapshots:
       - supports-color
 
   typescript@5.9.3: {}
+
+  uint8-to-base64@0.2.1: {}
 
   undici-types@7.16.0: {}
 

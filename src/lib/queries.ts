@@ -8,11 +8,15 @@ import { createGrpcWebTransport } from "@connectrpc/connect-web"
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query"
 import type { Octokit, RequestError } from "octokit"
 import { toast } from "sonner"
+import { decode, encode } from "uint8-to-base64"
 
 import { type StoredAccount, useStoredAccount } from "./auth"
 import { type Repo, type RepoContent, useSelectedRepo, useStoredRepos } from "./git"
 
 export const client = new QueryClient()
+
+const textEncoder = new TextEncoder()
+const textDecoder = new TextDecoder()
 
 export const ExchangeClient = createClient(
     ExchangeService,
@@ -139,11 +143,12 @@ const pushHabit = async (
     const copy = clone(HabitSchema, habit)
     copy.sha = ""
 
+    const content = encode(textEncoder.encode(JSON.stringify(toJson(HabitSchema, copy), null, 4)))
     return octokit.rest.repos.createOrUpdateFileContents({
         path: `habits/${habit.name}.json`,
         owner,
         repo,
-        content: btoa(JSON.stringify(toJson(HabitSchema, copy), null, 4)),
+        content,
         message,
         sha: habit.sha,
         headers: { "If-None-Match": "" },
@@ -157,6 +162,8 @@ export const useNewHabit = () => {
 
     return useMutation({
         mutationFn: (habit: Habit) => {
+            console.info(habit)
+
             if (repo === undefined) throw new Error("repo is not selected")
             return pushHabit(
                 octokit,
@@ -247,7 +254,8 @@ export const useHabit = (name: string) => {
                 throw new Error(`unexpected response type (${response.data.type})`)
             }
 
-            const habit = fromJsonString(HabitSchema, atob(response.data.content))
+            const decoded = textDecoder.decode(decode(response.data.content))
+            const habit = fromJsonString(HabitSchema, decoded)
             habit.sha = response.data.sha
 
             return habit
