@@ -45,6 +45,13 @@ export declare type Habit = Message<"models.v1.Habit"> & {
   dailyTarget: number;
 
   /**
+   * references to `Collection.tags`
+   *
+   * @generated from field: repeated string tag_names = 9;
+   */
+  tagNames: string[];
+
+  /**
    * key is date as `YYYY-MM-DD`
    *
    * @generated from field: map<string, models.v1.Completion> completions = 7;
@@ -162,4 +169,53 @@ export declare type Completion_ButtonOptions = Message<"models.v1.Completion.But
  * Use `create(Completion_ButtonOptionsSchema)` to create a new message.
  */
 export declare const Completion_ButtonOptionsSchema: GenMessage<Completion_ButtonOptions>;
+
+/**
+ * @generated from message models.v1.Tag
+ */
+export declare type Tag = Message<"models.v1.Tag"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string color = 2;
+   */
+  color: string;
+
+  /**
+   * @generated from field: string icon = 3;
+   */
+  icon: string;
+};
+
+/**
+ * Describes the message models.v1.Tag.
+ * Use `create(TagSchema)` to create a new message.
+ */
+export declare const TagSchema: GenMessage<Tag>;
+
+/**
+ * @generated from message models.v1.Collection
+ */
+export declare type Collection = Message<"models.v1.Collection"> & {
+  /**
+   * @generated from field: map<string, models.v1.Tag> tags = 1;
+   */
+  tags: { [key: string]: Tag };
+
+  /**
+   * references to `Habit.name`
+   *
+   * @generated from field: repeated string order = 2;
+   */
+  order: string[];
+};
+
+/**
+ * Describes the message models.v1.Collection.
+ * Use `create(CollectionSchema)` to create a new message.
+ */
+export declare const CollectionSchema: GenMessage<Collection>;
 

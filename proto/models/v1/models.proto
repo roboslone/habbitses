@@ -18,6 +18,9 @@ message Habit {
 
   uint32 daily_target = 6;
 
+  // references to `Collection.tags`
+  repeated string tag_names = 9;
+
   // key is date as `YYYY-MM-DD`
   map<string, Completion> completions = 7;
 
@@ -47,4 +50,17 @@ message Completion {
 
   uint32 count = 1;
   uint32 target = 2;
+}
+
+message Tag {
+  string name = 1;
+  string color = 2;
+  string icon = 3;
+}
+
+message Collection {
+  map<string, Tag> tags = 1;
+
+  // references to `Habit.name`
+  repeated string order = 2;
 }
