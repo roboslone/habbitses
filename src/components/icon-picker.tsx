@@ -11,7 +11,7 @@ interface P {
 }
 
 export const IconPicker: React.FC<P> = ({ active, color, onPick, disabled }) => (
-    <div data-testid="color-picker" className="flex flex-wrap gap-2">
+    <div data-testid="color-picker" className="flex flex-wrap gap-2 max-w-211">
         {icons.all.map((v) => (
             <div
                 key={v}
