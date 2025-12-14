@@ -109,7 +109,7 @@ export const HabitView: React.FC = () => {
     }
 
     return (
-        <div data-testid={`habit-view--${habit.name}`} className="truncate max-w-full">
+        <>
             <PageHeader
                 title={
                     <div className={cn("flex items-center gap-2", color.text)}>
@@ -123,10 +123,11 @@ export const HabitView: React.FC = () => {
                     </Button>
                 }
             />
-
-            <div className="flex justify-center">
-                <div className="flex flex-col gap-5 w-full px-4 max-w-211">{content}</div>
+            <div data-testid={`habit-view--${habit.name}`} className="max-w-full">
+                <div className="flex justify-center">
+                    <div className="flex flex-col gap-5 w-full px-4 max-w-211">{content}</div>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
