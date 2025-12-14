@@ -10,10 +10,12 @@ import { PageHeader } from "./page-header"
 import { RepoSelector } from "./repo/selector"
 import { Button } from "./ui/button"
 import { Label } from "./ui/label"
+import { Slider } from "./ui/slider"
+import { ColorPreview } from "./util/color-preview"
 import { ThemeContext } from "./util/theme-context"
 
 export const SettingsPage: React.FC = () => {
-    const { theme, setTheme } = React.useContext(ThemeContext)
+    const { theme, setTheme, saturation, setSaturation } = React.useContext(ThemeContext)
     const [displayOptions, setDisplayOptions] = useStoredDisplayOptions()
 
     return (
@@ -64,6 +66,18 @@ export const SettingsPage: React.FC = () => {
                             System
                         </Button>
                     </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                    <Label>Color saturation</Label>
+                    <Slider
+                        value={[saturation]}
+                        onValueChange={(v) => setSaturation(v[0])}
+                        step={10}
+                        min={30}
+                        max={100}
+                    />
+                    <ColorPreview />
                 </div>
 
                 <div className="flex flex-col gap-3">
