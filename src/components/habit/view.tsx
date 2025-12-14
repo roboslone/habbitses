@@ -37,65 +37,71 @@ export const HabitView: React.FC = () => {
                 }
             />
 
-            <div className="flex flex-col gap-5 px-5">
-                <div className="flex items-center gap-2 flex-wrap">
-                    <CompletionButtons variant="outline" />
-                    <ButtonForm />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <Label className="text-muted-foreground/50">Description</Label>
-                    <HabitDescription />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                    <Label className="text-muted-foreground/50">Progress</Label>
-                    <div className="flex items-center justify-between">
-                        <span>
-                            {completion.count} / {completion.target}
-                        </span>
-                        <CompletionButton
-                            options={create(Completion_ButtonOptionsSchema, {})}
-                            className="w-fit"
-                            size="sm"
-                        />
+            <div className="flex justify-center">
+                <div className="flex flex-col gap-5 max-w-211">
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <CompletionButtons variant="outline" />
+                        <ButtonForm />
                     </div>
-                    <HabitProgress className="rounded-full h-1.5" />
-                </div>
 
-                <div className="flex flex-col gap-2">
-                    <Label className="text-muted-foreground/50">Chart</Label>
-                    <div className="max-w-full overflow-auto">
-                        <HabitChart />
+                    <div className="flex flex-col gap-2">
+                        <Label className="text-muted-foreground/50">Description</Label>
+                        <HabitDescription />
                     </div>
-                </div>
 
-                <div className="flex flex-wrap items-center justify-center gap-2">
-                    <Button variant="ghost" onClick={() => void refetch()} disabled={isFetching}>
-                        <RefreshCw className={cn({ "animate-spin": isFetching })} />
-                        Refresh
-                    </Button>
+                    <div className="flex flex-col gap-2">
+                        <Label className="text-muted-foreground/50">Progress</Label>
+                        <div className="flex items-center justify-between">
+                            <span>
+                                {completion.count} / {completion.target}
+                            </span>
+                            <CompletionButton
+                                options={create(Completion_ButtonOptionsSchema, {})}
+                                className="w-fit"
+                                size="sm"
+                            />
+                        </div>
+                        <HabitProgress className="rounded-full h-1.5" />
+                    </div>
 
-                    <a href={fileURL} target="_blank">
-                        <Button variant="ghost">
-                            <Code />
-                            File
+                    <div className="flex flex-col gap-2">
+                        <Label className="text-muted-foreground/50">Chart</Label>
+                        <div className="max-w-full overflow-auto">
+                            <HabitChart />
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                        <Button
+                            variant="ghost"
+                            onClick={() => void refetch()}
+                            disabled={isFetching}
+                        >
+                            <RefreshCw className={cn({ "animate-spin": isFetching })} />
+                            Refresh
                         </Button>
-                    </a>
 
-                    <a href={historyURL} target="_blank">
-                        <Button variant="ghost">
-                            <History />
-                            History
-                        </Button>
-                    </a>
+                        <a href={fileURL} target="_blank">
+                            <Button variant="ghost">
+                                <Code />
+                                File
+                            </Button>
+                        </a>
 
-                    <HabitBreakDialog>
-                        <Button variant="ghost">
-                            <Trash2 />
-                            Break
-                        </Button>
-                    </HabitBreakDialog>
+                        <a href={historyURL} target="_blank">
+                            <Button variant="ghost">
+                                <History />
+                                History
+                            </Button>
+                        </a>
+
+                        <HabitBreakDialog>
+                            <Button variant="ghost">
+                                <Trash2 />
+                                Break
+                            </Button>
+                        </HabitBreakDialog>
+                    </div>
                 </div>
             </div>
         </div>
