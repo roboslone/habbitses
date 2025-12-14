@@ -1,8 +1,17 @@
 import { useStoredAccountContext } from "@/components/auth/account-context"
+import { useCollectionContext } from "@/components/collection/context"
+import { useRepoContentContext } from "@/components/repo/content-context"
+import { useRepoContext } from "@/components/repo/context"
 import { useOctokit } from "@/components/util/octokit-provider"
 import { ExchangeService } from "@/proto/github/v1/exchange_pb"
-import { type Habit, HabitSchema } from "@/proto/models/v1/models_pb"
-import { clone, fromJsonString, toJson } from "@bufbuild/protobuf"
+import {
+    CollectionSchema,
+    type Habit,
+    HabitSchema,
+    type Tag,
+    TagSchema,
+} from "@/proto/models/v1/models_pb"
+import { type JsonValue, clone, create, fromJsonString, toJson } from "@bufbuild/protobuf"
 import { createClient } from "@connectrpc/connect"
 import { createGrpcWebTransport } from "@connectrpc/connect-web"
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query"
@@ -11,7 +20,7 @@ import { toast } from "sonner"
 import { decode, encode } from "uint8-to-base64"
 
 import { type StoredAccount, useStoredAccount } from "./auth"
-import { type Repo, type RepoContent, useSelectedRepo, useStoredRepos } from "./git"
+import { type RepoContent, useStoredRepos } from "./git"
 
 export const client = new QueryClient()
 
@@ -44,6 +53,26 @@ const handleError =
         }
         return failureCount < (options?.maxFailures ?? 3)
     }
+
+const decodeFile = (
+    path: string,
+    response: Awaited<ReturnType<Octokit["rest"]["repos"]["getContent"]>>,
+) => {
+    if (Array.isArray(response.data)) {
+        console.error("getContent", { path, response })
+        throw new Error("unexpected response type (array)")
+    }
+
+    if (response.data.type === "file") {
+        const content = textDecoder.decode(decode(response.data.content))
+        return { content, sha: response.data.sha }
+    }
+
+    console.error("getContent", { path, response })
+    throw new Error(`unexpected response type (${response.data.type})`)
+}
+
+const encodeFile = (json: JsonValue) => encode(textEncoder.encode(JSON.stringify(json, null, 4)))
 
 export const useCurrentAccount = () => {
     const octokit = useOctokit()
@@ -92,21 +121,14 @@ export const useRepos = () => {
     })
 }
 
-export const useRepoContent = (repo?: Repo, force = false) => {
+export const useRepoContent = () => {
+    const repo = useRepoContext()
     const account = useStoredAccountContext()
     const octokit = useOctokit()
 
     return useQuery({
-        queryKey: ["repo", repo?.id, "content"],
+        queryKey: ["repo", repo.id, "content"],
         queryFn: async ({ signal }) => {
-            if (!repo || (!force && repo.size === 0)) {
-                return {
-                    sha: "",
-                    truncated: false,
-                    tree: [],
-                } as RepoContent
-            }
-
             try {
                 const response = await octokit.rest.git.getTree({
                     owner: account.login,
@@ -114,7 +136,7 @@ export const useRepoContent = (repo?: Repo, force = false) => {
                     tree_sha: "HEAD",
                     recursive: "true",
                     request: { signal },
-                    headers: force ? { "If-None-Match": "" } : undefined,
+                    headers: { "If-None-Match": "" },
                 })
                 return response.data
             } catch (e: unknown) {
@@ -134,10 +156,42 @@ export const useRepoContent = (repo?: Repo, force = false) => {
     })
 }
 
-export const useRefetchRepoContent = () => {
-    const [repo] = useSelectedRepo()
-    const content = useRepoContent(repo, true)
-    return content.refetch
+export const useCollection = () => {
+    const account = useStoredAccountContext()
+    const repo = useRepoContext()
+    const content = useRepoContentContext()
+    const octokit = useOctokit()
+
+    return useQuery({
+        queryKey: ["repo", repo.id, "collection"],
+        queryFn: async ({ signal }) => {
+            if (content.tree.length === 0) {
+                return create(CollectionSchema, {})
+            }
+
+            const path = "collection.json"
+
+            try {
+                const response = await octokit.rest.repos.getContent({
+                    owner: account.login,
+                    repo: repo.name,
+                    path: "collection.json",
+                    request: { signal },
+                    headers: { "If-None-Match": "" },
+                })
+                const file = decodeFile(path, response)
+                const collection = fromJsonString(CollectionSchema, file.content)
+                collection.sha = file.sha
+
+                return collection
+            } catch (e) {
+                if ((e as RequestError).status === 404) {
+                    return create(CollectionSchema, {})
+                }
+            }
+        },
+        retry: handleError("Failed to fetch habit collection"),
+    })
 }
 
 const pushHabit = async (
@@ -152,12 +206,11 @@ const pushHabit = async (
     copy.name = copy.name.trim()
     copy.description = copy.description.trim()
 
-    const content = encode(textEncoder.encode(JSON.stringify(toJson(HabitSchema, copy), null, 4)))
     return octokit.rest.repos.createOrUpdateFileContents({
         path: `habits/${habit.name}.json`,
         owner,
         repo,
-        content,
+        content: encodeFile(toJson(HabitSchema, copy)),
         message,
         sha: habit.sha,
         headers: { "If-None-Match": "" },
@@ -166,14 +219,11 @@ const pushHabit = async (
 
 export const useNewHabit = () => {
     const account = useStoredAccountContext()
-    const [repo] = useSelectedRepo()
+    const repo = useRepoContext()
     const octokit = useOctokit()
 
     return useMutation({
         mutationFn: (habit: Habit) => {
-            console.info(habit)
-
-            if (repo === undefined) throw new Error("repo is not selected")
             return pushHabit(
                 octokit,
                 habit,
@@ -182,13 +232,16 @@ export const useNewHabit = () => {
                 `start new habit - "${habit.name}"`,
             )
         },
-        retry: 0,
+        onSettled: async () => {
+            await client.invalidateQueries({ queryKey: ["repo", repo.id, "content"] })
+        },
+        retry: handleError("Failed to start a habit", { maxFailures: 0 }),
     })
 }
 
 export const useUpdateHabit = (name: string) => {
     const account = useStoredAccountContext()
-    const [repo] = useSelectedRepo()
+    const repo = useRepoContext()
     const octokit = useOctokit()
 
     return useMutation({
@@ -198,7 +251,7 @@ export const useUpdateHabit = (name: string) => {
             return pushHabit(octokit, habit, account.login, repo.name, `update habit - "${name}"`)
         },
         onSettled: async () => {
-            await client.invalidateQueries({ queryKey: ["habits", name] })
+            await client.invalidateQueries({ queryKey: ["repo", repo.id, "habit", name] })
         },
         retry: 0,
     })
@@ -206,7 +259,7 @@ export const useUpdateHabit = (name: string) => {
 
 export const useBreakHabit = () => {
     const account = useStoredAccountContext()
-    const [repo] = useSelectedRepo()
+    const repo = useRepoContext()
     const octokit = useOctokit()
 
     return useMutation({
@@ -221,53 +274,74 @@ export const useBreakHabit = () => {
                 sha: habit.sha,
             })
         },
+        onSettled: async () => {
+            await client.invalidateQueries({ queryKey: ["repo", repo.id, "content"] })
+        },
         retry: handleError("Failed to break a habit", { maxFailures: 0 }),
     })
 }
 
 export const useRefresh = () => {
-    const refetchRepoContent = useRefetchRepoContent()
+    const repo = useRepoContext()
+
     return async () => {
-        await refetchRepoContent()
-        await client.invalidateQueries({ queryKey: ["habits"] })
+        await client.invalidateQueries({ queryKey: ["repo", repo.id] })
     }
 }
 
 export const useHabit = (name: string) => {
     const account = useStoredAccountContext()
-    const [repo] = useSelectedRepo()
+    const repo = useRepoContext()
     const octokit = useOctokit()
 
     return useQuery({
-        queryKey: ["habits", name],
+        queryKey: ["repo", repo.id, "habit", name],
         queryFn: async ({ signal }) => {
-            if (repo === undefined) throw new Error("repo is not selected")
-
+            const path = `habits/${name}.json`
             const response = await octokit.rest.repos.getContent({
                 owner: account.login,
                 repo: repo.name,
-                path: `habits/${name}.json`,
+                path,
                 request: { signal },
                 headers: { "If-None-Match": "" },
             })
 
-            if (Array.isArray(response.data)) {
-                console.error("getContent", { name, response })
-                throw new Error("unexpected response type (array)")
-            }
-
-            if (response.data.type !== "file") {
-                console.error("getContent", { name, response })
-                throw new Error(`unexpected response type (${response.data.type})`)
-            }
-
-            const decoded = textDecoder.decode(decode(response.data.content))
-            const habit = fromJsonString(HabitSchema, decoded)
-            habit.sha = response.data.sha
+            const file = decodeFile(path, response)
+            const habit = fromJsonString(HabitSchema, file.content)
+            habit.sha = file.sha
 
             return habit
         },
         staleTime: 5 * 60 * 1000, // todo
         retry: handleError(`Failed to fetch habit data: ${name}`),
+    })
+}
+
+export const useNewTag = () => {
+    const account = useStoredAccountContext()
+    const repo = useRepoContext()
+    const octokit = useOctokit()
+    const { collection } = useCollectionContext()
+
+    return useMutation({
+        mutationFn: (tag: Tag) => {
+            const copy = clone(CollectionSchema, collection)
+            copy.sha = ""
+            copy.tags[tag.name] = tag
+
+            return octokit.rest.repos.createOrUpdateFileContents({
+                path: "collection.json",
+                owner: account.login,
+                repo: repo.name,
+                content: encodeFile(toJson(CollectionSchema, copy)),
+                message: `created tag - ${tag.name}`,
+                sha: collection.sha,
+                headers: { "If-None-Match": "" },
+            })
+        },
+        onSettled: async () => {
+            await client.invalidateQueries({ queryKey: ["repo", repo.id] })
+        },
+        retry: handleError("Failed to create tag", { maxFailures: 0 }),
     })
 }

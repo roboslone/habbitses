@@ -5,54 +5,54 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import * as colors from "@/lib/colors"
-import * as icons from "@/lib/icons"
 import { randomArrayElement } from "@/lib/utils"
-import { type Habit, HabitSchema } from "@/proto/models/v1/models_pb"
+import { type Tag, TagSchema } from "@/proto/models/v1/models_pb"
 import { clone, create } from "@bufbuild/protobuf"
 import { useNavigate } from "@tanstack/react-router"
 import { Check, Loader2, X } from "lucide-react"
 import React from "react"
 import { toast } from "sonner"
 
+import { TagView } from "./view"
+
 interface P {
-    value?: Habit
-    onChange: (h: Habit) => Promise<unknown>
+    value?: Tag
+    onChange: (t: Tag) => Promise<unknown>
     onCancel?: () => void
 }
 
-const empty = (): Habit =>
-    create(HabitSchema, {
-        dailyTarget: 1,
+const empty = (): Tag =>
+    create(TagSchema, {
+        icon: "Tag",
         color: randomArrayElement(colors.all),
-        icon: randomArrayElement(icons.all),
     })
 
-export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
+export const TagForm: React.FC<P> = ({ value, onChange, onCancel }) => {
     const [loading, setLoading] = React.useState(false)
-    const [habit, setHabit] = React.useState<Habit>(value ?? empty())
+    const [tag, setTag] = React.useState<Tag>(value ?? empty())
     const navigate = useNavigate()
 
-    const update = (fn: (h: Habit) => void) => {
-        const next = clone(HabitSchema, habit)
+    const update = (fn: (t: Tag) => void) => {
+        const next = clone(TagSchema, tag)
         fn(next)
-        setHabit(next)
+        setTag(next)
     }
 
-    const valid = !!habit.name
+    const valid = !!tag.name
 
     const handleSubmit = () => {
         setLoading(true)
-        onChange(habit)
+        onChange(tag)
             .then(async () => {
                 const icon = <Check size={16} className="text-emerald-600" />
                 if (value === undefined) {
-                    toast.success("New habit emerges!", {
-                        description: habit.name,
+                    toast.success("New tag created", {
+                        description: tag.name,
                         icon,
                     })
-                    await navigate({ to: "/" })
+                    await navigate({ to: "/tags" })
                 } else {
-                    toast.success("Habit updated", { description: habit.name, icon })
+                    toast.success("Tag updated", { description: tag.name, icon })
                 }
             })
             .catch((e: Error) => {
@@ -64,48 +64,25 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
     }
 
     return (
-        <div data-testid="habit-form" className="flex flex-col gap-5 p-5">
+        <div data-testid="tag-form" className="flex flex-col gap-5 p-5">
             {value === undefined && (
                 <div className="flex flex-col gap-2">
                     <Label aria-required>Name *</Label>
                     <Input
                         autoFocus
                         disabled={loading}
-                        value={habit.name}
-                        onChange={(e) => update((h) => (h.name = e.target.value))}
+                        value={tag.name}
+                        onChange={(e) => update((t) => (t.name = e.target.value))}
                     />
                 </div>
             )}
 
             <div className="flex flex-col gap-2">
-                <Label>Description</Label>
-                <Input
-                    disabled={loading}
-                    value={habit.description}
-                    onChange={(e) => update((h) => (h.description = e.target.value))}
-                />
-            </div>
-
-            <div className="flex flex-col gap-2">
-                <Label>Daily target</Label>
-                <p className="text-xs text-muted-foreground">
-                    For example, number of book pages to read.
-                </p>
-                <Input
-                    type="number"
-                    disabled={loading}
-                    value={habit.dailyTarget}
-                    onFocus={(e) => e.target.select()}
-                    onChange={(e) => update((h) => (h.dailyTarget = e.target.valueAsNumber || 0))}
-                />
-            </div>
-
-            <div className="flex flex-col gap-2">
                 <Label>Color</Label>
                 <ColorPicker
                     disabled={loading}
-                    active={habit.color}
-                    onPick={(color) => update((h) => (h.color = color))}
+                    active={tag.color}
+                    onPick={(color) => update((t) => (t.color = color))}
                 />
             </div>
 
@@ -113,10 +90,16 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                 <Label>Icon</Label>
                 <IconPicker
                     disabled={loading}
-                    active={habit.icon}
-                    color={habit.color}
-                    onPick={(icon) => update((h) => (h.icon = icon))}
+                    active={tag.icon}
+                    color={tag.color}
+                    onPick={(icon) => update((t) => (t.icon = icon))}
                 />
+            </div>
+
+            <Separator />
+
+            <div className="flex justify-center w-full">
+                <TagView name={tag.name} tag={tag} />
             </div>
 
             <Separator />
@@ -132,9 +115,9 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                     {loading ? (
                         <Loader2 className="animate-spin" />
                     ) : (
-                        <Check style={{ color: `var(--color-${habit.color}-400)` }} />
+                        <Check style={{ color: `var(--color-${tag.color}-400)` }} />
                     )}
-                    {value === undefined ? "Start a habit" : "Save"}
+                    {value === undefined ? "Create tag" : "Save"}
                 </Button>
 
                 {onCancel !== undefined && (
@@ -152,5 +135,3 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
         </div>
     )
 }
-
-export default HabitForm

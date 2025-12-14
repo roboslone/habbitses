@@ -6,24 +6,18 @@ import {
 } from "@tanstack/react-router"
 import React from "react"
 
-import { LoadingScreen } from "./components/util/loading-screen"
+import { LoadingPage } from "./components/util/loading-page"
 
 const history = createHashHistory()
 
 const common = {
     getParentRoute: () => rRoot,
-    pendingComponent: LoadingScreen,
+    pendingComponent: LoadingPage,
 }
 
 export const rRoot = createRootRoute({
     component: React.lazy(() => import("@/layout")),
-    pendingComponent: LoadingScreen,
-})
-
-export const rHome = createRoute({
-    ...common,
-    path: "/",
-    component: React.lazy(() => import("@/components/home")),
+    pendingComponent: LoadingPage,
 })
 
 export const rSettings = createRoute({
@@ -32,10 +26,16 @@ export const rSettings = createRoute({
     component: React.lazy(() => import("@/components/settings-page")),
 })
 
+export const rHabitList = createRoute({
+    ...common,
+    path: "/",
+    component: React.lazy(() => import("@/components/habit/list-page")),
+})
+
 export const rNewHabit = createRoute({
     ...common,
     path: "/habits/new",
-    component: React.lazy(() => import("@/components/habit/new-habbit-page")),
+    component: React.lazy(() => import("@/components/habit/new-page")),
 })
 
 export const rHabit = createRoute({
@@ -44,7 +44,19 @@ export const rHabit = createRoute({
     component: React.lazy(() => import("@/components/habit/page")),
 })
 
-const routeTree = rRoot.addChildren([rHome, rSettings, rNewHabit, rHabit])
+export const rTagList = createRoute({
+    ...common,
+    path: "/tags",
+    component: React.lazy(() => import("@/components/tag/list-page")),
+})
+
+export const rNewTag = createRoute({
+    ...common,
+    path: "/tags/new",
+    component: React.lazy(() => import("@/components/tag/new-page")),
+})
+
+const routeTree = rRoot.addChildren([rHabitList, rSettings, rNewHabit, rHabit, rTagList, rNewTag])
 
 export const router = createRouter({
     history,

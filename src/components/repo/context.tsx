@@ -1,12 +1,7 @@
 import type { Repo } from "@/lib/git"
 import React from "react"
 
-interface S {
-    repo: Repo
-    names: string[]
-}
-
-export const RepoContext = React.createContext<S | undefined>(undefined)
+export const RepoContext = React.createContext<Repo | undefined>(undefined)
 
 export const useRepoContext = () => {
     const ctx = React.useContext(RepoContext)

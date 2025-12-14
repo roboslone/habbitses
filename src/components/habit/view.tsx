@@ -1,8 +1,9 @@
 import { useHabitContext } from "@/components/habit/context"
 import { PageHeader } from "@/components/page-header"
+import { useRepoContext } from "@/components/repo/context"
+import { TagPicker } from "@/components/tag/picker"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { useSelectedRepo } from "@/lib/git"
 import { cn } from "@/lib/utils"
 import { Completion_ButtonOptionsSchema } from "@/proto/models/v1/models_pb"
 import { create } from "@bufbuild/protobuf"
@@ -21,7 +22,7 @@ import { HabitIcon } from "./icon"
 import { HabitProgress } from "./progress"
 
 export const HabitView: React.FC = () => {
-    const [repo] = useSelectedRepo()
+    const repo = useRepoContext()
     const [editMode, setEditMode] = React.useState(false)
 
     const { habit, update, color, completion, refetch, isFetching } = useHabitContext()
@@ -53,6 +54,11 @@ export const HabitView: React.FC = () => {
                     />
                 </div>
                 <HabitProgress className="rounded-full h-1.5" />
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <Label className="text-muted-foreground/50">Tags</Label>
+                <TagPicker />
             </div>
 
             <div className="flex flex-col gap-2">

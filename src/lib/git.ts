@@ -17,7 +17,7 @@ export const useSelectedRepo = () => {
     })
 }
 
-export function* parseRepoContent(content: RepoContent) {
+export function* iterHabitNames(content: RepoContent) {
     for (const item of content.tree) {
         if (item.path.startsWith("habits/")) {
             const parts = item.path.split("/")

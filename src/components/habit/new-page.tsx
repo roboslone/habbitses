@@ -4,9 +4,9 @@ import { useNewHabit } from "@/lib/queries"
 import type { Habit } from "@/proto/models/v1/models_pb"
 import type React from "react"
 
-import HabitForm from "./form"
+import { HabitForm } from "./form"
 
-export const NewHabbitPage: React.FC = () => {
+const NewHabbitPage: React.FC = () => {
     const saveHabit = useNewHabit()
 
     const handleSubmit = (habit: Habit) => {

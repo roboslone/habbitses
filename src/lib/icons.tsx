@@ -3,12 +3,14 @@ import {
     CircleQuestionMark,
     Dumbbell,
     Hammer,
+    Heart,
     type LucideIcon,
     type LucideProps,
     MoonStar,
     Pill,
     Star,
     Tablets,
+    Tag,
     Trophy,
     Wallet,
 } from "lucide-react"
@@ -25,6 +27,8 @@ export const icons: Record<string, LucideIcon> = {
     Dumbbell,
     Pill,
     Tablets,
+    Tag,
+    Heart,
 }
 
 export type Key = keyof typeof icons

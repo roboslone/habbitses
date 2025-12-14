@@ -1,17 +1,13 @@
-import { RepoSelector } from "@/components/repo/selector"
-import { useSelectedRepo } from "@/lib/git"
+import { PageHeader } from "@/components/page-header"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Link } from "@tanstack/react-router"
 import { Cog, Plus } from "lucide-react"
 import type React from "react"
 
-import { PageHeader } from "./page-header"
-import { RepoViewer } from "./repo/viewer"
-import { Button } from "./ui/button"
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip"
+import { HabitList } from "./list"
 
 export const Home: React.FC = () => {
-    const [repo] = useSelectedRepo()
-
     return (
         <>
             <PageHeader
@@ -42,13 +38,9 @@ export const Home: React.FC = () => {
                 }
             />
 
-            {repo === undefined && (
-                <div className="flex flex-col items-center justify-center gap-2 p-5">
-                    <RepoSelector />
-                </div>
-            )}
-
-            {repo !== undefined && <RepoViewer repo={repo} />}
+            <div className="w-full p-2 pt-0">
+                <HabitList />
+            </div>
         </>
     )
 }

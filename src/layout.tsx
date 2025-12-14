@@ -1,5 +1,6 @@
 import { AccountWall } from "@/components/auth/account-wall"
 import AuthWall from "@/components/auth/auth-wall"
+import { RepoWall } from "@/components/auth/repo-wall"
 import { Toaster } from "@/components/ui/sonner"
 import { Suspense } from "@/components/util/suspense"
 import { client } from "@/lib/queries"
@@ -13,7 +14,9 @@ export const Layout: React.FC = () => {
             <QueryClientProvider client={client}>
                 <AuthWall>
                     <AccountWall>
-                        <Outlet />
+                        <RepoWall>
+                            <Outlet />
+                        </RepoWall>
                     </AccountWall>
                 </AuthWall>
             </QueryClientProvider>

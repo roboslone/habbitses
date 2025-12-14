@@ -1,15 +1,14 @@
 import { HabitFetcher } from "@/components/habit/fetcher"
-import { useSelectedRepo } from "@/lib/git"
+import { PageHeader } from "@/components/page-header"
+import { useRepoContext } from "@/components/repo/context"
+import { RepoSelector } from "@/components/repo/selector"
 import { rHabit } from "@/routes"
 import type React from "react"
 
-import { PageHeader } from "../page-header"
-import { RepoContext } from "../repo/context"
-import { RepoSelector } from "../repo/selector"
 import { HabitView } from "./view"
 
 export const HabitPage: React.FC = () => {
-    const [repo] = useSelectedRepo()
+    const repo = useRepoContext()
     const { name } = rHabit.useParams()
 
     if (repo === undefined) {
@@ -24,11 +23,9 @@ export const HabitPage: React.FC = () => {
     }
 
     return (
-        <RepoContext.Provider value={{ repo, names: [name] }}>
-            <HabitFetcher name={name} mode="page">
-                <HabitView />
-            </HabitFetcher>
-        </RepoContext.Provider>
+        <HabitFetcher name={name} mode="page">
+            <HabitView />
+        </HabitFetcher>
     )
 }
 

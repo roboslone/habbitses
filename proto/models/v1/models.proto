@@ -59,8 +59,10 @@ message Tag {
 }
 
 message Collection {
-  map<string, Tag> tags = 1;
+  string sha = 1;
+
+  map<string, Tag> tags = 2;
 
   // references to `Habit.name`
-  repeated string order = 2;
+  repeated string order = 3;
 }

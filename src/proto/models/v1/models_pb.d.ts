@@ -201,14 +201,19 @@ export declare const TagSchema: GenMessage<Tag>;
  */
 export declare type Collection = Message<"models.v1.Collection"> & {
   /**
-   * @generated from field: map<string, models.v1.Tag> tags = 1;
+   * @generated from field: string sha = 1;
+   */
+  sha: string;
+
+  /**
+   * @generated from field: map<string, models.v1.Tag> tags = 2;
    */
   tags: { [key: string]: Tag };
 
   /**
    * references to `Habit.name`
    *
-   * @generated from field: repeated string order = 2;
+   * @generated from field: repeated string order = 3;
    */
   order: string[];
 };

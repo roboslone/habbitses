@@ -8,7 +8,7 @@ interface P {
 }
 
 export const FileButton: React.FC<P> = ({ name }) => {
-    const { repo } = useRepoContext()
+    const repo = useRepoContext()
     const fileURL = `https://github.com/${repo?.full_name}/blob/main/habits/${name}.json`
     return (
         <a href={fileURL} target="_blank">

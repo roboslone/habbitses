@@ -8,7 +8,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { useBreakHabit, useRefetchRepoContent } from "@/lib/queries"
+import { useBreakHabit } from "@/lib/queries"
 import { cn } from "@/lib/utils"
 import { useNavigate } from "@tanstack/react-router"
 import { Trash2, Undo2 } from "lucide-react"
@@ -22,7 +22,6 @@ export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({ children }
     const [open, setOpen] = React.useState(false)
     const { habit, color } = useHabitContext()
     const breakHabit = useBreakHabit()
-    const refetchRepoContent = useRefetchRepoContent()
     const navigate = useNavigate()
 
     const handleBreak = () => {
@@ -30,8 +29,7 @@ export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({ children }
             breakHabit
                 .mutateAsync(habit)
                 .then(() => setOpen(false))
-                .then(() => navigate({ to: "/" }))
-                .then(() => refetchRepoContent()),
+                .then(() => navigate({ to: "/" })),
             {
                 loading: "Breaking the habit, tonight...",
                 success: () => ({

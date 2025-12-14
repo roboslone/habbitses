@@ -75,7 +75,7 @@ export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
     return (
         <div className="w-full max-w-211">
             <ErrorView title={name} error={habit.error}>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full">
                     <FileButton name={name} />
                     <Button variant="ghost" onClick={() => void habit.refetch()}>
                         <RefreshCw />

@@ -1,17 +1,31 @@
 import { useHabitContext } from "@/components/habit/context"
+import { TagContext } from "@/components/tag/context"
 import { useStoredDisplayOptions } from "@/lib/displayOptions"
 import { cn } from "@/lib/utils"
+import type { Habit } from "@/proto/models/v1/models_pb"
 import { Link } from "@tanstack/react-router"
-import type React from "react"
+import React from "react"
 
 import { CompletionButtons } from "./buttons"
 import { HabitChart } from "./chart"
 import { HabitIcon } from "./icon"
 import { HabitProgress } from "./progress"
 
+const matchActiveTags = (h: Habit, active?: Set<string>): boolean => {
+    if (!active || active.size === 0) return true
+
+    for (const tag of h.tagNames) {
+        if (active.has(tag)) return true
+    }
+    return false
+}
+
 export const HabitCard: React.FC = () => {
+    const tags = React.useContext(TagContext)
     const { habit, color, isCompleted } = useHabitContext()
     const [displayOptions] = useStoredDisplayOptions()
+
+    if (!matchActiveTags(habit, tags.active)) return null
 
     return (
         <div
