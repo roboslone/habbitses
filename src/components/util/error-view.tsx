@@ -13,7 +13,10 @@ export const ErrorView: React.FC<P> = ({ title, error, retry, children }) => {
     error ??= new Error("Unknown error")
 
     return (
-        <div className="w-full h-full flex items-center justify-center max-w-full p-2">
+        <div
+            data-testid="error-view"
+            className="w-full h-full flex items-center justify-center max-w-full p-2"
+        >
             <div className="flex flex-col gap-4">
                 <Alert variant="destructive" className="p-0 overflow-hidden">
                     <AlertTitle className="flex items-center gap-2 p-2">

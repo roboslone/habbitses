@@ -4,11 +4,10 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { useSelectedRepo } from "@/lib/git"
 import { cn } from "@/lib/utils"
-import { Completion_ButtonOptionsSchema, type Habit } from "@/proto/models/v1/models_pb"
+import { Completion_ButtonOptionsSchema } from "@/proto/models/v1/models_pb"
 import { create } from "@bufbuild/protobuf"
-import { Code, History, Pencil, RefreshCw, Trash2 } from "lucide-react"
+import { History, Pencil, RefreshCw, Trash2 } from "lucide-react"
 import React from "react"
-import { toast } from "sonner"
 
 import { HabitBreakDialog } from "./break-dialog"
 import { CompletionButton } from "./button"
@@ -16,6 +15,7 @@ import { ButtonForm } from "./button-form"
 import { CompletionButtons } from "./buttons"
 import { HabitChart } from "./chart"
 import { HabitDescription } from "./description"
+import { FileButton } from "./file-button"
 import HabitForm from "./form"
 import { HabitIcon } from "./icon"
 import { HabitProgress } from "./progress"
@@ -27,7 +27,6 @@ export const HabitView: React.FC = () => {
     const { habit, update, color, completion, refetch, isFetching } = useHabitContext()
 
     const historyURL = `https://github.com/${repo?.full_name}/commits/main/habits/${habit.name}.json`
-    const fileURL = `https://github.com/${repo?.full_name}/blob/main/habits/${habit.name}.json`
 
     let content = (
         <>
@@ -83,12 +82,7 @@ export const HabitView: React.FC = () => {
                     </Button>
                 </HabitBreakDialog>
 
-                <a href={fileURL} target="_blank">
-                    <Button variant="ghost">
-                        <Code />
-                        File
-                    </Button>
-                </a>
+                <FileButton name={habit.name} />
 
                 <a href={historyURL} target="_blank">
                     <Button variant="ghost">

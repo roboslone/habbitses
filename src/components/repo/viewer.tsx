@@ -29,7 +29,7 @@ export const RepoViewer: React.FC<P> = ({ repo }) => {
         const names = [...parseRepoContent(content.data)]
         return (
             <PullToRefresh onRefresh={refresh} className="h-full [&>div.refresh-view]:h-full">
-                <RepoContext.Provider value={{ content, names }}>
+                <RepoContext.Provider value={{ repo, content, names }}>
                     <div className="flex flex-col items-center gap-2 p-2 pt-0 h-full">
                         <div className="flex flex-col items-center gap-2 w-full">
                             {names.map((name) => (

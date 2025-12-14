@@ -1,7 +1,9 @@
+import type { Repo } from "@/lib/git"
 import type { useRepoContent } from "@/lib/queries"
 import React from "react"
 
 interface S {
+    repo: Repo
     content: ReturnType<typeof useRepoContent>
     names: string[]
 }

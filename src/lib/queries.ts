@@ -34,7 +34,14 @@ interface RetryOptions {
 const handleError =
     (op: string, options?: RetryOptions) =>
     (failureCount: number, error: Error): boolean => {
-        toast.error(op, { description: error.message, closeButton: true })
+        console.error({ error, message: error.message })
+        toast.error(op, { description: error.message })
+        if (
+            (error as RequestError).status >= 400 ||
+            error.message.includes("cannot decode message")
+        ) {
+            return false
+        }
         return failureCount < (options?.maxFailures ?? 3)
     }
 
@@ -183,7 +190,6 @@ export const useUpdateHabit = (name: string) => {
     const account = useStoredAccountContext()
     const [repo] = useSelectedRepo()
     const octokit = useOctokit()
-    // const habit = useHabit(name)
 
     return useMutation({
         mutationFn: (habit: Habit) => {
@@ -193,7 +199,6 @@ export const useUpdateHabit = (name: string) => {
         },
         onSettled: async () => {
             await client.invalidateQueries({ queryKey: ["habits", name] })
-            // await habit.refetch()
         },
         retry: 0,
     })

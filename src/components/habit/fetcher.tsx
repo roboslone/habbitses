@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import { ErrorView } from "@/components/util/error-view"
 import { LoadingScreen } from "@/components/util/loading-screen"
 import * as colors from "@/lib/colors"
@@ -5,9 +6,11 @@ import { useStoredDisplayOptions } from "@/lib/displayOptions"
 import { getProgress } from "@/lib/progress"
 import { useHabit, useUpdateHabit } from "@/lib/queries"
 import { cn } from "@/lib/utils"
+import { RefreshCw } from "lucide-react"
 import type React from "react"
 
 import { HabitContext } from "./context"
+import { FileButton } from "./file-button"
 
 interface P extends React.PropsWithChildren {
     name: string
@@ -69,5 +72,17 @@ export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
         // Error will be shown in `active` fetcher, avoid duplication.
         return null
     }
-    return <ErrorView error={habit.error} />
+    return (
+        <div className="w-full max-w-211">
+            <ErrorView title={name} error={habit.error}>
+                <div className="flex items-center gap-2">
+                    <FileButton name={name} />
+                    <Button variant="ghost" onClick={() => void habit.refetch()}>
+                        <RefreshCw />
+                        Retry
+                    </Button>
+                </div>
+            </ErrorView>
+        </div>
+    )
 }
