@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import * as colors from "@/lib/colors"
+import { formatDate } from "@/lib/dates"
 import * as icons from "@/lib/icons"
 import { randomArrayElement } from "@/lib/utils"
 import { type Habit, HabitSchema } from "@/proto/models/v1/models_pb"
@@ -38,6 +39,17 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
         setHabit(next)
     }
 
+    const updateDailyTarget = (v: number) => {
+        const next = clone(HabitSchema, habit)
+        next.dailyTarget = v
+
+        const date = formatDate(new Date())
+        if (next.completions[date] !== undefined) {
+            next.completions[date].target = v
+        }
+
+        setHabit(next)
+    }
     const valid = !!habit.name
 
     const handleSubmit = () => {
@@ -97,7 +109,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                     disabled={loading}
                     value={habit.dailyTarget}
                     onFocus={(e) => e.target.select()}
-                    onChange={(e) => update((h) => (h.dailyTarget = e.target.valueAsNumber || 0))}
+                    onChange={(e) => updateDailyTarget(e.target.valueAsNumber || 0)}
                 />
             </div>
 
