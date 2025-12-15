@@ -30,6 +30,20 @@ const Cell: React.FC<CellProps> = ({ date, background, completion }) => {
         progress = Math.min(1, completion.count / completion.target)
     }
 
+    if (completion === undefined) {
+        return (
+            <div
+                className={cn("w-3 h-3 min-w-3 min-h-3 rounded-xs", {
+                    "bg-secondary dark:bg-card/80": progress === 0,
+                    [background]: progress > 0,
+                })}
+                style={{
+                    opacity: progress === 0 ? 1 : progress * 0.5,
+                }}
+            />
+        )
+    }
+
     return (
         <Tooltip delayDuration={100}>
             <TooltipTrigger asChild>

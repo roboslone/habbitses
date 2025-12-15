@@ -65,7 +65,7 @@ export const HabitCard: React.FC = () => {
             className={cn(
                 "habit-card rounded truncate w-full max-w-211 flex flex-col gap-1",
                 {
-                    "min-h-40": !displayOptions.hideChart,
+                    "min-h-40": !displayOptions.hideChart && !isReordering,
                 },
                 { "cursor-move": isReordering },
             )}
@@ -118,7 +118,7 @@ export const HabitCard: React.FC = () => {
                 {!displayOptions.hideProgressbar && <HabitProgress />}
             </div>
 
-            {!displayOptions.hideChart && <HabitChart />}
+            {!displayOptions.hideChart && !isReordering && <HabitChart />}
         </div>
     )
 }
