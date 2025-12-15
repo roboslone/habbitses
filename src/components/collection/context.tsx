@@ -1,4 +1,4 @@
-import type { Collection } from "@/proto/models/v1/models_pb"
+import type { Collection, Habit } from "@/proto/models/v1/models_pb"
 import React from "react"
 
 interface S {
@@ -7,6 +7,8 @@ interface S {
     tagSet: Set<string>
     habits: string[]
     habitNameSet: Set<string>
+    completed: Set<string>
+    recordCompletion: (h: Habit) => void
 }
 
 export const CollectionContext = React.createContext<S | undefined>(undefined)

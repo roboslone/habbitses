@@ -10,7 +10,7 @@ import {
     HabitSchema,
 } from "@/proto/models/v1/models_pb"
 import { clone, create } from "@bufbuild/protobuf"
-import { ArrowRight, ArrowUp, Check, Plus, Undo2 } from "lucide-react"
+import { ArrowRight, Check, Plus, Undo2 } from "lucide-react"
 import React from "react"
 import { toast } from "sonner"
 
@@ -30,9 +30,11 @@ const applyButton = (
     options: Completion_ButtonOptions,
     manualValue?: number,
 ) => {
+    console.info("apply button", { completion, options, manualValue })
+
     switch (options.kind.case) {
         case "delta":
-            completion.count = manualValue ?? options.kind.value
+            completion.count += manualValue ?? options.kind.value
             return
         case "percentage":
             completion.count += Math.ceil(

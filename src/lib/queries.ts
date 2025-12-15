@@ -205,6 +205,8 @@ const usePushHabit = () => {
         copy.name = copy.name.trim()
         copy.description = copy.description.trim()
 
+        console.info("push habit", copy)
+
         return octokit.rest.repos.createOrUpdateFileContents({
             path: `habits/${habit.name}.json`,
             owner: account.login,
@@ -234,18 +236,22 @@ export const useNewHabit = () => {
 export const useUpdateHabit = (name: string) => {
     const repo = useRepoContext()
     const pushHabit = usePushHabit()
+    const { recordCompletion } = useCollectionContext()
+
     const queryKey = ["repo", repo.id, "habit", name]
 
     return useMutation({
         mutationFn: async (habit: Habit) => pushHabit(`update habit - "${name}"`, habit),
         onMutate: async (next: Habit) => {
-            const prev = client.getQueryData(queryKey)
+            const prev: Habit | undefined = client.getQueryData(queryKey)
             await client.setQueryData(queryKey, next)
+            recordCompletion(next)
             return { prev }
         },
         onError: (_, __, context) => {
-            if (context) {
+            if (context?.prev) {
                 client.setQueryData(queryKey, context.prev)
+                recordCompletion(context.prev)
             }
         },
         onSettled: async () => {
@@ -291,6 +297,7 @@ export const useHabit = (name: string) => {
     const account = useStoredAccountContext()
     const repo = useRepoContext()
     const octokit = useOctokit()
+    const { recordCompletion } = useCollectionContext()
 
     return useQuery({
         queryKey: ["repo", repo.id, "habit", name],
@@ -307,6 +314,8 @@ export const useHabit = (name: string) => {
             const file = decodeFile(path, response)
             const habit = fromJsonString(HabitSchema, file.content)
             habit.sha = file.sha
+
+            recordCompletion(habit)
 
             return habit
         },

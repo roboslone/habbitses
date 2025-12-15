@@ -1,3 +1,4 @@
+import { useCollectionContext } from "@/components/collection/context"
 import { Button } from "@/components/ui/button"
 import { ErrorView } from "@/components/util/error-view"
 import { LoadingScreen } from "@/components/util/loading-screen"
@@ -21,6 +22,7 @@ export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
     const habit = useHabit(name)
     const update = useUpdateHabit(name)
     const [displayOptions] = useStoredDisplayOptions()
+    const { completed } = useCollectionContext()
 
     if (habit.isLoading) {
         if (mode === "completed") {
@@ -39,8 +41,8 @@ export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
     }
 
     if (habit.data) {
-        const { progress, completion } = getProgress(habit.data, new Date())
-        const isCompleted = completion.count >= completion.target
+        const { completion, progress } = getProgress(habit.data, new Date())
+        const isCompleted = completed.has(habit.data.name)
 
         if (mode === "completed" && !isCompleted) {
             return null

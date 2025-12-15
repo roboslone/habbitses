@@ -47,7 +47,7 @@ export const ManualCompletionDialog: React.FC<P> = ({ children, onSubmit }) => {
                     </Button>
                     <Button variant="outline" onClick={handleSubmit}>
                         <Check className="text-emerald-600" />
-                        Cancel
+                        Submit
                     </Button>
                 </DialogFooter>
             </DialogContent>
