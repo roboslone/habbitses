@@ -20,7 +20,15 @@ export const CollectionView: React.FC<React.PropsWithChildren> = ({ children }) 
     if (collection.data) {
         const tags = Object.keys(collection.data.tags).sort()
         return (
-            <CollectionContext.Provider value={{ collection: collection.data, tags, habits }}>
+            <CollectionContext.Provider
+                value={{
+                    collection: collection.data,
+                    tags,
+                    tagSet: new Set(tags),
+                    habits,
+                    habitNameSet: new Set(habits),
+                }}
+            >
                 <div data-testid="collection-view" className="flex flex-col items-center grow">
                     {children}
                 </div>

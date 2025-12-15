@@ -1,3 +1,4 @@
+import { useCollectionContext } from "@/components/collection/context"
 import ColorPicker from "@/components/color-picker"
 import IconPicker from "@/components/icon-picker"
 import { Button } from "@/components/ui/button"
@@ -11,7 +12,7 @@ import { randomArrayElement } from "@/lib/utils"
 import { type Habit, HabitSchema } from "@/proto/models/v1/models_pb"
 import { clone, create } from "@bufbuild/protobuf"
 import { useNavigate } from "@tanstack/react-router"
-import { Check, Loader2, X } from "lucide-react"
+import { AlertTriangle, Check, Loader2, X } from "lucide-react"
 import React from "react"
 import { toast } from "sonner"
 
@@ -29,6 +30,8 @@ const empty = (): Habit =>
     })
 
 export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
+    const { habitNameSet } = useCollectionContext()
+
     const [loading, setLoading] = React.useState(false)
     const [habit, setHabit] = React.useState<Habit>(value ?? empty())
     const navigate = useNavigate()
@@ -50,7 +53,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
 
         setHabit(next)
     }
-    const valid = !!habit.name
+    const valid = !!habit.name && (value !== undefined || !habitNameSet.has(habit.name))
 
     const handleSubmit = () => {
         setLoading(true)
@@ -86,6 +89,11 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                         value={habit.name}
                         onChange={(e) => update((h) => (h.name = e.target.value))}
                     />
+                    {habitNameSet.has(habit.name) && (
+                        <div className="flex items-center gap-1 text-xs text-amber-600">
+                            <AlertTriangle size={14} /> Habit already exists!
+                        </div>
+                    )}
                 </div>
             )}
 

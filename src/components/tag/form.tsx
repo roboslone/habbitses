@@ -1,3 +1,4 @@
+import { useCollectionContext } from "@/components/collection/context"
 import ColorPicker from "@/components/color-picker"
 import IconPicker from "@/components/icon-picker"
 import { Button } from "@/components/ui/button"
@@ -9,7 +10,7 @@ import { randomArrayElement } from "@/lib/utils"
 import { type Tag, TagSchema } from "@/proto/models/v1/models_pb"
 import { clone, create } from "@bufbuild/protobuf"
 import { useNavigate } from "@tanstack/react-router"
-import { Check, Loader2, X } from "lucide-react"
+import { AlertTriangle, Check, Loader2, X } from "lucide-react"
 import React from "react"
 import { toast } from "sonner"
 
@@ -28,6 +29,8 @@ const empty = (): Tag =>
     })
 
 export const TagForm: React.FC<P> = ({ value, onChange, onCancel }) => {
+    const { tagSet } = useCollectionContext()
+
     const [loading, setLoading] = React.useState(false)
     const [tag, setTag] = React.useState<Tag>(value ?? empty())
     const navigate = useNavigate()
@@ -38,7 +41,7 @@ export const TagForm: React.FC<P> = ({ value, onChange, onCancel }) => {
         setTag(next)
     }
 
-    const valid = !!tag.name
+    const valid = !!tag.name && (value !== undefined || !tagSet.has(tag.name))
 
     const handleSubmit = () => {
         setLoading(true)
@@ -74,6 +77,11 @@ export const TagForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                         value={tag.name}
                         onChange={(e) => update((t) => (t.name = e.target.value))}
                     />
+                    {tagSet.has(tag.name) && (
+                        <div className="flex items-center gap-1 text-xs text-amber-600">
+                            <AlertTriangle size={14} /> Tag already exists!
+                        </div>
+                    )}
                 </div>
             )}
 
