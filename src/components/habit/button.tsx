@@ -70,8 +70,6 @@ export const CompletionButton: React.FC<P> = ({ options = defaultOptions, previe
         }
 
         toast.promise(update.mutateAsync(next), {
-            loading: "Updating habit...",
-            success: "Habit updated",
             error: (e: Error) => ({
                 message: "Update failed",
                 description: e.message,
