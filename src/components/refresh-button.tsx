@@ -14,7 +14,12 @@ export const RefreshButton: React.FC<React.ComponentProps<typeof Button>> = (pro
     const loading = repoIsFetching || collectionIsFetching
 
     return (
-        <Button variant="ghost" disabled={loading} onClick={() => void refresh()} {...props}>
+        <Button
+            variant="ghost"
+            onClick={() => void refresh()}
+            {...props}
+            disabled={loading || props.disabled}
+        >
             <RefreshCw className={cn({ "animate-spin": loading })} />
             Refresh
         </Button>

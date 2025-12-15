@@ -3,12 +3,15 @@ import { LogoutButton } from "@/components/auth/logout-button"
 import { useStoredDisplayOptions } from "@/lib/displayOptions"
 import { useQueryClient } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
-import { ExternalLink, Monitor, Moon, Sun, Trash2 } from "lucide-react"
+import { Monitor, Moon, Sun, Tags, Trash2 } from "lucide-react"
 import React from "react"
 import { toast } from "sonner"
 
 import { DisplayOptionsForm } from "./display-options-form"
+import { GitHubIcon } from "./github-icon"
 import { PageHeader } from "./page-header"
+import { RefreshButton } from "./refresh-button"
+import { useRepoContext } from "./repo/context"
 import { RepoSelector } from "./repo/selector"
 import { Button } from "./ui/button"
 import { Label } from "./ui/label"
@@ -20,6 +23,9 @@ export const SettingsPage: React.FC = () => {
     const { theme, setTheme, saturation, setSaturation } = React.useContext(ThemeContext)
     const [displayOptions, setDisplayOptions] = useStoredDisplayOptions()
     const queryClient = useQueryClient()
+    const repo = useRepoContext()
+
+    const repoURL = `https://github.com/${repo?.full_name}`
 
     const clearCache = () => {
         queryClient.removeQueries()
@@ -30,9 +36,9 @@ export const SettingsPage: React.FC = () => {
         <>
             <PageHeader title="Settings" />
 
-            <div className="flex flex-col gap-5 p-5 pt-0 w-full max-w-216">
+            <div className="flex flex-col gap-7 p-5 pt-0 w-full max-w-216">
                 <div className="flex flex-col gap-3">
-                    <Label>Account</Label>
+                    <Label className="text-muted-foreground">Account</Label>
                     <div className="flex items-center gap-2">
                         <AccountBadge />
                         <LogoutButton variant="destructive" className="w-fit" />
@@ -40,12 +46,12 @@ export const SettingsPage: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                    <Label>Repository</Label>
+                    <Label className="text-muted-foreground">Repository</Label>
                     <RepoSelector />
                 </div>
 
                 <div className="flex flex-col gap-3">
-                    <Label>Theme</Label>
+                    <Label className="text-muted-foreground">Theme</Label>
                     <div className="flex items-center gap-2">
                         <Button
                             variant="outline"
@@ -77,7 +83,7 @@ export const SettingsPage: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                    <Label>Color saturation</Label>
+                    <Label className="text-muted-foreground">Color saturation</Label>
                     <Slider
                         value={[saturation]}
                         onValueChange={(v) => setSaturation(v[0])}
@@ -89,23 +95,38 @@ export const SettingsPage: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                    <Label>Tags</Label>
-                    <Link to="/tags">
-                        <Button variant="outline" className="w-fit">
-                            <ExternalLink />
-                            Manage
-                        </Button>
-                    </Link>
+                    <Label className="text-muted-foreground">Data</Label>
+                    <div className="flex items-center gap-2">
+                        <a href={repoURL} target="_blank">
+                            <Button variant="outline">
+                                <GitHubIcon inverted className="w-4 h-4" />
+                                Root
+                            </Button>
+                        </a>
+
+                        <Link to="/tags">
+                            <Button variant="outline" className="w-fit">
+                                <Tags />
+                                Tags
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
 
-                <DisplayOptionsForm options={displayOptions} onChange={setDisplayOptions} />
+                <div className="flex flex-col gap-3">
+                    <Label className="text-muted-foreground">Display options</Label>
+                    <DisplayOptionsForm options={displayOptions} onChange={setDisplayOptions} />
+                </div>
 
                 <div className="flex flex-col gap-3">
-                    <Label>Cache</Label>
-                    <Button variant="outline" className="w-fit" onClick={clearCache}>
-                        <Trash2 />
-                        Clear cache
-                    </Button>
+                    <Label className="text-muted-foreground">Cache</Label>
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" className="w-fit" onClick={clearCache}>
+                            <Trash2 />
+                            Clear cache
+                        </Button>
+                        <RefreshButton variant="outline" />
+                    </div>
                 </div>
             </div>
         </>

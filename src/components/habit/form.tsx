@@ -89,7 +89,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                         value={habit.name}
                         onChange={(e) => update((h) => (h.name = e.target.value))}
                     />
-                    {habitNameSet.has(habit.name) && (
+                    {!loading && habitNameSet.has(habit.name) && (
                         <div className="flex items-center gap-1 text-xs text-amber-600">
                             <AlertTriangle size={14} /> Habit already exists!
                         </div>

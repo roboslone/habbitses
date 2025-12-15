@@ -77,7 +77,7 @@ export const TagForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                         value={tag.name}
                         onChange={(e) => update((t) => (t.name = e.target.value))}
                     />
-                    {tagSet.has(tag.name) && (
+                    {!loading && tagSet.has(tag.name) && (
                         <div className="flex items-center gap-1 text-xs text-amber-600">
                             <AlertTriangle size={14} /> Tag already exists!
                         </div>

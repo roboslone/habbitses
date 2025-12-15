@@ -56,8 +56,8 @@ export const HabitList: React.FC = () => {
                         </Link>
                     </>
                 ) : (
-                    <div className="flex items-center justify-center gap-2">
-                        <RefreshButton />
+                    <div className="flex items-center justify-center gap-2 p-2 pb-4">
+                        <RefreshButton disabled={isReordering} />
                         <Button
                             variant="ghost"
                             className="w-fit"
