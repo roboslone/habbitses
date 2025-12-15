@@ -36,10 +36,12 @@ export const HabitView: React.FC = () => {
                 <ButtonForm />
             </div>
 
-            <div className="flex flex-col gap-2">
-                <Label className="text-muted-foreground/50">Description</Label>
-                <HabitDescription />
-            </div>
+            {habit.description && (
+                <div className="flex flex-col gap-2">
+                    <Label className="text-muted-foreground/50">Description</Label>
+                    <HabitDescription />
+                </div>
+            )}
 
             <div className="flex flex-col gap-2">
                 <Label className="text-muted-foreground/50">Progress</Label>
