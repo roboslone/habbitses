@@ -4,21 +4,23 @@ import { cn } from "@/lib/utils"
 import { type Completion } from "@/proto/models/v1/models_pb"
 import type React from "react"
 
+import { Progress } from "../ui/progress"
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
+
 const rows = Array.from(Array(7).keys())
 const columns = Array.from(Array(53).keys())
 
 const day = 24 * 60 * 60 * 1000
 
-const cellToDate = (now: Date, row: number, column: number): string => {
+const cellToDate = (now: Date, row: number, column: number): Date => {
     const delta = row + column * 7
-    const d = new Date(now.getTime() - delta * day)
-    return formatDate(d)
+    return new Date(now.getTime() - delta * day)
 }
 
 interface CellProps {
     row: number
     column: number
-    date: string
+    date: Date
     background: string
     completion?: Completion
 }
@@ -30,16 +32,32 @@ const Cell: React.FC<CellProps> = ({ date, background, completion }) => {
     }
 
     return (
-        <div
-            className={cn("w-3 h-3 min-w-3 min-h-3 rounded-xs", {
-                "bg-secondary dark:bg-card/80": progress === 0,
-                [background]: progress > 0,
-            })}
-            style={{
-                opacity: progress === 0 ? 1 : progress * 0.5,
-            }}
-            data-date={date}
-        />
+        <Tooltip delayDuration={100}>
+            <TooltipTrigger asChild>
+                <div
+                    className={cn("w-3 h-3 min-w-3 min-h-3 rounded-xs", {
+                        "bg-secondary dark:bg-card/80": progress === 0,
+                        [background]: progress > 0,
+                    })}
+                    style={{
+                        opacity: progress === 0 ? 1 : progress * 0.5,
+                    }}
+                />
+            </TooltipTrigger>
+            <TooltipContent>
+                <div className="flex flex-col gap-2 items-center">
+                    <span>{date.toLocaleDateString()}</span>
+                    {completion !== undefined && (
+                        <>
+                            <Progress value={progress * 100} className="rounded-full" />
+                            <span className="font-bold">
+                                {completion.count} / {completion.target}
+                            </span>
+                        </>
+                    )}
+                </div>
+            </TooltipContent>
+        </Tooltip>
     )
 }
 
@@ -62,7 +80,7 @@ export const HabitChart: React.FC = () => {
                                         column={column}
                                         date={date}
                                         background={color.background}
-                                        completion={habit.completions[date]}
+                                        completion={habit.completions[formatDate(date)]}
                                     />
                                 )
                             })}
