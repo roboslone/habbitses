@@ -48,7 +48,7 @@ export const HabitCard: React.FC = () => {
                     <Link
                         to="/habits/$name"
                         params={{ name: habit.name }}
-                        className="flex flex-col justify-center grow h-full"
+                        className="flex flex-col justify-center grow h-full min-h-11"
                     >
                         <div className="flex items-center gap-3 grow">
                             <HabitIcon size={20} className="w-6" />

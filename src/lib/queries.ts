@@ -234,11 +234,22 @@ export const useNewHabit = () => {
 export const useUpdateHabit = (name: string) => {
     const repo = useRepoContext()
     const pushHabit = usePushHabit()
+    const queryKey = ["repo", repo.id, "habit", name]
 
     return useMutation({
-        mutationFn: (habit: Habit) => pushHabit(`update habit - "${name}"`, habit),
+        mutationFn: async (habit: Habit) => pushHabit(`update habit - "${name}"`, habit),
+        onMutate: async (next: Habit) => {
+            const prev = client.getQueryData(queryKey)
+            await client.setQueryData(queryKey, next)
+            return { prev }
+        },
+        onError: (_, __, context) => {
+            if (context) {
+                client.setQueryData(queryKey, context.prev)
+            }
+        },
         onSettled: async () => {
-            await client.invalidateQueries({ queryKey: ["repo", repo.id, "habit", name] })
+            await client.invalidateQueries({ queryKey })
         },
         retry: 0,
     })
