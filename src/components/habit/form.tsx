@@ -30,7 +30,7 @@ const empty = (): Habit =>
     })
 
 export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
-    const { habitNameSet } = useCollectionContext()
+    const { habits: habitNameSet } = useCollectionContext()
 
     const [loading, setLoading] = React.useState(false)
     const [habit, setHabit] = React.useState<Habit>(value ?? empty())

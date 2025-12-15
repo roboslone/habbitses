@@ -1,15 +1,17 @@
 import { useCollectionContext } from "@/components/collection/context"
 import { HabitCard } from "@/components/habit/card"
 import { HabitFetcher } from "@/components/habit/fetcher"
+import { useOrderingContext } from "@/components/ordering/context"
 import { TagContext } from "@/components/tag/context"
 import { TagList } from "@/components/tag/list"
 import { Button } from "@/components/ui/button"
 import { Link } from "@tanstack/react-router"
-import { Ellipsis, Plus } from "lucide-react"
+import { Check, ChevronsUpDown, Ellipsis, Loader2, Plus } from "lucide-react"
 import React from "react"
 
 export const HabitList: React.FC = () => {
-    const { tags, habits } = useCollectionContext()
+    const { tags } = useCollectionContext()
+    const { orderedNames, isReordering, setReordering, update } = useOrderingContext()
 
     const [activeTags, setActiveTags] = React.useState<Set<string>>(new Set())
     const toggleTag = (name: string) => {
@@ -36,22 +38,14 @@ export const HabitList: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col items-center gap-2 w-full">
-                    {habits.map((name) => (
-                        <HabitFetcher key={name} name={name} mode="active">
+                    {orderedNames.map((name) => (
+                        <HabitFetcher key={name} name={name}>
                             <HabitCard />
                         </HabitFetcher>
                     ))}
                 </div>
 
-                <div className="flex flex-col items-center gap-2 w-full">
-                    {habits.map((name) => (
-                        <HabitFetcher key={name} name={name} mode="completed">
-                            <HabitCard />
-                        </HabitFetcher>
-                    ))}
-                </div>
-
-                {habits.length === 0 && (
+                {orderedNames.length === 0 ? (
                     <>
                         <Link to="/habits/new">
                             <Button size="lg">
@@ -60,6 +54,31 @@ export const HabitList: React.FC = () => {
                             </Button>
                         </Link>
                     </>
+                ) : (
+                    <div className="flex justify-center">
+                        <Button
+                            variant="ghost"
+                            className="w-fit"
+                            onClick={() => setReordering(!isReordering)}
+                            disabled={update.isPending}
+                        >
+                            {isReordering ? (
+                                <>
+                                    <Check />
+                                    Done
+                                </>
+                            ) : (
+                                <>
+                                    {update.isPending ? (
+                                        <Loader2 className="animate-spin" />
+                                    ) : (
+                                        <ChevronsUpDown />
+                                    )}
+                                    Reorder
+                                </>
+                            )}
+                        </Button>
+                    </div>
                 )}
             </div>
         </TagContext.Provider>

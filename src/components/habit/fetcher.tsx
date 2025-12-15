@@ -1,4 +1,4 @@
-import { useCollectionContext } from "@/components/collection/context"
+import { useOrderingContext } from "@/components/ordering/context"
 import { Button } from "@/components/ui/button"
 import { ErrorView } from "@/components/util/error-view"
 import { LoadingScreen } from "@/components/util/loading-screen"
@@ -15,20 +15,15 @@ import { FileButton } from "./file-button"
 
 interface P extends React.PropsWithChildren {
     name: string
-    mode: "completed" | "active" | "page"
 }
 
-export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
+export const HabitFetcher: React.FC<P> = ({ name, children }) => {
     const habit = useHabit(name)
     const update = useUpdateHabit(name)
     const [displayOptions] = useStoredDisplayOptions()
-    const { completed } = useCollectionContext()
+    const { completed } = useOrderingContext()
 
     if (habit.isLoading) {
-        if (mode === "completed") {
-            // Loading will be shown in `active` fetcher, avoid duplication.
-            return null
-        }
         return (
             <LoadingScreen
                 label={name}
@@ -43,14 +38,6 @@ export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
     if (habit.data) {
         const { completion, progress } = getProgress(habit.data, new Date())
         const isCompleted = completed.has(habit.data.name)
-
-        if (mode === "completed" && !isCompleted) {
-            return null
-        }
-        if (mode === "active" && isCompleted) {
-            // Habit will be shown in `completed` fetcher, avoid duplication.
-            return null
-        }
 
         return (
             <HabitContext
@@ -70,10 +57,6 @@ export const HabitFetcher: React.FC<P> = ({ name, children, mode }) => {
         )
     }
 
-    if (mode === "completed") {
-        // Error will be shown in `active` fetcher, avoid duplication.
-        return null
-    }
     return (
         <div className="w-full max-w-211">
             <ErrorView title={name} error={habit.error}>

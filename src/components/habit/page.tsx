@@ -23,7 +23,7 @@ export const HabitPage: React.FC = () => {
     }
 
     return (
-        <HabitFetcher name={name} mode="page">
+        <HabitFetcher name={name}>
             <HabitView />
         </HabitFetcher>
     )

@@ -1,11 +1,10 @@
 import { useHabitContext } from "@/components/habit/context"
+import { Progress } from "@/components/ui/progress"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { formatDate } from "@/lib/dates"
 import { cn } from "@/lib/utils"
 import { type Completion } from "@/proto/models/v1/models_pb"
 import type React from "react"
-
-import { Progress } from "../ui/progress"
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 
 const rows = Array.from(Array(7).keys())
 const columns = Array.from(Array(53).keys())

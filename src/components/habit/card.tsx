@@ -1,8 +1,11 @@
 import { useHabitContext } from "@/components/habit/context"
+import { useOrderingContext } from "@/components/ordering/context"
 import { TagContext } from "@/components/tag/context"
 import { useStoredDisplayOptions } from "@/lib/displayOptions"
 import { cn } from "@/lib/utils"
 import type { Habit } from "@/proto/models/v1/models_pb"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import { Link } from "@tanstack/react-router"
 import React from "react"
 
@@ -20,18 +23,54 @@ const matchActiveTags = (h: Habit, active?: Set<string>): boolean => {
     return false
 }
 
+const LinkWrapper: React.FC<React.PropsWithChildren> = ({ children }) => {
+    const { isReordering } = useOrderingContext()
+    const { habit } = useHabitContext()
+
+    if (isReordering) {
+        return children
+    }
+
+    return (
+        <Link
+            to="/habits/$name"
+            params={{ name: habit.name }}
+            className="flex flex-col justify-center grow h-full min-h-11"
+        >
+            {children}
+        </Link>
+    )
+}
+
 export const HabitCard: React.FC = () => {
     const tags = React.useContext(TagContext)
     const { habit, color, isCompleted } = useHabitContext()
+    const { isReordering } = useOrderingContext()
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+        id: habit.name,
+    })
+    const style: React.CSSProperties = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    }
     const [displayOptions] = useStoredDisplayOptions()
 
     if (!matchActiveTags(habit, tags.active)) return null
 
+    const extraProps = isReordering
+        ? { ref: setNodeRef, style, ...attributes, ...listeners }
+        : undefined
+
     return (
         <div
-            className={cn("habit-card rounded truncate w-full max-w-211 flex flex-col gap-1", {
-                "min-h-40": !displayOptions.hideChart,
-            })}
+            {...extraProps}
+            className={cn(
+                "habit-card rounded truncate w-full max-w-211 flex flex-col gap-1",
+                {
+                    "min-h-40": !displayOptions.hideChart,
+                },
+                { "cursor-move": isReordering },
+            )}
         >
             <div
                 className={cn(
@@ -41,22 +80,18 @@ export const HabitCard: React.FC = () => {
                     color.lightBackground,
                     { "pt-1": !displayOptions.hideProgressbar },
                     { "py-1": displayOptions.hideProgressbar },
-                    { "opacity-50": isCompleted },
+                    { "opacity-50": isCompleted && !isReordering },
                 )}
             >
                 <div className={cn("flex items-center gap-1 w-full px-2 pl-3 min-h-11")}>
-                    <Link
-                        to="/habits/$name"
-                        params={{ name: habit.name }}
-                        className="flex flex-col justify-center grow h-full min-h-11"
-                    >
+                    <LinkWrapper>
                         <div className="flex items-center gap-3 grow">
                             <HabitIcon size={20} className="w-6" />
 
                             <div className="flex flex-col gap-0">
                                 <span
                                     className={cn("max-w-120 overflow-hidden text-ellipsis", {
-                                        "line-through": isCompleted,
+                                        "line-through": isCompleted && !isReordering,
                                     })}
                                     title={habit.name}
                                 >
@@ -73,11 +108,13 @@ export const HabitCard: React.FC = () => {
                                 )}
                             </div>
                         </div>
-                    </Link>
+                    </LinkWrapper>
 
-                    <div className="ml-auto flex items-center gap-1 overflow-hidden">
-                        <CompletionButtons max={2} />
-                    </div>
+                    {!isReordering && (
+                        <div className="ml-auto flex items-center gap-1 overflow-hidden">
+                            <CompletionButtons max={2} />
+                        </div>
+                    )}
                 </div>
 
                 {!displayOptions.hideProgressbar && <HabitProgress />}

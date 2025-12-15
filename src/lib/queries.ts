@@ -1,5 +1,6 @@
 import { useStoredAccountContext } from "@/components/auth/account-context"
 import { useCollectionContext } from "@/components/collection/context"
+import { useOrderingContext } from "@/components/ordering/context"
 import { useRepoContentContext } from "@/components/repo/content-context"
 import { useRepoContext } from "@/components/repo/context"
 import { useOctokit } from "@/components/util/octokit-provider"
@@ -20,7 +21,7 @@ import { toast } from "sonner"
 import { decode, encode } from "uint8-to-base64"
 
 import { type StoredAccount, useStoredAccount } from "./auth"
-import { type RepoContent, useStoredRepos } from "./git"
+import { type RepoContent, useStoredCollection, useStoredRepoContent, useStoredRepos } from "./git"
 
 export const client = new QueryClient()
 
@@ -126,9 +127,12 @@ export const useRepoContent = () => {
     const account = useStoredAccountContext()
     const octokit = useOctokit()
 
+    const [stored, setStored] = useStoredRepoContent()
+
     return useQuery({
         queryKey: ["repo", repo.id, "content"],
         queryFn: async ({ signal }) => {
+            let data: RepoContent
             try {
                 const response = await octokit.rest.git.getTree({
                     owner: account.login,
@@ -138,11 +142,11 @@ export const useRepoContent = () => {
                     request: { signal },
                     headers: { "If-None-Match": "" },
                 })
-                return response.data
+                data = response.data
             } catch (e: unknown) {
                 if ((e as RequestError).status === 404 || (e as RequestError).status === 409) {
                     // empty repo
-                    return {
+                    data = {
                         sha: "",
                         truncated: false,
                         tree: [],
@@ -150,7 +154,12 @@ export const useRepoContent = () => {
                 }
                 throw e
             }
+
+            setStored({ data, updatedAt: new Date() })
+            return data
         },
+        initialData: stored?.data,
+        initialDataUpdatedAt: stored?.updatedAt?.getTime?.(),
         staleTime: 5 * 60 * 1000, // todo
         retry: handleError("Failed to fetch repo content", { maxFailures: 1 }),
     })
@@ -162,6 +171,8 @@ export const useCollection = () => {
     const content = useRepoContentContext()
     const octokit = useOctokit()
 
+    const [stored, setStored] = useStoredCollection()
+
     return useQuery({
         queryKey: ["repo", repo.id, "collection"],
         queryFn: async ({ signal }) => {
@@ -170,7 +181,7 @@ export const useCollection = () => {
             }
 
             const path = "collection.json"
-
+            let collection: Collection
             try {
                 const response = await octokit.rest.repos.getContent({
                     owner: account.login,
@@ -180,16 +191,21 @@ export const useCollection = () => {
                     headers: { "If-None-Match": "" },
                 })
                 const file = decodeFile(path, response)
-                const collection = fromJsonString(CollectionSchema, file.content)
+                collection = fromJsonString(CollectionSchema, file.content)
                 collection.sha = file.sha
-
-                return collection
             } catch (e) {
                 if ((e as RequestError).status === 404) {
-                    return create(CollectionSchema, {})
+                    collection = create(CollectionSchema, {})
                 }
+                throw e
             }
+
+            setStored({ data: collection, updatedAt: new Date() })
+            return collection
         },
+        initialData: stored?.data,
+        initialDataUpdatedAt: stored?.updatedAt?.getTime?.(),
+        staleTime: 5 * 60 * 1000, // todo
         retry: handleError("Failed to fetch habit collection"),
     })
 }
@@ -236,7 +252,7 @@ export const useNewHabit = () => {
 export const useUpdateHabit = (name: string) => {
     const repo = useRepoContext()
     const pushHabit = usePushHabit()
-    const { recordCompletion } = useCollectionContext()
+    const { recordCompletion } = useOrderingContext()
 
     const queryKey = ["repo", repo.id, "habit", name]
 
@@ -297,7 +313,7 @@ export const useHabit = (name: string) => {
     const account = useStoredAccountContext()
     const repo = useRepoContext()
     const octokit = useOctokit()
-    const { recordCompletion } = useCollectionContext()
+    const { recordCompletion } = useOrderingContext()
 
     return useQuery({
         queryKey: ["repo", repo.id, "habit", name],
@@ -324,7 +340,7 @@ export const useHabit = (name: string) => {
     })
 }
 
-const useUpdateCollection = () => {
+const usePushCollection = () => {
     const account = useStoredAccountContext()
     const repo = useRepoContext()
     const { collection } = useCollectionContext()
@@ -356,12 +372,12 @@ const useInvalidateCollection = () => {
 }
 
 export const useDeleteTags = () => {
-    const updateCollection = useUpdateCollection()
+    const pushCollection = usePushCollection()
     const invalidateCollection = useInvalidateCollection()
 
     return useMutation({
         mutationFn: (tags: string[]) =>
-            updateCollection((c) => {
+            pushCollection((c) => {
                 for (const name of tags) {
                     delete c.tags[name]
                 }
@@ -372,13 +388,25 @@ export const useDeleteTags = () => {
 }
 
 export const useNewTag = () => {
-    const updateCollection = useUpdateCollection()
+    const pushCollection = usePushCollection()
     const invalidateCollection = useInvalidateCollection()
 
     return useMutation({
         mutationFn: (tag: Tag) =>
-            updateCollection((c) => (c.tags[tag.name] = tag), `created tag - ${tag.name}`),
+            pushCollection((c) => (c.tags[tag.name] = tag), `created tag - ${tag.name}`),
         onSettled: invalidateCollection,
         retry: handleError("Failed to create tag", { maxFailures: 0 }),
+    })
+}
+
+export const useUpdateOrder = () => {
+    const pushCollection = usePushCollection()
+    const invalidateCollection = useInvalidateCollection()
+
+    return useMutation({
+        mutationFn: (order: string[]) =>
+            pushCollection((c) => (c.order = order), `reordered habits`),
+        onSettled: invalidateCollection,
+        retry: handleError("Failed to update order", { maxFailures: 0 }),
     })
 }
