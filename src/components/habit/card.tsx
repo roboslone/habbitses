@@ -55,15 +55,19 @@ export const HabitCard: React.FC = () => {
 
                             <div className="flex flex-col gap-0">
                                 <span
-                                    className={cn({
+                                    className={cn("max-w-120 overflow-hidden text-ellipsis", {
                                         "line-through": isCompleted,
                                     })}
+                                    title={habit.name}
                                 >
                                     {habit.name}
                                 </span>
 
                                 {!displayOptions.hideDescription && (
-                                    <span className="text-xs text-muted-foreground dark:text-stone-500">
+                                    <span
+                                        className="max-w-120 overflow-hidden text-ellipsis text-xs text-muted-foreground dark:text-stone-500"
+                                        title={habit.description}
+                                    >
                                         {habit.description}
                                     </span>
                                 )}

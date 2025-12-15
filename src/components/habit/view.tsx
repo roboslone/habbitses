@@ -114,7 +114,9 @@ export const HabitView: React.FC = () => {
                 title={
                     <div className={cn("flex items-center gap-2", color.text)}>
                         <HabitIcon size={18} />
-                        {habit.name}
+                        <span className="max-w-120 overflow-hidden text-ellipsis whitespace-nowrap" title={habit.name}>
+                            {habit.name}
+                        </span>
                     </div>
                 }
                 buttonRight={

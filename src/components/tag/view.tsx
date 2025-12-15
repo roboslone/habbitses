@@ -23,7 +23,7 @@ export const TagView: React.FC<P> = ({ name, tag }) => {
             data-testid={`tag-${name}`}
             onClick={() => ctx.onClick?.(name)}
             className={cn(
-                "flex items-center gap-1 p-1 px-2 rounded-md h-8 max-w-40 border text-sm",
+                "flex items-center gap-1 p-1 px-2 rounded-md h-8 max-w-60 border text-sm",
                 { "border-dashed": !active },
                 { "bg-accent/20": active },
                 { [color.border]: active },

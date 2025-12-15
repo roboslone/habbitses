@@ -55,7 +55,9 @@ export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({ children }
 
                 <div className="flex flex-col gap-2">
                     <h1 className={cn("flex items-center gap-2 text-xl", color.text)}>
-                        <HabitIcon />
+                        <div>
+                            <HabitIcon />
+                        </div>
                         {habit.name}
                     </h1>
                     <HabitDescription />
