@@ -9,6 +9,9 @@ interface S {
     update: ReturnType<typeof useUpdateHabit>
     isFetching: boolean
     color: colors.Options
+
+    date: Date
+    setDate: React.Dispatch<React.SetStateAction<Date>>
     completion: Completion
     isCompleted: boolean
     progress: number

@@ -51,22 +51,22 @@ const applyButton = (
 }
 
 export const CompletionButton: React.FC<P> = ({ options = defaultOptions, preview, ...rest }) => {
-    const { habit, color, update } = useHabitContext()
+    const { habit, color, update, date } = useHabitContext()
 
     const handleClick = (manualValue?: number) => {
         if (preview) return
 
         const next = clone(HabitSchema, habit)
-        const date = formatDate(new Date())
+        const dateStr = formatDate(date)
 
         if (options.kind.case === undefined) {
-            delete next.completions[date]
+            delete next.completions[dateStr]
         } else {
             const completion =
-                next.completions[date] ?? create(CompletionSchema, { target: next.dailyTarget })
+                next.completions[dateStr] ?? create(CompletionSchema, { target: next.dailyTarget })
 
             applyButton(completion, options, manualValue)
-            next.completions[date] = completion
+            next.completions[dateStr] = completion
         }
 
         toast.promise(update.mutateAsync(next), {

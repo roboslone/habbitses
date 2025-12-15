@@ -74,7 +74,7 @@ export const TagPicker: React.FC = () => {
                                     </span>
 
                                     <Link to="/tags/new">
-                                        <Button variant="ghost">
+                                        <Button>
                                             <Plus />
                                             Create tag
                                         </Button>

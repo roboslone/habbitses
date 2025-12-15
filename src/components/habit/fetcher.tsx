@@ -8,7 +8,7 @@ import { getProgress } from "@/lib/progress"
 import { useHabit, useUpdateHabit } from "@/lib/queries"
 import { cn } from "@/lib/utils"
 import { RefreshCw } from "lucide-react"
-import type React from "react"
+import React from "react"
 
 import { HabitContext } from "./context"
 import { FileButton } from "./file-button"
@@ -23,6 +23,8 @@ export const HabitFetcher: React.FC<P> = ({ name, children }) => {
     const [displayOptions] = useStoredDisplayOptions()
     const { completed } = useOrderingContext()
 
+    const [date, setDate] = React.useState<Date>(new Date())
+
     if (habit.isLoading) {
         return (
             <LoadingScreen
@@ -36,7 +38,7 @@ export const HabitFetcher: React.FC<P> = ({ name, children }) => {
     }
 
     if (habit.data) {
-        const { completion, progress } = getProgress(habit.data, new Date())
+        const { completion, progress } = getProgress(habit.data, date)
         const isCompleted = completed.has(habit.data.name)
 
         return (
@@ -47,6 +49,9 @@ export const HabitFetcher: React.FC<P> = ({ name, children }) => {
                     update,
                     isFetching: habit.isFetching,
                     progress,
+
+                    date,
+                    setDate,
                     completion,
                     isCompleted,
                     color: colors.forHabit(habit.data),

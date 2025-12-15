@@ -1,10 +1,10 @@
 import { useHabitContext } from "@/components/habit/context"
-import { Progress } from "@/components/ui/progress"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { formatDate } from "@/lib/dates"
 import { cn } from "@/lib/utils"
 import { type Completion } from "@/proto/models/v1/models_pb"
 import type React from "react"
+
+import { HabitDatePicker } from "./date-picker"
 
 const rows = Array.from(Array(7).keys())
 const columns = Array.from(Array(53).keys())
@@ -21,71 +21,54 @@ interface CellProps {
     column: number
     date: Date
     background: string
+    interactive: boolean
     completion?: Completion
+    selected?: boolean
 }
 
-const Cell: React.FC<CellProps> = ({ date, background, completion }) => {
+const Cell: React.FC<CellProps> = ({ date, background, completion, selected, interactive }) => {
+    const { setDate } = useHabitContext()
+
     let progress = 0
     if (completion !== undefined) {
         progress = Math.min(1, completion.count / completion.target)
     }
 
-    if (completion === undefined) {
-        return (
-            <div
-                className={cn("w-3 h-3 min-w-3 min-h-3 rounded-xs", {
-                    "bg-secondary dark:bg-card/80": progress === 0,
-                    [background]: progress > 0,
-                })}
-                style={{
-                    opacity: progress === 0 ? 1 : progress * 0.5,
-                }}
-            />
-        )
-    }
-
     return (
-        <Tooltip delayDuration={100}>
-            <TooltipTrigger asChild>
-                <div
-                    className={cn("w-3 h-3 min-w-3 min-h-3 rounded-xs", {
-                        "bg-secondary dark:bg-card/80": progress === 0,
-                        [background]: progress > 0,
-                    })}
-                    style={{
-                        opacity: progress === 0 ? 1 : progress * 0.5,
-                    }}
-                />
-            </TooltipTrigger>
-            <TooltipContent>
-                <div className="flex flex-col gap-2 items-center">
-                    <span>{date.toLocaleDateString()}</span>
-                    {completion !== undefined && (
-                        <>
-                            <Progress value={progress * 100} className="rounded-full" />
-                            <span className="font-bold">
-                                {completion.count} / {completion.target}
-                            </span>
-                        </>
-                    )}
-                </div>
-            </TooltipContent>
-        </Tooltip>
+        <div
+            className={cn("w-3 h-3 min-w-3 min-h-3 rounded-xs flex items-center justify-center", {
+                "cursor-pointer": interactive,
+                "bg-secondary dark:bg-card/80": progress === 0,
+                [background]: progress > 0,
+            })}
+            style={{
+                opacity: progress === 0 ? 1 : progress,
+            }}
+            onClick={interactive ? () => setDate(date) : undefined}
+        >
+            {interactive && selected && <div className="h-2 w-2 rounded-xs bg-secondary" />}
+        </div>
     )
 }
 
-export const HabitChart: React.FC = () => {
-    const { habit, color } = useHabitContext()
+interface P {
+    interactive?: boolean
+}
+
+export const HabitChart: React.FC<P> = ({ interactive }) => {
+    const { habit, color, date } = useHabitContext()
     const now = new Date()
+    const selectedDateStr = formatDate(date)
 
     return (
-        <div>
+        <div className="flex flex-col gap-2">
             <div className="max-w-full overflow-auto">
                 <div data-testid={`habit-chart--${habit.name}`} className="flex flex-col gap-1">
                     {rows.map((row) => (
                         <div key={row} className="flex gap-1">
                             {columns.map((column) => {
                                 const date = cellToDate(now, row, column)
+                                const dateStr = formatDate(date)
                                 return (
                                     <Cell
                                         key={`${row}-${column}`}
@@ -93,7 +76,9 @@ export const HabitChart: React.FC = () => {
                                         column={column}
                                         date={date}
                                         background={color.background}
-                                        completion={habit.completions[formatDate(date)]}
+                                        completion={habit.completions[dateStr]}
+                                        selected={dateStr === selectedDateStr}
+                                        interactive={!!interactive}
                                     />
                                 )
                             })}
@@ -101,6 +86,8 @@ export const HabitChart: React.FC = () => {
                     ))}
                 </div>
             </div>
+
+            <div className="flex justify-end">{interactive && <HabitDatePicker />}</div>
         </div>
     )
 }

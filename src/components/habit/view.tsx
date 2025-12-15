@@ -10,11 +10,13 @@ import { create } from "@bufbuild/protobuf"
 import { History, Pencil, RefreshCw, Trash2 } from "lucide-react"
 import React from "react"
 
+import { Separator } from "../ui/separator"
 import { HabitBreakDialog } from "./break-dialog"
 import { CompletionButton } from "./button"
 import { ButtonForm } from "./button-form"
 import { CompletionButtons } from "./buttons"
 import { HabitChart } from "./chart"
+import { HabitDatePicker } from "./date-picker"
 import { HabitDescription } from "./description"
 import { FileButton } from "./file-button"
 import HabitForm from "./form"
@@ -71,7 +73,11 @@ export const HabitView: React.FC = () => {
                         />
                     </div>
                 </div>
+
                 <HabitProgress className="rounded-full h-1.5" />
+            </div>
+            <div className="max-w-full overflow-auto">
+                <HabitChart interactive />
             </div>
 
             <div className="flex flex-col gap-2">
@@ -79,29 +85,17 @@ export const HabitView: React.FC = () => {
                 <TagPicker />
             </div>
 
-            <div className="flex flex-col gap-2">
-                <Label className="text-muted-foreground/50">Chart</Label>
-                <div className="max-w-full overflow-auto">
-                    <HabitChart />
-                </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-                <Label className="text-muted-foreground/50">GitHub</Label>
-
-                <div className="flex items-center gap-2">
-                    <FileButton variant="outline" name={habit.name} />
-
-                    <a href={historyURL} target="_blank">
-                        <Button variant="outline">
-                            <History />
-                            History
-                        </Button>
-                    </a>
-                </div>
-            </div>
+            <Separator />
 
             <div className="flex flex-wrap items-center justify-center gap-2">
+                <FileButton variant="ghost" name={habit.name} />
+
+                <a href={historyURL} target="_blank">
+                    <Button variant="ghost">
+                        <History />
+                        History
+                    </Button>
+                </a>
                 <Button variant="ghost" onClick={() => void refetch()} disabled={isFetching}>
                     <RefreshCw className={cn({ "animate-spin": isFetching })} />
                     Refresh
