@@ -1,7 +1,12 @@
 import type { RepoContent } from "@/lib/git"
 import React from "react"
 
-export const RepoContentContext = React.createContext<RepoContent | undefined>(undefined)
+interface S {
+    repoContent: RepoContent
+    isFetching: boolean
+}
+
+export const RepoContentContext = React.createContext<S | undefined>(undefined)
 
 export const useRepoContentContext = () => {
     const ctx = React.useContext(RepoContentContext)

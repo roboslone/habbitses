@@ -9,7 +9,7 @@ import { CollectionContext } from "./context"
 
 export const CollectionProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const collection = useCollection()
-    const repoContent = useRepoContentContext()
+    const { repoContent } = useRepoContentContext()
 
     const habits = [...iterHabitNames(repoContent)]
 
@@ -23,6 +23,7 @@ export const CollectionProvider: React.FC<React.PropsWithChildren> = ({ children
             <CollectionContext.Provider
                 value={{
                     collection: collection.data,
+                    isFetching: collection.isFetching,
                     tags,
                     tagSet: new Set(tags),
                     habits: new Set(habits),

@@ -65,7 +65,7 @@ export const HabitCard: React.FC = () => {
         <div
             {...extraProps}
             className={cn(
-                "habit-card rounded truncate w-full max-w-211 flex flex-col gap-1",
+                "habit-card rounded truncate w-full max-w-211 flex flex-col gap-1 touch-none",
                 {
                     "min-h-40": !displayOptions.hideChart,
                 },

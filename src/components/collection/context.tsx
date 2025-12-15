@@ -3,6 +3,7 @@ import React from "react"
 
 interface S {
     collection: Collection
+    isFetching: boolean
 
     tags: string[]
     tagSet: Set<string>

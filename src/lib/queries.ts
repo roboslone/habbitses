@@ -168,7 +168,7 @@ export const useRepoContent = () => {
 export const useCollection = () => {
     const account = useStoredAccountContext()
     const repo = useRepoContext()
-    const content = useRepoContentContext()
+    const { repoContent } = useRepoContentContext()
     const octokit = useOctokit()
 
     const [stored, setStored] = useStoredCollection()
@@ -176,7 +176,7 @@ export const useCollection = () => {
     return useQuery({
         queryKey: ["repo", repo.id, "collection"],
         queryFn: async ({ signal }) => {
-            if (content.tree.length === 0) {
+            if (repoContent.tree.length === 0) {
                 return create(CollectionSchema, {})
             }
 

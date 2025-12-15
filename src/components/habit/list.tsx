@@ -2,6 +2,7 @@ import { useCollectionContext } from "@/components/collection/context"
 import { HabitCard } from "@/components/habit/card"
 import { HabitFetcher } from "@/components/habit/fetcher"
 import { useOrderingContext } from "@/components/ordering/context"
+import { RefreshButton } from "@/components/refresh-button"
 import { TagContext } from "@/components/tag/context"
 import { TagList } from "@/components/tag/list"
 import { Button } from "@/components/ui/button"
@@ -55,7 +56,8 @@ export const HabitList: React.FC = () => {
                         </Link>
                     </>
                 ) : (
-                    <div className="flex justify-center">
+                    <div className="flex items-center justify-center gap-2">
+                        <RefreshButton />
                         <Button
                             variant="ghost"
                             className="w-fit"
