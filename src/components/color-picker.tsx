@@ -12,7 +12,7 @@ interface P {
 export const ColorPicker: React.FC<P> = ({ active, onPick, disabled }) => (
     <div data-testid="color-picker" className="flex flex-wrap gap-2">
         {all.map((v) => (
-            <div
+            <button
                 key={v}
                 className={cn(
                     "rounded-md w-8 h-8 flex flex-col items-center justify-center cursor-pointer",
@@ -24,7 +24,7 @@ export const ColorPicker: React.FC<P> = ({ active, onPick, disabled }) => (
                 }}
             >
                 {active === v && <Check className="text-background" />}
-            </div>
+            </button>
         ))}
     </div>
 )

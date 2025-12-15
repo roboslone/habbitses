@@ -93,6 +93,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                 </p>
                 <Input
                     type="number"
+                    inputMode="numeric"
                     disabled={loading}
                     value={habit.dailyTarget}
                     onFocus={(e) => e.target.select()}

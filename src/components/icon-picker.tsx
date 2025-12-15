@@ -13,7 +13,7 @@ interface P {
 export const IconPicker: React.FC<P> = ({ active, color, onPick, disabled }) => (
     <div data-testid="color-picker" className="flex flex-wrap gap-2 max-w-211">
         {icons.all.map((v) => (
-            <div
+            <button
                 key={v}
                 className={cn(
                     "rounded-md w-10 h-10 flex flex-col items-center justify-center bg-card border-2 cursor-pointer",
@@ -26,7 +26,7 @@ export const IconPicker: React.FC<P> = ({ active, color, onPick, disabled }) => 
                 }}
             >
                 {icons.render(v, { size: 22 })}
-            </div>
+            </button>
         ))}
     </div>
 )

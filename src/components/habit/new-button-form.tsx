@@ -162,6 +162,7 @@ const SetPreview: React.FC<SubProps> = ({ setOptions }) => {
                 <Label>Value</Label>
                 <Input
                     type="number"
+                    inputMode="numeric"
                     value={value}
                     onChange={(e) => setValue(Math.max(0, e.target.valueAsNumber || 0))}
                 />
@@ -189,6 +190,7 @@ const DeltaPreview: React.FC<SubProps> = ({ setOptions }) => {
                 <Label>Value</Label>
                 <Input
                     type="number"
+                    inputMode="numeric"
                     value={value}
                     onChange={(e) => setValue(Math.max(0, e.target.valueAsNumber || 0))}
                 />
@@ -216,6 +218,7 @@ const PercentagePreview: React.FC<SubProps> = ({ setOptions }) => {
                 <Label>Value</Label>
                 <Input
                     type="number"
+                    inputMode="numeric"
                     value={value}
                     onChange={(e) =>
                         setValue(Math.min(100, Math.max(0, e.target.valueAsNumber || 0)))
