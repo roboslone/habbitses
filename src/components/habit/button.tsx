@@ -10,9 +10,11 @@ import {
     HabitSchema,
 } from "@/proto/models/v1/models_pb"
 import { clone, create } from "@bufbuild/protobuf"
-import { ArrowRight, ArrowUp, Check, Undo2 } from "lucide-react"
-import type React from "react"
+import { ArrowRight, ArrowUp, Check, Plus, Undo2 } from "lucide-react"
+import React from "react"
 import { toast } from "sonner"
+
+import { ManualCompletionDialog } from "./manual-completion-dialog"
 
 interface P extends React.ComponentProps<typeof Button> {
     options?: Completion_ButtonOptions
@@ -23,32 +25,33 @@ const defaultOptions = create(Completion_ButtonOptionsSchema, {
     kind: { case: "complete", value: true },
 })
 
-const applyButton = (completion: Completion, options: Completion_ButtonOptions) => {
+const applyButton = (
+    completion: Completion,
+    options: Completion_ButtonOptions,
+    manualValue?: number,
+) => {
     switch (options.kind.case) {
         case "delta":
-            completion.count += options.kind.value
+            completion.count = manualValue ?? options.kind.value
             return
         case "percentage":
-            completion.count += Math.ceil((options.kind.value / 100) * completion.target)
+            completion.count += Math.ceil(
+                ((manualValue ?? options.kind.value) / 100) * completion.target,
+            )
             return
         case "complete":
             completion.count = completion.target
             return
         case "set":
-            completion.count = options.kind.value
+            completion.count = manualValue ?? options.kind.value
             return
     }
 }
 
-export const CompletionButton: React.FC<P> = ({
-    options = defaultOptions,
-    children,
-    preview,
-    ...rest
-}) => {
+export const CompletionButton: React.FC<P> = ({ options = defaultOptions, preview, ...rest }) => {
     const { habit, color, update } = useHabitContext()
 
-    const handleClick = () => {
+    const handleClick = (manualValue?: number) => {
         if (preview) return
 
         const next = clone(HabitSchema, habit)
@@ -60,7 +63,7 @@ export const CompletionButton: React.FC<P> = ({
             const completion =
                 next.completions[date] ?? create(CompletionSchema, { target: next.dailyTarget })
 
-            applyButton(completion, options)
+            applyButton(completion, options, manualValue)
             next.completions[date] = completion
         }
 
@@ -85,22 +88,6 @@ export const CompletionButton: React.FC<P> = ({
                 <span>Reset</span>
             </>
         )
-    } else if (kind.case === "delta") {
-        className = cn(className, "gap-1")
-        content = (
-            <>
-                <ArrowUp />
-                <span>+{kind.value}</span>
-            </>
-        )
-    } else if (kind.case === "percentage") {
-        className = cn(className, "gap-1")
-        content = (
-            <>
-                <ArrowUp />
-                <span>+{kind.value}%</span>
-            </>
-        )
     } else if (kind.case === "complete") {
         content = (
             <>
@@ -108,7 +95,71 @@ export const CompletionButton: React.FC<P> = ({
                 Done
             </>
         )
+    } else if (kind.case === "delta") {
+        if (kind.value === 0) {
+            return (
+                <ManualCompletionDialog onSubmit={handleClick}>
+                    <Button
+                        variant="ghost"
+                        {...rest}
+                        className={className}
+                        disabled={rest.disabled || update.isPending}
+                    >
+                        <Plus />
+                        Add
+                    </Button>
+                </ManualCompletionDialog>
+            )
+        }
+
+        className = cn(className, "gap-1")
+        content = (
+            <>
+                <Plus />
+                <span>{kind.value}</span>
+            </>
+        )
+    } else if (kind.case === "percentage") {
+        className = cn(className, "gap-1")
+        content = (
+            <>
+                <Plus />
+                <span>{kind.value}%</span>
+            </>
+        )
+
+        if (kind.value === 0) {
+            return (
+                <ManualCompletionDialog onSubmit={handleClick}>
+                    <Button
+                        variant="ghost"
+                        {...rest}
+                        className={className}
+                        disabled={rest.disabled || update.isPending}
+                    >
+                        <Plus />
+                        Add %
+                    </Button>
+                </ManualCompletionDialog>
+            )
+        }
     } else if (kind.case === "set") {
+        if (kind.value === 0) {
+            return (
+                <ManualCompletionDialog onSubmit={handleClick}>
+                    <Button
+                        variant="ghost"
+                        {...rest}
+                        className={className}
+                        disabled={rest.disabled || update.isPending}
+                    >
+                        <ArrowRight />
+                        Set
+                    </Button>
+                </ManualCompletionDialog>
+            )
+        }
+
         content = (
             <>
                 <ArrowRight />
@@ -123,9 +174,9 @@ export const CompletionButton: React.FC<P> = ({
             {...rest}
             className={className}
             disabled={rest.disabled || update.isPending}
-            onClick={handleClick}
+            onClick={() => handleClick()}
         >
-            {children ?? content}
+            {content}
         </Button>
     )
 }

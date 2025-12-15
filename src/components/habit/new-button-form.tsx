@@ -18,7 +18,6 @@ import {
 import { clone, create } from "@bufbuild/protobuf"
 import { Check, Loader2, X } from "lucide-react"
 import React from "react"
-import { toast } from "sonner"
 
 import { CompletionButton } from "./button"
 import { useHabitContext } from "./context"
@@ -45,13 +44,7 @@ export const NewButtonForm: React.FC<P> = ({ onClose }) => {
             copy.buttons = []
         }
         copy.buttons.push(clone(Completion_ButtonOptionsSchema, options))
-
-        toast.promise(update.mutateAsync(copy).then(onClose), {
-            error: (e: Error) => ({
-                message: "Failed to add button",
-                description: e.message,
-            }),
-        })
+        void update.mutateAsync(copy).then(onClose)
     }
 
     let preview = null
@@ -60,13 +53,40 @@ export const NewButtonForm: React.FC<P> = ({ onClose }) => {
             preview = <CompletePreview setOptions={setOptions} />
             break
         case "delta":
-            preview = <DeltaPreview setOptions={setOptions} />
+            preview = (
+                <NumericPreview
+                    key={case_}
+                    description="Increase progress by specified amount"
+                    setOptions={setOptions}
+                    toOptions={(value) =>
+                        create(Completion_ButtonOptionsSchema, { kind: { case: case_, value } })
+                    }
+                />
+            )
             break
         case "percentage":
-            preview = <PercentagePreview setOptions={setOptions} />
+            preview = (
+                <NumericPreview
+                    key={case_}
+                    description="Increase progress by specified percentage"
+                    setOptions={setOptions}
+                    toOptions={(value) =>
+                        create(Completion_ButtonOptionsSchema, { kind: { case: case_, value } })
+                    }
+                />
+            )
             break
         case "set":
-            preview = <SetPreview setOptions={setOptions} />
+            preview = (
+                <NumericPreview
+                    key={case_}
+                    description="Set progress to specified value"
+                    setOptions={setOptions}
+                    toOptions={(value) =>
+                        create(Completion_ButtonOptionsSchema, { kind: { case: case_, value } })
+                    }
+                />
+            )
             break
     }
 
@@ -92,7 +112,7 @@ export const NewButtonForm: React.FC<P> = ({ onClose }) => {
             {preview}
 
             <div className="flex flex-col gap-2">
-                <Label>Result</Label>
+                <Label className="text-muted-foreground">Result</Label>
                 <CompletionButton preview variant="outline" options={options} />
             </div>
 
@@ -143,48 +163,27 @@ const CompletePreview: React.FC<SubProps> = ({ setOptions }) => {
     )
 }
 
-const SetPreview: React.FC<SubProps> = ({ setOptions }) => {
-    const [value, setValue] = React.useState(42)
-
-    React.useEffect(() => {
-        setOptions(
-            create(Completion_ButtonOptionsSchema, {
-                kind: { case: "set", value },
-            }),
-        )
-    }, [setOptions, value])
-
-    return (
-        <>
-            <p className="text-muted-foreground">Set progress to specified value</p>
-
-            <div className="flex flex-col gap-2">
-                <Label>Value</Label>
-                <Input
-                    type="number"
-                    inputMode="numeric"
-                    value={value}
-                    onChange={(e) => setValue(Math.max(0, e.target.valueAsNumber || 0))}
-                />
-            </div>
-        </>
-    )
+interface NumericPreviewProps extends SubProps {
+    description: string
+    max?: number
+    toOptions: (v: number) => Completion_ButtonOptions
 }
 
-const DeltaPreview: React.FC<SubProps> = ({ setOptions }) => {
+const NumericPreview: React.FC<NumericPreviewProps> = ({
+    description,
+    max,
+    toOptions,
+    setOptions,
+}) => {
     const [value, setValue] = React.useState(42)
 
     React.useEffect(() => {
-        setOptions(
-            create(Completion_ButtonOptionsSchema, {
-                kind: { case: "delta", value },
-            }),
-        )
+        setOptions(toOptions(value))
     }, [setOptions, value])
 
     return (
         <>
-            <p className="text-muted-foreground">Increase progress by specified amount</p>
+            <p className="text-muted-foreground">{description}</p>
 
             <div className="flex flex-col gap-2">
                 <Label>Value</Label>
@@ -192,38 +191,21 @@ const DeltaPreview: React.FC<SubProps> = ({ setOptions }) => {
                     type="number"
                     inputMode="numeric"
                     value={value}
-                    onChange={(e) => setValue(Math.max(0, e.target.valueAsNumber || 0))}
+                    onChange={(e) => {
+                        let v = Math.max(0, e.target.valueAsNumber || 0)
+                        if (max !== undefined) {
+                            v = Math.min(max, v)
+                        }
+                        setValue(v)
+                    }}
                 />
-            </div>
-        </>
-    )
-}
-
-const PercentagePreview: React.FC<SubProps> = ({ setOptions }) => {
-    const [value, setValue] = React.useState(42)
-
-    React.useEffect(() => {
-        setOptions(
-            create(Completion_ButtonOptionsSchema, {
-                kind: { case: "percentage", value },
-            }),
-        )
-    }, [setOptions, value])
-
-    return (
-        <>
-            <p className="text-muted-foreground">Increase progress by specified percentage</p>
-
-            <div className="flex flex-col gap-2">
-                <Label>Value</Label>
-                <Input
-                    type="number"
-                    inputMode="numeric"
-                    value={value}
-                    onChange={(e) =>
-                        setValue(Math.min(100, Math.max(0, e.target.valueAsNumber || 0)))
-                    }
-                />
+                <span className="text-xs text-muted-foreground">
+                    If{" "}
+                    <a className="underline cursor-pointer" onClick={() => setValue(0)}>
+                        zero
+                    </a>
+                    , value will be set manually each time.
+                </span>
             </div>
         </>
     )

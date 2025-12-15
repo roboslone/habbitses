@@ -47,11 +47,20 @@ export const HabitView: React.FC = () => {
                     <span>
                         {completion.count} / {completion.target}
                     </span>
-                    <CompletionButton
-                        options={create(Completion_ButtonOptionsSchema, {})}
-                        className="w-fit"
-                        size="sm"
-                    />
+                    <div className="flex items-center gap-2">
+                        <CompletionButton
+                            options={create(Completion_ButtonOptionsSchema, {
+                                kind: { case: "set", value: 0 },
+                            })}
+                            className="w-fit"
+                            size="sm"
+                        />
+                        <CompletionButton
+                            options={create(Completion_ButtonOptionsSchema, {})}
+                            className="w-fit"
+                            size="sm"
+                        />
+                    </div>
                 </div>
                 <HabitProgress className="rounded-full h-1.5" />
             </div>
@@ -114,7 +123,10 @@ export const HabitView: React.FC = () => {
                 title={
                     <div className={cn("flex items-center gap-2", color.text)}>
                         <HabitIcon size={18} />
-                        <span className="max-w-120 overflow-hidden text-ellipsis whitespace-nowrap" title={habit.name}>
+                        <span
+                            className="max-w-120 overflow-hidden text-ellipsis whitespace-nowrap"
+                            title={habit.name}
+                        >
                             {habit.name}
                         </span>
                     </div>
