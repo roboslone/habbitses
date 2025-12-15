@@ -79,7 +79,7 @@ export const OrderingProvider: React.FC<React.PropsWithChildren> = ({ children }
 
     React.useEffect(() => {
         setOrderedNames(reorder(habits, completed, collection.order, isReordering))
-    }, [completed])
+    }, [completed, habits])
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event

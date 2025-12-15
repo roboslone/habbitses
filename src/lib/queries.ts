@@ -238,12 +238,14 @@ const usePushHabit = () => {
 export const useNewHabit = () => {
     const repo = useRepoContext()
     const pushHabit = usePushHabit()
+    const invalidateCollection = useInvalidateCollection()
 
     return useMutation({
         mutationFn: (habit: Habit) => pushHabit(`start new habit - "${habit.name}"`, habit),
 
         onSettled: async () => {
             await client.invalidateQueries({ queryKey: ["repo", repo.id, "content"] })
+            await invalidateCollection()
         },
         retry: handleError("Failed to start a habit", { maxFailures: 0 }),
     })

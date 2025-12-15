@@ -57,15 +57,13 @@ export const HabitCard: React.FC = () => {
 
     if (!matchActiveTags(habit, tags.active)) return null
 
-    const extraProps = isReordering
-        ? { ref: setNodeRef, style, ...attributes, ...listeners }
-        : undefined
+    const extraProps = isReordering ? { ref: setNodeRef, style, ...attributes } : undefined
 
     return (
         <div
             {...extraProps}
             className={cn(
-                "habit-card rounded truncate w-full max-w-211 flex flex-col gap-1 touch-none",
+                "habit-card rounded truncate w-full max-w-211 flex flex-col gap-1",
                 {
                     "min-h-40": !displayOptions.hideChart,
                 },
@@ -86,7 +84,7 @@ export const HabitCard: React.FC = () => {
                 <div className={cn("flex items-center gap-1 w-full px-2 pl-3 min-h-11")}>
                     <LinkWrapper>
                         <div className="flex items-center gap-3 grow">
-                            <HabitIcon size={20} className="w-6" />
+                            <HabitIcon size={20} className="w-6 touch-none" {...listeners} />
 
                             <div className="flex flex-col gap-0">
                                 <span
