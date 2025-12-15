@@ -57,7 +57,7 @@ export const HabitCard: React.FC = () => {
 
     if (!matchActiveTags(habit, tags.active)) return null
 
-    const extraProps = isReordering ? { ref: setNodeRef, style, ...attributes } : undefined
+    const extraProps = { ref: setNodeRef, style, ...attributes }
 
     return (
         <div
@@ -108,7 +108,9 @@ export const HabitCard: React.FC = () => {
                         </div>
                     </LinkWrapper>
 
-                    {!isReordering && (
+                    {isReordering ? (
+                        <HabitIcon size={20} className="w-6 touch-none" {...listeners} />
+                    ) : (
                         <div className="ml-auto flex items-center gap-1 overflow-hidden">
                             <CompletionButtons max={2} />
                         </div>
