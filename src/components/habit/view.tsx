@@ -50,6 +50,13 @@ export const HabitView: React.FC = () => {
                     <div className="flex items-center gap-2">
                         <CompletionButton
                             options={create(Completion_ButtonOptionsSchema, {
+                                kind: { case: "complete", value: true },
+                            })}
+                            className="w-fit"
+                            size="sm"
+                        />
+                        <CompletionButton
+                            options={create(Completion_ButtonOptionsSchema, {
                                 kind: { case: "set", value: 0 },
                             })}
                             className="w-fit"
