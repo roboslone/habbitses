@@ -39,8 +39,8 @@ const reorder = (
         const aCompleted = completed.has(a)
         const bCompleted = completed.has(b)
         if (aCompleted && bCompleted) return 0
-        if (aCompleted) return 1
-        return -1
+        if (aCompleted) return -1
+        return 1
     })
     return ordered
 }
