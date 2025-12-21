@@ -16,6 +16,8 @@ import { AlertTriangle, Check, Loader2, X } from "lucide-react"
 import React from "react"
 import { toast } from "sonner"
 
+import { TagPicker } from "../tag/picker"
+
 interface P {
     value?: Habit
     onChange: (h: Habit) => Promise<unknown>
@@ -137,6 +139,14 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                     active={habit.icon}
                     color={habit.color}
                     onPick={(icon) => update((h) => (h.icon = icon))}
+                />
+            </div>
+
+            <div className="flex flex-col gap-2">
+                <Label>Tags</Label>
+                <TagPicker
+                    value={habit.tagNames}
+                    onChange={(tags) => update((h) => (h.tagNames = tags))}
                 />
             </div>
 

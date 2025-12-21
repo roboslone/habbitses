@@ -296,7 +296,8 @@ export const useBreakHabit = () => {
                 sha: habit.sha,
             })
         },
-        onSettled: async () => {
+        onSettled: async (_, __, habit) => {
+            client.removeQueries({ queryKey: ["repo", repo.id, "habit", habit.name] })
             await client.invalidateQueries({ queryKey: ["repo", repo.id, "content"] })
         },
         retry: handleError("Failed to break a habit", { maxFailures: 0 }),

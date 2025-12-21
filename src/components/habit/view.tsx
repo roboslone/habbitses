@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
-import { Completion_ButtonOptionsSchema } from "@/proto/models/v1/models_pb"
-import { create } from "@bufbuild/protobuf"
+import { Completion_ButtonOptionsSchema, HabitSchema } from "@/proto/models/v1/models_pb"
+import { clone, create } from "@bufbuild/protobuf"
 import { Link } from "@tanstack/react-router"
 import { ChevronLeft, History, Pencil, RefreshCw, Trash2 } from "lucide-react"
 import React from "react"
+import { toast } from "sonner"
 
 import { Page } from "../page/page"
 import { HabitBreakDialog } from "./break-dialog"
@@ -31,6 +32,15 @@ export const HabitView: React.FC = () => {
     const { habit, update, color, completion, refetch, isFetching } = useHabitContext()
 
     const historyURL = `https://github.com/${repo?.full_name}/commits/main/habits/${habit.name}.json`
+
+    const handleTagsChange = (tags: string[]) => {
+        const copy = clone(HabitSchema, habit)
+        copy.tagNames = [...tags].sort()
+
+        toast.promise(update.mutateAsync(copy), {
+            error: (e: Error) => ({ message: "Habit update failed", description: e.message }),
+        })
+    }
 
     let content = (
         <>
@@ -83,7 +93,7 @@ export const HabitView: React.FC = () => {
 
             <div className="flex flex-col gap-2">
                 <Label className="text-muted-foreground/50">Tags</Label>
-                <TagPicker />
+                <TagPicker value={habit.tagNames} onChange={handleTagsChange} />
             </div>
 
             <Separator />

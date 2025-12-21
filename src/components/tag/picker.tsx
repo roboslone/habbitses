@@ -1,5 +1,4 @@
 import { useCollectionContext } from "@/components/collection/context"
-import { useHabitContext } from "@/components/habit/context"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -8,23 +7,24 @@ import {
     DialogFooter,
     DialogTitle,
 } from "@/components/ui/dialog"
-import { HabitSchema } from "@/proto/models/v1/models_pb"
-import { clone } from "@bufbuild/protobuf"
 import { DialogTrigger } from "@radix-ui/react-dialog"
 import { Link } from "@tanstack/react-router"
-import { Check, Ellipsis, Loader2, Plus, Undo2 } from "lucide-react"
+import { Check, Ellipsis, Plus, Undo2 } from "lucide-react"
 import React from "react"
-import { toast } from "sonner"
 
 import { TagContext } from "./context"
 import { TagList } from "./list"
 
-export const TagPicker: React.FC = () => {
+interface P {
+    value: string[]
+    onChange: (tags: string[]) => void
+}
+
+export const TagPicker: React.FC<P> = ({ value, onChange }) => {
     const { tags } = useCollectionContext()
-    const { habit, update } = useHabitContext()
 
     const [open, setOpen] = React.useState(false)
-    const [selected, setSelected] = React.useState<Set<string>>(new Set(habit.tagNames))
+    const [selected, setSelected] = React.useState<Set<string>>(new Set(value))
 
     const toggleTag = (name: string) => {
         const next = new Set(selected)
@@ -38,24 +38,19 @@ export const TagPicker: React.FC = () => {
 
     const handleCancel = () => {
         setOpen(false)
-        setSelected(new Set(habit.tagNames))
+        setSelected(new Set(value))
     }
 
     const handleSubmit = () => {
-        const copy = clone(HabitSchema, habit)
-        copy.tagNames = [...selected].sort()
-
-        toast.promise(
-            update.mutateAsync(copy).then(() => setOpen(false)),
-            {
-                error: (e: Error) => ({ message: "Habit update failed", description: e.message }),
-            },
-        )
+        const tags = [...selected]
+        tags.sort()
+        onChange(tags)
+        setOpen(false)
     }
 
     return (
         <div data-testid="tag-picker" className="flex items-center gap-1 flex-wrap">
-            <TagList tags={habit.tagNames}>
+            <TagList tags={value}>
                 <TagContext value={{ active: selected, onClick: toggleTag }}>
                     <Dialog open={open} onOpenChange={setOpen}>
                         <DialogTrigger asChild>
@@ -86,24 +81,12 @@ export const TagPicker: React.FC = () => {
                                         <TagList tags={tags} />
                                     </div>
                                     <DialogFooter>
-                                        <Button
-                                            variant="outline"
-                                            onClick={handleCancel}
-                                            disabled={update.isPending}
-                                        >
+                                        <Button variant="outline" onClick={handleCancel}>
                                             <Undo2 />
                                             Cancel
                                         </Button>
-                                        <Button
-                                            variant="outline"
-                                            disabled={update.isPending}
-                                            onClick={handleSubmit}
-                                        >
-                                            {update.isPending ? (
-                                                <Loader2 className="animate-spin" />
-                                            ) : (
-                                                <Check className="text-emerald-600" />
-                                            )}
+                                        <Button variant="outline" onClick={handleSubmit}>
+                                            <Check className="text-emerald-600" />
                                             Save
                                         </Button>
                                     </DialogFooter>

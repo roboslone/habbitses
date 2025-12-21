@@ -25,7 +25,7 @@ export const TagView: React.FC<P> = ({ name, tag, preview }) => {
     }
 
     return (
-        <div
+        <button
             data-testid={`tag-${name}`}
             onClick={() => ctx.onClick?.(name)}
             className={cn(
@@ -45,6 +45,6 @@ export const TagView: React.FC<P> = ({ name, tag, preview }) => {
             >
                 {displayedName}
             </span>
-        </div>
+        </button>
     )
 }
