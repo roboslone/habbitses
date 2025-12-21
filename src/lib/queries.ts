@@ -292,7 +292,7 @@ export const useBreakHabit = () => {
                 owner: account.login,
                 repo: repo.name,
                 path: `habits/${habit.name}.json`,
-                message: `breaking a habit - ${habit.name}`,
+                message: `break habit - ${habit.name}`,
                 sha: habit.sha,
             })
         },
@@ -388,7 +388,7 @@ export const useDeleteTags = () => {
                 for (const name of tags) {
                     delete c.tags[name]
                 }
-            }, `deleted ${tags.length} tag(s)`),
+            }, `delete ${tags.length} tag(s)`),
         onSettled,
         retry: handleError("Failed to delete tags", { maxFailures: 0 }),
     })
@@ -399,7 +399,7 @@ export const useNewTag = () => {
 
     return useMutation({
         mutationFn: (tag: Tag) =>
-            mutate((c) => (c.tags[tag.name] = tag), `created tag - ${tag.name}`),
+            mutate((c) => (c.tags[tag.name] = tag), `create tag - ${tag.name}`),
         onSettled,
         retry: handleError("Failed to create tag", { maxFailures: 0 }),
     })
