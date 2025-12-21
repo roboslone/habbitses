@@ -1,5 +1,5 @@
 import { useHabitContext } from "@/components/habit/context"
-import { PageHeader } from "@/components/page-header"
+import { PageHeader } from "@/components/page/header"
 import { useRepoContext } from "@/components/repo/context"
 import { TagPicker } from "@/components/tag/picker"
 import { Button } from "@/components/ui/button"
@@ -8,9 +8,11 @@ import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { Completion_ButtonOptionsSchema } from "@/proto/models/v1/models_pb"
 import { create } from "@bufbuild/protobuf"
-import { History, Pencil, RefreshCw, Trash2 } from "lucide-react"
+import { Link } from "@tanstack/react-router"
+import { ChevronLeft, History, Pencil, RefreshCw, Trash2 } from "lucide-react"
 import React from "react"
 
+import { Page } from "../page/page"
 import { HabitBreakDialog } from "./break-dialog"
 import { CompletionButton } from "./button"
 import { ButtonForm } from "./button-form"
@@ -122,6 +124,13 @@ export const HabitView: React.FC = () => {
     return (
         <>
             <PageHeader
+                buttonLeft={
+                    <Link to="/">
+                        <Button variant="ghost" size="icon-lg">
+                            <ChevronLeft />
+                        </Button>
+                    </Link>
+                }
                 title={
                     <div className={cn("flex items-center gap-2", color.text)}>
                         <HabitIcon size={18} />
@@ -139,11 +148,8 @@ export const HabitView: React.FC = () => {
                     </Button>
                 }
             />
-            <div data-testid={`habit-view--${habit.name}`} className="max-w-full">
-                <div className="flex justify-center">
-                    <div className="flex flex-col gap-5 w-full px-4 max-w-211">{content}</div>
-                </div>
-            </div>
+
+            <Page data-testid="habit-view">{content}</Page>
         </>
     )
 }

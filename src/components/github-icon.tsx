@@ -13,7 +13,7 @@ export const GitHubIcon: React.FC<P> = (props) => {
         <img
             src={GitHubLogo}
             {...rest}
-            className={cn("h-6 w-6", { invert: inverted }, className)}
+            className={cn("h-6 w-6", { "dark:invert": inverted }, { invert: !inverted }, className)}
         />
     )
 }

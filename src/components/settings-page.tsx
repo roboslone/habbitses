@@ -9,7 +9,8 @@ import { toast } from "sonner"
 
 import { DisplayOptionsForm } from "./display-options-form"
 import { GitHubIcon } from "./github-icon"
-import { PageHeader } from "./page-header"
+import { PageHeader } from "./page/header"
+import { Page } from "./page/page"
 import { RefreshButton } from "./refresh-button"
 import { useRepoContext } from "./repo/context"
 import { RepoSelector } from "./repo/selector"
@@ -36,7 +37,7 @@ export const SettingsPage: React.FC = () => {
         <>
             <PageHeader title="Settings" />
 
-            <div className="flex flex-col gap-7 p-5 pt-0 w-full max-w-216">
+            <Page className="gap-6">
                 <div className="flex flex-col gap-3">
                     <Label className="text-muted-foreground">Account</Label>
                     <div className="flex items-center gap-2">
@@ -128,7 +129,7 @@ export const SettingsPage: React.FC = () => {
                         <RefreshButton variant="outline" />
                     </div>
                 </div>
-            </div>
+            </Page>
         </>
     )
 }

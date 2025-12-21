@@ -1,10 +1,11 @@
-import { PageHeader } from "@/components/page-header"
+import { PageHeader } from "@/components/page/header"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Link } from "@tanstack/react-router"
 import { Cog, Plus } from "lucide-react"
 import type React from "react"
 
+import { Page } from "../page/page"
 import { HabitList } from "./list"
 
 export const HabitListPage: React.FC = () => {
@@ -38,9 +39,9 @@ export const HabitListPage: React.FC = () => {
                 }
             />
 
-            <div className="w-full px-4">
+            <Page data-testid="habit-list-page">
                 <HabitList />
-            </div>
+            </Page>
         </>
     )
 }

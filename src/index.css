@@ -120,7 +120,15 @@
 }
 
 html,
-body,
+body {
+    @apply w-full h-full flex justify-center;
+}
+
 #root {
-    @apply h-full flex flex-col;
+    @apply w-full h-full flex flex-col;
+    @apply max-w-216;
+}
+
+.page {
+    @apply w-full h-full flex flex-col gap-4 px-4;
 }

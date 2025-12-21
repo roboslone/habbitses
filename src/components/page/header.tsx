@@ -13,7 +13,7 @@ interface P {
 
 export const PageHeader: React.FC<P> = ({ title = "Habbitses", buttonLeft, buttonRight }) => {
     return (
-        <div data-testid="page-header" className="flex items-center gap-2 p-2 w-full">
+        <div data-testid="page-header" className="flex items-center gap-2 py-2 px-4 w-full">
             {buttonLeft ?? (
                 <Link to="/">
                     <Button variant="ghost" size="icon-lg">

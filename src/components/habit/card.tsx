@@ -35,7 +35,7 @@ const LinkWrapper: React.FC<React.PropsWithChildren> = ({ children }) => {
         <Link
             to="/habits/$name"
             params={{ name: habit.name }}
-            className="flex flex-col justify-center grow h-full min-h-11"
+            className="flex flex-col justify-center grow h-full min-h-11 cursor-pointer"
         >
             {children}
         </Link>

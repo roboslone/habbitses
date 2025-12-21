@@ -67,7 +67,7 @@ export const TagForm: React.FC<P> = ({ value, onChange, onCancel }) => {
     }
 
     return (
-        <div data-testid="tag-form" className="flex flex-col gap-5 px-4">
+        <>
             {value === undefined && (
                 <div className="flex flex-col gap-2">
                     <Label aria-required>Name *</Label>
@@ -107,7 +107,7 @@ export const TagForm: React.FC<P> = ({ value, onChange, onCancel }) => {
             <Separator />
 
             <div className="flex justify-center w-full">
-                <TagView name={tag.name} tag={tag} />
+                <TagView name={tag.name} tag={tag} preview />
             </div>
 
             <Separator />
@@ -135,6 +135,6 @@ export const TagForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                     </Button>
                 )}
             </div>
-        </div>
+        </>
     )
 }

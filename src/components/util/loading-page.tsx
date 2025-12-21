@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/page-header"
+import { PageHeader } from "@/components/page/header"
 import { LoadingScreen } from "@/components/util/loading-screen"
 import type React from "react"
 

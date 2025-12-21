@@ -25,18 +25,16 @@ export const HabitList: React.FC = () => {
 
     return (
         <TagContext.Provider value={{ active: activeTags, onClick: toggleTag }}>
-            <div className="flex flex-col gap-2">
-                <div className="flex justify-center">
+            <div className="flex flex-col gap-2" data-testid="habit-list">
+                {tags.length > 0 && (
                     <TagList tags={tags}>
-                        {tags.length > 0 && (
-                            <Link to="/tags">
-                                <Button variant="ghost" size="icon-sm">
-                                    <Ellipsis />
-                                </Button>
-                            </Link>
-                        )}
+                        <Link to="/tags">
+                            <Button variant="ghost" size="icon-sm">
+                                <Ellipsis />
+                            </Button>
+                        </Link>
                     </TagList>
-                </div>
+                )}
 
                 <div className="flex flex-col items-center gap-2 w-full">
                     {orderedNames.map((name) => (

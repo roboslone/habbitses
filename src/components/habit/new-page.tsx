@@ -1,9 +1,10 @@
-import { PageHeader } from "@/components/page-header"
+import { PageHeader } from "@/components/page/header"
 import { generateButtons } from "@/lib/buttons"
 import { useNewHabit } from "@/lib/queries"
 import type { Habit } from "@/proto/models/v1/models_pb"
 import type React from "react"
 
+import { Page } from "../page/page"
 import { HabitForm } from "./form"
 
 const NewHabbitPage: React.FC = () => {
@@ -17,9 +18,9 @@ const NewHabbitPage: React.FC = () => {
     return (
         <>
             <PageHeader title="Start new habit" />
-            <div className="px-4">
+            <Page data-testid="new-habbit-page">
                 <HabitForm onChange={handleSubmit} />
-            </div>
+            </Page>
         </>
     )
 }

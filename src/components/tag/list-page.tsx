@@ -1,5 +1,5 @@
 import { useCollectionContext } from "@/components/collection/context"
-import { PageHeader } from "@/components/page-header"
+import { PageHeader } from "@/components/page/header"
 import { Button } from "@/components/ui/button"
 import { Dialog } from "@/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -9,6 +9,7 @@ import { Loader2, Plus, Trash2 } from "lucide-react"
 import React from "react"
 import { toast } from "sonner"
 
+import { Page } from "../page/page"
 import { TagContext } from "./context"
 import { TagList } from "./list"
 
@@ -49,7 +50,7 @@ export const TagListPage: React.FC = () => {
                 }
             />
 
-            <div className="p-2 pt-0 flex flex-col gap-2">
+            <Page>
                 <TagContext value={{ active: selected, onClick: toggle }}>
                     <TagList tags={tags} />
                 </TagContext>
@@ -70,7 +71,7 @@ export const TagListPage: React.FC = () => {
                         </Button>
                     </Dialog>
                 </div>
-            </div>
+            </Page>
         </>
     )
 }

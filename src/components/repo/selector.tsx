@@ -1,8 +1,13 @@
 import { RepoPicker } from "@/components/repo/picker"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 import { type Repo, useSelectedRepo } from "@/lib/git"
-import { DialogDescription } from "@radix-ui/react-dialog"
 import { BookMarked, ChevronsUpDown, Trash2 } from "lucide-react"
 import React from "react"
 

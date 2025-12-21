@@ -9,21 +9,27 @@ import { TagContext } from "./context"
 interface P {
     name: string
     tag: Tag
+    preview?: boolean
 }
 
-export const TagView: React.FC<P> = ({ name, tag }) => {
+export const TagView: React.FC<P> = ({ name, tag, preview }) => {
     const ctx = React.useContext(TagContext)
 
     const active = ctx.active.has(name)
     const color = colors.get(tag.color)
     const icon = icons.render(tag.icon || "Tag", { className: cn(color.text), size: 14 })
 
+    let displayedName = name
+    if (preview && !name) {
+        displayedName = "Unnamed"
+    }
+
     return (
         <div
             data-testid={`tag-${name}`}
             onClick={() => ctx.onClick?.(name)}
             className={cn(
-                "flex items-center gap-1 p-1 px-2 rounded-md h-8 max-w-60 border text-sm",
+                "flex items-center gap-1.5 p-1 px-2 rounded-md h-8 max-w-60 border text-sm",
                 { "border-dashed": !active },
                 { "bg-accent/20": active },
                 { [color.border]: active },
@@ -32,7 +38,13 @@ export const TagView: React.FC<P> = ({ name, tag }) => {
             )}
         >
             <div>{icon}</div>
-            <span className="text-nowrap text-ellipsis overflow-hidden">{name}</span>
+            <span
+                className={cn("text-nowrap text-ellipsis overflow-hidden", {
+                    "opacity-40": preview && !name,
+                })}
+            >
+                {displayedName}
+            </span>
         </div>
     )
 }

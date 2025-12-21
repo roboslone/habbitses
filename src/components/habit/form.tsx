@@ -79,7 +79,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
     }
 
     return (
-        <div data-testid="habit-form" className="flex flex-col gap-5">
+        <>
             {value === undefined && (
                 <div className="flex flex-col gap-2">
                     <Label aria-required>Name *</Label>
@@ -165,7 +165,7 @@ export const HabitForm: React.FC<P> = ({ value, onChange, onCancel }) => {
                     </Button>
                 )}
             </div>
-        </div>
+        </>
     )
 }
 
