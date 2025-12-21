@@ -38,6 +38,11 @@ export const ManualCompletionDialog: React.FC<P> = ({ children, onSubmit }) => {
                     value={value}
                     onFocus={(e) => e.target.select()}
                     onChange={(e) => setValue(e.target.valueAsNumber || 0)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            handleSubmit()
+                        }
+                    }}
                 />
 
                 <DialogFooter>
