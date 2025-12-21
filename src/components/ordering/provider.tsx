@@ -75,18 +75,19 @@ export const OrderingProvider: React.FC<React.PropsWithChildren> = ({ children }
         })
     }
 
+    const orderHabits = (isReordering: boolean) =>
+        reorder(habits, completed, collection.order, isReordering)
+
     const [isReordering, _setReordering] = React.useState(false)
-    const [orderedNames, setOrderedNames] = React.useState<string[]>(
-        reorder(habits, completed, collection.order, isReordering),
-    )
+    const [orderedNames, setOrderedNames] = React.useState<string[]>(orderHabits(isReordering))
 
     React.useEffect(() => {
         setCompleted(new Set())
     }, [date])
 
     React.useEffect(() => {
-        setOrderedNames(reorder(habits, completed, collection.order, isReordering))
-    }, [completed, habits])
+        setOrderedNames(orderHabits(isReordering))
+    }, [completed, habits, collection.order])
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event
@@ -105,7 +106,7 @@ export const OrderingProvider: React.FC<React.PropsWithChildren> = ({ children }
     const updateOrder = useUpdateOrder()
     const setReordering = (v: boolean) => {
         _setReordering(v)
-        setOrderedNames(reorder(habits, completed, collection.order, v))
+        setOrderedNames(orderHabits(v))
 
         if (!v && orderChanged(collection.order, orderedNames)) {
             updateOrder.mutate(orderedNames)

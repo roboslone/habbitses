@@ -347,12 +347,15 @@ const usePushCollection = () => {
     const repo = useRepoContext()
     const { collection } = useCollectionContext()
     const octokit = useOctokit()
+    const onSettled = useInvalidateCollection()
 
-    return (update: (c: Collection) => void, message: string) => {
+    const mutate = (update: (c: Collection) => void, message: string) => {
         const copy = clone(CollectionSchema, collection)
 
         update(copy)
         copy.sha = ""
+
+        client.setQueryData(["repo", repo.id, "collection"], copy)
 
         return octokit.rest.repos.createOrUpdateFileContents({
             path: "collection.json",
@@ -364,6 +367,8 @@ const usePushCollection = () => {
             headers: { "If-None-Match": "" },
         })
     }
+
+    return { mutate, onSettled }
 }
 
 const useInvalidateCollection = () => {
@@ -374,41 +379,37 @@ const useInvalidateCollection = () => {
 }
 
 export const useDeleteTags = () => {
-    const pushCollection = usePushCollection()
-    const invalidateCollection = useInvalidateCollection()
+    const { mutate, onSettled } = usePushCollection()
 
     return useMutation({
         mutationFn: (tags: string[]) =>
-            pushCollection((c) => {
+            mutate((c) => {
                 for (const name of tags) {
                     delete c.tags[name]
                 }
             }, `deleted ${tags.length} tag(s)`),
-        onSettled: invalidateCollection,
+        onSettled,
         retry: handleError("Failed to delete tags", { maxFailures: 0 }),
     })
 }
 
 export const useNewTag = () => {
-    const pushCollection = usePushCollection()
-    const invalidateCollection = useInvalidateCollection()
+    const { mutate, onSettled } = usePushCollection()
 
     return useMutation({
         mutationFn: (tag: Tag) =>
-            pushCollection((c) => (c.tags[tag.name] = tag), `created tag - ${tag.name}`),
-        onSettled: invalidateCollection,
+            mutate((c) => (c.tags[tag.name] = tag), `created tag - ${tag.name}`),
+        onSettled,
         retry: handleError("Failed to create tag", { maxFailures: 0 }),
     })
 }
 
 export const useUpdateOrder = () => {
-    const pushCollection = usePushCollection()
-    const invalidateCollection = useInvalidateCollection()
+    const { mutate, onSettled } = usePushCollection()
 
     return useMutation({
-        mutationFn: (order: string[]) =>
-            pushCollection((c) => (c.order = order), `reordered habits`),
-        onSettled: invalidateCollection,
+        mutationFn: (order: string[]) => mutate((c) => (c.order = order), `reordered habits`),
+        onSettled,
         retry: handleError("Failed to update order", { maxFailures: 0 }),
     })
 }

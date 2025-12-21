@@ -12,11 +12,20 @@ export const HabitIcon: React.FC<LucideProps> = (props) => {
     const color = colors.index[colors.fromString(habit.color)]
 
     if (isFetching) {
-        return <Loader2 {...props} className={cn("animate-spin", color.text, props.className)} />
+        return (
+            <Loader2
+                data-testid="habit-icon-locader"
+                {...props}
+                className={cn("animate-spin", color.text, props.className)}
+            />
+        )
     }
 
-    const className = cn(color.text, props.className)
+    const className = cn(color.text, props.className, {
+        "cursor-move": isReordering,
+    })
+    const finalProps = { ...props, className, "data-testid": "habit-icon" }
 
-    if (isReordering) return React.createElement(GripVertical, { ...props, className })
-    return icons.render(habit.icon, { ...props, className })
+    if (isReordering) return React.createElement(GripVertical, finalProps)
+    return icons.render(habit.icon, finalProps)
 }

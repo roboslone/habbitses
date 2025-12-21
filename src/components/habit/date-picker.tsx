@@ -1,4 +1,3 @@
-import { DateContext } from "@/components/date/context"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -9,19 +8,15 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { formatDate } from "@/lib/dates"
-import { ArrowRight, CalendarIcon, Undo2 } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { ArrowRight, CalendarIcon, CalendarSearch, Undo2 } from "lucide-react"
 import React from "react"
 
 import { useHabitContext } from "./context"
 
 export const HabitDatePicker: React.FC = () => {
-    const today = React.useContext(DateContext)
     const { selectedDate, setSelectedDate } = useHabitContext()
     const [open, setOpen] = React.useState(false)
-
-    const dateStr = formatDate(selectedDate ?? today)
-    const todayStr = formatDate(new Date())
 
     const handleSelect = (d: Date | undefined) => {
         setSelectedDate(d || new Date())
@@ -34,7 +29,7 @@ export const HabitDatePicker: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 className="w-fit"
-                disabled={dateStr === todayStr}
+                disabled={selectedDate === undefined}
                 onClick={() => setSelectedDate(undefined)}
             >
                 <Undo2 />
@@ -44,8 +39,12 @@ export const HabitDatePicker: React.FC = () => {
                 <DialogTrigger asChild>
                     <div className="flex items-center gap-2">
                         <Button variant="ghost" size="sm" className="w-fit">
-                            <CalendarIcon />
-                            {selectedDate?.toLocaleDateString()}
+                            <CalendarSearch
+                                className={cn({ "text-amber-600": selectedDate !== undefined })}
+                            />
+                            {selectedDate === undefined
+                                ? "Today"
+                                : selectedDate?.toLocaleDateString()}
                         </Button>
                     </div>
                 </DialogTrigger>
