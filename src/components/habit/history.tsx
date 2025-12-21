@@ -1,3 +1,5 @@
+import { DateContext } from "@/components/date/context"
+import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
@@ -6,11 +8,9 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { timestampDate } from "@bufbuild/protobuf/wkt"
-import { CalendarClock, History } from "lucide-react"
+import { CalendarClock } from "lucide-react"
 import React from "react"
 
-import { DateContext } from "../date/context"
-import { Button } from "../ui/button"
 import { useHabitContext } from "./context"
 
 export const HabitHistory: React.FC = () => {

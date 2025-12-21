@@ -9,7 +9,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
-import { ArrowRight, CalendarIcon, CalendarSearch, Undo2 } from "lucide-react"
+import { ArrowRight, CalendarSearch, Undo2 } from "lucide-react"
 import React from "react"
 
 import { useHabitContext } from "./context"
