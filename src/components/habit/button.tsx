@@ -8,9 +8,11 @@ import {
     CompletionSchema,
     type Completion_ButtonOptions,
     Completion_ButtonOptionsSchema,
+    Completion_EventSchema,
     HabitSchema,
 } from "@/proto/models/v1/models_pb"
 import { clone, create } from "@bufbuild/protobuf"
+import { timestampNow } from "@bufbuild/protobuf/wkt"
 import { ArrowRight, Check, Plus, Undo2 } from "lucide-react"
 import React from "react"
 import { toast } from "sonner"
@@ -33,22 +35,30 @@ const applyButton = (
 ) => {
     console.info("apply button", { completion, options, manualValue })
 
+    const previousCount = completion.count
+
+    let count = 0
     switch (options.kind.case) {
         case "delta":
-            completion.count += manualValue ?? options.kind.value
-            return
+            count = previousCount + (manualValue ?? options.kind.value)
+            break
         case "percentage":
-            completion.count += Math.ceil(
-                ((manualValue ?? options.kind.value) / 100) * completion.target,
-            )
-            return
+            count =
+                previousCount +
+                Math.ceil(((manualValue ?? options.kind.value) / 100) * completion.target)
+            break
         case "complete":
-            completion.count = completion.target
-            return
+            count = completion.target
+            break
         case "set":
-            completion.count = manualValue ?? options.kind.value
-            return
+            count = manualValue ?? options.kind.value
+            break
     }
+
+    completion.count = count
+    completion.events.push(
+        create(Completion_EventSchema, { time: timestampNow(), previousCount, count }),
+    )
 }
 
 export const CompletionButton: React.FC<P> = ({ options = defaultOptions, preview, ...rest }) => {

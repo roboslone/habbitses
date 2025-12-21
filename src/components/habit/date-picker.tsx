@@ -25,16 +25,6 @@ export const HabitDatePicker: React.FC = () => {
 
     return (
         <div className="flex items-center gap-2">
-            <Button
-                variant="ghost"
-                size="sm"
-                className="w-fit"
-                disabled={selectedDate === undefined}
-                onClick={() => setSelectedDate(undefined)}
-            >
-                <Undo2 />
-            </Button>
-
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger asChild>
                     <div className="flex items-center gap-2">
@@ -82,6 +72,15 @@ export const HabitDatePicker: React.FC = () => {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
+            <Button
+                variant="ghost"
+                size="sm"
+                className="w-fit"
+                disabled={selectedDate === undefined}
+                onClick={() => setSelectedDate(undefined)}
+            >
+                <Undo2 />
+            </Button>
         </div>
     )
 }

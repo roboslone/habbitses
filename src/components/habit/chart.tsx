@@ -6,6 +6,7 @@ import { type Completion } from "@/proto/models/v1/models_pb"
 import React from "react"
 
 import { HabitDatePicker } from "./date-picker"
+import { HabitHistory } from "./history"
 
 const rows = Array.from(Array(7).keys())
 const columns = Array.from(Array(53).keys())
@@ -89,7 +90,12 @@ export const HabitChart: React.FC<P> = ({ interactive }) => {
                 </div>
             </div>
 
-            <div className="flex justify-end">{interactive && <HabitDatePicker />}</div>
+            {interactive && (
+                <div className="flex justify-end items-center gap-2">
+                    <HabitHistory />
+                    <HabitDatePicker />
+                </div>
+            )}
         </div>
     )
 }
