@@ -11,3 +11,4 @@ services:
             - ../..:/workspaces:cached
             - .zshrc:/root/.zshrc:cached
             - ~/.config:/root/.config:cached
+            - ~/.ssh:/root/.ssh:cached
