@@ -3,7 +3,9 @@ services:
         hostname: dc
         ports:
             - 5173:5173
-        image: node:24-trixie-slim
+        build:
+            context: .
+            dockerfile: Dockerfile
         command: sleep infinity
         env_file:
             - .env
