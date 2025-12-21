@@ -1,3 +1,4 @@
+import { DateContext } from "@/components/date/context"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -15,14 +16,15 @@ import React from "react"
 import { useHabitContext } from "./context"
 
 export const HabitDatePicker: React.FC = () => {
-    const { date, setDate } = useHabitContext()
+    const today = React.useContext(DateContext)
+    const { selectedDate, setSelectedDate } = useHabitContext()
     const [open, setOpen] = React.useState(false)
 
-    const dateStr = formatDate(date)
+    const dateStr = formatDate(selectedDate ?? today)
     const todayStr = formatDate(new Date())
 
     const handleSelect = (d: Date | undefined) => {
-        setDate(d || new Date())
+        setSelectedDate(d || new Date())
         setOpen(false)
     }
 
@@ -33,7 +35,7 @@ export const HabitDatePicker: React.FC = () => {
                 size="sm"
                 className="w-fit"
                 disabled={dateStr === todayStr}
-                onClick={() => setDate(new Date())}
+                onClick={() => setSelectedDate(undefined)}
             >
                 <Undo2 />
             </Button>
@@ -43,7 +45,7 @@ export const HabitDatePicker: React.FC = () => {
                     <div className="flex items-center gap-2">
                         <Button variant="ghost" size="sm" className="w-fit">
                             <CalendarIcon />
-                            {date?.toLocaleDateString()}
+                            {selectedDate?.toLocaleDateString()}
                         </Button>
                     </div>
                 </DialogTrigger>
@@ -56,7 +58,7 @@ export const HabitDatePicker: React.FC = () => {
 
                     <Calendar
                         mode="single"
-                        selected={date}
+                        selected={selectedDate}
                         onSelect={handleSelect}
                         weekStartsOn={1}
                         className="min-h-85"
@@ -71,7 +73,7 @@ export const HabitDatePicker: React.FC = () => {
                         <Button
                             variant="outline"
                             onClick={() => {
-                                setDate(new Date())
+                                setSelectedDate(new Date())
                                 setOpen(false)
                             }}
                         >

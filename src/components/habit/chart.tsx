@@ -1,8 +1,9 @@
+import { DateContext } from "@/components/date/context"
 import { useHabitContext } from "@/components/habit/context"
 import { formatDate } from "@/lib/dates"
 import { cn } from "@/lib/utils"
 import { type Completion } from "@/proto/models/v1/models_pb"
-import type React from "react"
+import React from "react"
 
 import { HabitDatePicker } from "./date-picker"
 
@@ -27,7 +28,7 @@ interface CellProps {
 }
 
 const Cell: React.FC<CellProps> = ({ date, background, completion, selected, interactive }) => {
-    const { setDate } = useHabitContext()
+    const { setSelectedDate } = useHabitContext()
 
     let progress = 0
     if (completion !== undefined) {
@@ -44,7 +45,7 @@ const Cell: React.FC<CellProps> = ({ date, background, completion, selected, int
             style={{
                 opacity: progress === 0 ? 1 : progress,
             }}
-            onClick={interactive ? () => setDate(date) : undefined}
+            onClick={interactive ? () => setSelectedDate(date) : undefined}
         >
             {interactive && selected && <div className="h-2 w-2 rounded-xs bg-secondary" />}
         </div>
@@ -56,9 +57,10 @@ interface P {
 }
 
 export const HabitChart: React.FC<P> = ({ interactive }) => {
-    const { habit, color, date } = useHabitContext()
+    const today = React.useContext(DateContext)
+    const { habit, color, selectedDate } = useHabitContext()
     const now = new Date()
-    const selectedDateStr = formatDate(date)
+    const selectedDateStr = formatDate(selectedDate ?? today)
 
     return (
         <div className="flex flex-col gap-2">

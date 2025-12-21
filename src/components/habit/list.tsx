@@ -1,6 +1,6 @@
 import { useCollectionContext } from "@/components/collection/context"
 import { HabitCard } from "@/components/habit/card"
-import { HabitFetcher } from "@/components/habit/fetcher"
+import { HabitProvider } from "@/components/habit/provider"
 import { useOrderingContext } from "@/components/ordering/context"
 import { RefreshButton } from "@/components/refresh-button"
 import { TagContext } from "@/components/tag/context"
@@ -40,9 +40,9 @@ export const HabitList: React.FC = () => {
 
                 <div className="flex flex-col items-center gap-2 w-full">
                     {orderedNames.map((name) => (
-                        <HabitFetcher key={name} name={name}>
+                        <HabitProvider key={name} name={name}>
                             <HabitCard />
-                        </HabitFetcher>
+                        </HabitProvider>
                     ))}
                 </div>
 

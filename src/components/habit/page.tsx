@@ -1,4 +1,4 @@
-import { HabitFetcher } from "@/components/habit/fetcher"
+import { HabitProvider } from "@/components/habit/provider"
 import { PageHeader } from "@/components/page-header"
 import { useRepoContext } from "@/components/repo/context"
 import { RepoSelector } from "@/components/repo/selector"
@@ -23,9 +23,9 @@ export const HabitPage: React.FC = () => {
     }
 
     return (
-        <HabitFetcher name={name}>
+        <HabitProvider name={name}>
             <HabitView />
-        </HabitFetcher>
+        </HabitProvider>
     )
 }
 

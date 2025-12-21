@@ -1,4 +1,5 @@
 import { useCollectionContext } from "@/components/collection/context"
+import { DateContext } from "@/components/date/context"
 import { getProgress } from "@/lib/progress"
 import { useUpdateOrder } from "@/lib/queries"
 import type { Habit } from "@/proto/models/v1/models_pb"
@@ -54,11 +55,13 @@ const orderChanged = (a: string[], b: string[]): boolean => {
 }
 
 export const OrderingProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
+    const date = React.useContext(DateContext)
+
     const { habits, collection } = useCollectionContext()
 
     const [completed, setCompleted] = React.useState<Set<string>>(new Set())
     const recordCompletion = (h: Habit) => {
-        const { completion } = getProgress(h, new Date())
+        const { completion } = getProgress(h, date)
         const isCompleted = completion.count >= completion.target
 
         setCompleted((prev) => {
@@ -76,6 +79,10 @@ export const OrderingProvider: React.FC<React.PropsWithChildren> = ({ children }
     const [orderedNames, setOrderedNames] = React.useState<string[]>(
         reorder(habits, completed, collection.order, isReordering),
     )
+
+    React.useEffect(() => {
+        setCompleted(new Set())
+    }, [date])
 
     React.useEffect(() => {
         setOrderedNames(reorder(habits, completed, collection.order, isReordering))

@@ -1,3 +1,4 @@
+import { DateContext } from "@/components/date/context"
 import { useOrderingContext } from "@/components/ordering/context"
 import { Button } from "@/components/ui/button"
 import { ErrorView } from "@/components/util/error-view"
@@ -17,13 +18,15 @@ interface P extends React.PropsWithChildren {
     name: string
 }
 
-export const HabitFetcher: React.FC<P> = ({ name, children }) => {
+export const HabitProvider: React.FC<P> = ({ name, children }) => {
+    const today = React.useContext(DateContext)
+
     const habit = useHabit(name)
     const update = useUpdateHabit(name)
     const [displayOptions] = useStoredDisplayOptions()
     const { completed } = useOrderingContext()
 
-    const [date, setDate] = React.useState<Date>(new Date())
+    const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(undefined)
 
     if (habit.isLoading) {
         return (
@@ -38,7 +41,7 @@ export const HabitFetcher: React.FC<P> = ({ name, children }) => {
     }
 
     if (habit.data) {
-        const { completion, progress } = getProgress(habit.data, date)
+        const { completion, progress } = getProgress(habit.data, selectedDate ?? today)
         const isCompleted = completed.has(habit.data.name)
 
         return (
@@ -50,8 +53,8 @@ export const HabitFetcher: React.FC<P> = ({ name, children }) => {
                     isFetching: habit.isFetching,
                     progress,
 
-                    date,
-                    setDate,
+                    selectedDate,
+                    setSelectedDate,
                     completion,
                     isCompleted,
                     color: colors.forHabit(habit.data),

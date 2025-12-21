@@ -10,8 +10,8 @@ interface S {
     isFetching: boolean
     color: colors.Options
 
-    date: Date
-    setDate: React.Dispatch<React.SetStateAction<Date>>
+    selectedDate: Date | undefined
+    setSelectedDate: React.Dispatch<React.SetStateAction<Date | undefined>>
     completion: Completion
     isCompleted: boolean
     progress: number

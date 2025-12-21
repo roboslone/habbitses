@@ -1,3 +1,4 @@
+import { DateContext } from "@/components/date/context"
 import { useHabitContext } from "@/components/habit/context"
 import { Button } from "@/components/ui/button"
 import { formatDate } from "@/lib/dates"
@@ -51,13 +52,14 @@ const applyButton = (
 }
 
 export const CompletionButton: React.FC<P> = ({ options = defaultOptions, preview, ...rest }) => {
-    const { habit, color, update, date } = useHabitContext()
+    const today = React.useContext(DateContext)
+    const { habit, color, update, selectedDate } = useHabitContext()
 
     const handleClick = (manualValue?: number) => {
         if (preview) return
 
         const next = clone(HabitSchema, habit)
-        const dateStr = formatDate(date)
+        const dateStr = formatDate(selectedDate ?? today)
 
         if (options.kind.case === undefined) {
             delete next.completions[dateStr]

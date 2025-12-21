@@ -1,10 +1,9 @@
 services:
     app:
         hostname: dc
-        network_mode: host
-        build:
-            context: .
-            dockerfile: devcontainer.Dockerfile
+        ports:
+            - 5173:5173
+        image: node:24-trixie-slim
         command: sleep infinity
         env_file:
             - .env
