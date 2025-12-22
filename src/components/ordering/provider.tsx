@@ -36,14 +36,13 @@ const reorder = (
 
     if (isReordering) return ordered
 
-    ordered.sort((a, b) => {
+    return ordered.sort((a, b) => {
         const aCompleted = completed.has(a)
         const bCompleted = completed.has(b)
         if (aCompleted && bCompleted) return 0
-        if (aCompleted) return 1
-        return -1
+        if (aCompleted) return -1
+        return 1
     })
-    return ordered
 }
 
 const orderChanged = (a: string[], b: string[]): boolean => {

@@ -1,5 +1,6 @@
 import { useStoredAccountContext } from "@/components/auth/account-context"
 import { useCollectionContext } from "@/components/collection/context"
+import { useHabitContext } from "@/components/habit/context"
 import { useOrderingContext } from "@/components/ordering/context"
 import { useRepoContentContext } from "@/components/repo/content-context"
 import { useRepoContext } from "@/components/repo/context"
@@ -21,7 +22,13 @@ import { toast } from "sonner"
 import { decode, encode } from "uint8-to-base64"
 
 import { type StoredAccount, useStoredAccount } from "./auth"
-import { type RepoContent, useStoredCollection, useStoredRepoContent, useStoredRepos } from "./git"
+import {
+    type RepoContent,
+    useStoredCollection,
+    useStoredHabit,
+    useStoredRepoContent,
+    useStoredRepos,
+} from "./git"
 
 export const client = new QueryClient()
 
@@ -280,12 +287,15 @@ export const useUpdateHabit = (name: string) => {
 }
 
 export const useBreakHabit = () => {
+    const { habit } = useHabitContext()
     const account = useStoredAccountContext()
     const repo = useRepoContext()
     const octokit = useOctokit()
 
+    const [, setStored] = useStoredHabit(habit.name)
+
     return useMutation({
-        mutationFn: (habit: Habit) => {
+        mutationFn: () => {
             if (repo === undefined) throw new Error("repo is not selected")
 
             return octokit.rest.repos.deleteFile({
@@ -296,8 +306,11 @@ export const useBreakHabit = () => {
                 sha: habit.sha,
             })
         },
-        onSettled: async (_, __, habit) => {
+        onSuccess: () => {
+            setStored(undefined)
             client.removeQueries({ queryKey: ["repo", repo.id, "habit", habit.name] })
+        },
+        onSettled: async () => {
             await client.invalidateQueries({ queryKey: ["repo", repo.id, "content"] })
         },
         retry: handleError("Failed to break a habit", { maxFailures: 0 }),
@@ -318,6 +331,8 @@ export const useHabit = (name: string) => {
     const octokit = useOctokit()
     const { recordCompletion } = useOrderingContext()
 
+    const [stored, setStored] = useStoredHabit(name)
+
     return useQuery({
         queryKey: ["repo", repo.id, "habit", name],
         queryFn: async ({ signal }) => {
@@ -336,8 +351,11 @@ export const useHabit = (name: string) => {
 
             recordCompletion(habit)
 
+            setStored({ data: habit, updatedAt: new Date() })
             return habit
         },
+        initialData: stored?.data,
+        initialDataUpdatedAt: stored?.updatedAt?.getTime?.(),
         staleTime: 5 * 60 * 1000, // todo
         retry: handleError(`Failed to fetch habit data: ${name}`),
     })

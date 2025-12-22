@@ -27,7 +27,7 @@ export const HabitBreakDialog: React.FC<React.PropsWithChildren> = ({ children }
     const handleBreak = () => {
         toast.promise(
             breakHabit
-                .mutateAsync(habit)
+                .mutateAsync()
                 .then(() => setOpen(false))
                 .then(() => navigate({ to: "/" })),
             {
