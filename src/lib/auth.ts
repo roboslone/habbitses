@@ -2,8 +2,6 @@ import { Octokit } from "octokit"
 import { toast } from "sonner"
 import useLocalStorage from "use-local-storage"
 
-export const clientId = "Iv23liRvkyXb7ekzNQEf"
-
 export interface StoredToken {
     value: string
     expiresAt: Date

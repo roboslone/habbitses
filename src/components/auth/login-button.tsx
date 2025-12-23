@@ -1,6 +1,6 @@
 import GitHubLogo from "@/assets/github.svg?url"
 import { Button } from "@/components/ui/button"
-import { clientId } from "@/lib/auth"
+import { clientId } from "@/lib/const"
 import type React from "react"
 
 export const LoginButton: React.FC<React.ComponentProps<typeof Button>> = (props) => {

@@ -22,6 +22,7 @@ import { toast } from "sonner"
 import { decode, encode } from "uint8-to-base64"
 
 import { type StoredAccount, useStoredAccount } from "./auth"
+import { githubExchangeAddress } from "./const"
 import {
     type RepoContent,
     useStoredCollection,
@@ -38,7 +39,7 @@ const textDecoder = new TextDecoder()
 export const ExchangeClient = createClient(
     ExchangeService,
     createGrpcWebTransport({
-        baseUrl: "https://robosl.one",
+        baseUrl: githubExchangeAddress,
         defaultTimeoutMs: 30 * 1000,
         fetch: (input, init) => fetch(input, { ...init, credentials: "include" }),
     }),
