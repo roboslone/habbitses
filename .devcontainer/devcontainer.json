@@ -12,7 +12,8 @@
                 "bufbuild.vscode-buf",
                 "esbenp.prettier-vscode",
                 "github.vscode-github-actions",
-                "MartyBeGood.single-editor-tabs"
+                "MartyBeGood.single-editor-tabs",
+                "vitest.explorer"
             ]
         }
     },
