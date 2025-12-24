@@ -16,42 +16,7 @@ import { SortableContext, arrayMove, verticalListSortingStrategy } from "@dnd-ki
 import React from "react"
 
 import { OrderingContext } from "./context"
-
-const reorder = (
-    existing: Set<string>,
-    completed: Set<string>,
-    order: string[],
-    isReordering: boolean,
-): string[] => {
-    const ordered: string[] = []
-    const missed = new Set(existing)
-
-    for (const name of order) {
-        if (missed.has(name)) {
-            ordered.push(name)
-            missed.delete(name)
-        }
-    }
-    ordered.push(...[...missed].sort())
-
-    if (isReordering) return ordered
-
-    return ordered.sort((a, b) => {
-        const aCompleted = completed.has(a)
-        const bCompleted = completed.has(b)
-        if (aCompleted && bCompleted) return 0
-        if (aCompleted) return -1
-        return 1
-    })
-}
-
-const orderChanged = (a: string[], b: string[]): boolean => {
-    if (a.length !== b.length) return true
-    for (let i = 0; i < a.length; i++) {
-        if (a[i] !== b[i]) return true
-    }
-    return false
-}
+import { orderChanged, orderHabits } from "./ordering"
 
 export const OrderingProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
     const date = React.useContext(DateContext)
@@ -74,18 +39,18 @@ export const OrderingProvider: React.FC<React.PropsWithChildren> = ({ children }
         })
     }
 
-    const orderHabits = (isReordering: boolean) =>
-        reorder(habits, completed, collection.order, isReordering)
+    const reorder = (isReordering: boolean) =>
+        orderHabits(habits, completed, collection.order, isReordering)
 
     const [isReordering, _setReordering] = React.useState(false)
-    const [orderedNames, setOrderedNames] = React.useState<string[]>(orderHabits(isReordering))
+    const [orderedNames, setOrderedNames] = React.useState<string[]>(reorder(isReordering))
 
     React.useEffect(() => {
         setCompleted(new Set())
     }, [date])
 
     React.useEffect(() => {
-        setOrderedNames(orderHabits(isReordering))
+        setOrderedNames(reorder(isReordering))
     }, [completed, habits, collection.order])
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -105,7 +70,7 @@ export const OrderingProvider: React.FC<React.PropsWithChildren> = ({ children }
     const updateOrder = useUpdateOrder()
     const setReordering = (v: boolean) => {
         _setReordering(v)
-        setOrderedNames(orderHabits(v))
+        setOrderedNames(reorder(v))
 
         if (!v && orderChanged(collection.order, orderedNames)) {
             updateOrder.mutate(orderedNames)
