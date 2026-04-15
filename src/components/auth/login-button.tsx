@@ -5,7 +5,7 @@ import type React from "react"
 
 export const LoginButton: React.FC<React.ComponentProps<typeof Button>> = (props) => {
     const pathParts = document.location.pathname.split("/")
-    let path = "/"
+    let path = ""
     if (pathParts.length > 1) {
         path = pathParts.slice(0, 2).join("/") + "/"
     }
