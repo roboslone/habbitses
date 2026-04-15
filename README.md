@@ -1,4 +1,4 @@
-# Habbitses – https://roboslone.github.io/habbitses/
+# Habbitses – https://habbitses.robosl.one
 
 **Habit tracker** using your private GitHub repository as data storage.  
 Operates completely in browser, except for [GitHub token exchange](https://github.com/roboslone/github-oauth-exchange).
@@ -15,7 +15,7 @@ Operates completely in browser, except for [GitHub token exchange](https://githu
 
 <img width="404,25" height="403,25" alt="github com_settings_installations_99406588" src="https://github.com/user-attachments/assets/07bf68d8-2faf-4b1a-b7db-fe4d353cc68a" />
 
-3. Open https://roboslone.github.io/habbitses/, sign in with your GitHub account.
+3. Open https://habbitses.robosl.one, sign in with your GitHub account.
 
 ## Setting up your own instance
 
